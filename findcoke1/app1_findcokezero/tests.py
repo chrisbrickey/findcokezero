@@ -8,8 +8,8 @@ from app1_findcokezero.models import Retailer
 
 class RetailerTestCase(TestCase):
     def setUp(self):
-        Retailer.objects.create(name="Shell", street_address="598 Bryant Street", city="San Francisco", state="CA", zip="94107", country="", longitude="", latitude="")
-        Retailer.objects.create(name="Bush Market", street_address="820 Bush Street", city="San Francisco", state="CA", zip="94108", country="", longitude="", latitude="")
+        Retailer.objects.create(name="Shell", street_address="598 Bryant Street", city="San Francisco", zip="94107")
+        Retailer.objects.create(name="Bush Market", street_address="820 Bush Street", city="San Francisco", zip="94108")
 
     def database_stores_retailers(self):
         """Retailers are stored and identified by address"""
