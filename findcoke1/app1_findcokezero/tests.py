@@ -12,7 +12,7 @@ class RetailerTestCase(TestCase):
         Retailer.objects.create(name="Bush Market", street_address="820 Bush Street", city="San Francisco", zip="94108")
 
     def database_stores_retailers(self):
-        """Retailers are stored and identified by address"""
+        """Retailers are stored in database and identified by address"""
         retailer1 = Retailer.objects.get(street_address="598 Bryant Street")
         retailer2 = Retailer.objects.get(street_address="820 Bush Street")
         self.assertEqual(retailer1.name, "Shell")
