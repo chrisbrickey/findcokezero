@@ -4,8 +4,12 @@ iOS mobile app that provides locations of CokeZero retailers based on user input
 ### A very serious mission
 I'm building this app because I love CherryCokeZero, but it's not omni-present. When I find myself in a new location, I have to scout out the stores that carry it. Surely, I'm not the only one! This app will keep track of those retailers and capture the knowledge of other CherryCokeZero consumers. This is an especially serious concern now that the Coca-Cola Company has announced the discontinuation of CokeZero.  
 
+### Run the Program
+- Run development server locally: `./manage.py runserver`
+- Run test: `./manage.py test app1_findcokezero`
+
 ### Major Dependencies
-*see requirements.txt for full list*
+*see requirements.txt requirements-dev.txt for full lists*
 - python 2.7.10
 - pip 9.0.1
 - virualenv 15.1.0
