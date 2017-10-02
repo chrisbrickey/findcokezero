@@ -33,3 +33,4 @@ class RetailerWebTestCase(WebTest):
         self.assertEqual(response.json["name"], "McJSONs Store")
         self.assertEqual(response.json["city"], "SF")
         self.assertEqual(response.json["street_address"], "Bush St")
+        self.assertTrue(response.json.has_key("id"), "Expected Retailer object to have key 'id', but it was missing.")
