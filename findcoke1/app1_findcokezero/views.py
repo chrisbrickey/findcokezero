@@ -3,4 +3,13 @@ from __future__ import unicode_literals
 
 from django.shortcuts import render
 
-# Create your views here.
+from .models import Retailer
+from rest_framework import viewsets
+from .serializers import RetailerSerializer
+
+class RetailerViewSet(viewsets.ModelViewSet):
+    """
+    API endpoint that allows retailers to be viewed or edited.
+    """
+    queryset = Retailer.objects.all()
+    serializer_class = RetailerSerializer
