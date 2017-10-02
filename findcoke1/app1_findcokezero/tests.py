@@ -22,15 +22,19 @@ class RetailerTestCase(TestCase):
 class RetailerWebTestCase(WebTest):
     csrf_checks = False
     def test_create_retailer(self):
-        response = self.app.post_json('/retailers/',
-                                      headers={
-                                        "accept": str('application/json'),
-                                        "X-Requested-With": str('XMLHttpRequest'),
-                                      },
-                                      params={"city": "SF", "name": "McJSONs Store", "street_address": "Bush St"})
-        self.assertEqual(response.status, "201 Created")
+        post_response = self.app.post_json('/retailers/',
+                                           params={"city": "SF", "name": "McJSONs Store", "street_address": "Bush St"})
+        self.assertEqual(post_response.status, "201 Created")
 
-        self.assertEqual(response.json["name"], "McJSONs Store")
-        self.assertEqual(response.json["city"], "SF")
-        self.assertEqual(response.json["street_address"], "Bush St")
-        self.assertTrue(response.json.has_key("id"), "Expected Retailer object to have key 'id', but it was missing.")
+        self.assertEqual(post_response.json["name"], "McJSONs Store")
+        self.assertEqual(post_response.json["city"], "SF")
+        self.assertEqual(post_response.json["street_address"], "Bush St")
+        self.assertTrue(post_response.json.has_key("id"), "Expected Retailer object to have key 'id', but it was missing.")
+
+        new_retailer_id = post_response.json["id"]
+
+        get_response = self.app.get('/retailers/%d/' % new_retailer_id)
+
+        self.assertEqual(get_response.status, "200 OK")
+        self.assertEqual(len(get_response.json.keys()), 10)
+        self.assertEqual(get_response.json, post_response.json)
