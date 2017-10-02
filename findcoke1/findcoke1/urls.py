@@ -14,15 +14,11 @@ Including another URLconf
     2. Add a URL to urlpatterns:  url(r'^blog/', include('blog.urls'))
 """
 from django.conf.urls import url, include
-from rest_framework import routers
-from app1_findcokezero import views
+from app1_findcokezero import urls as app1_findcokezero_urls
 from django.contrib import admin
 
-router = routers.DefaultRouter()
-router.register(r'retailers', views.RetailerViewSet)
 
 urlpatterns = [
-    url(r'^', include(router.urls)),
-    url(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework')),
+    url(r'^api/', include(app1_findcokezero_urls)),
     url(r'^admin/', admin.site.urls)
 ]

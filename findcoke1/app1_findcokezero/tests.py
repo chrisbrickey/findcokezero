@@ -22,7 +22,7 @@ class RetailerTestCase(TestCase):
 class RetailerWebTestCase(WebTest):
     csrf_checks = False
     def test_create_retailer(self):
-        post_response = self.app.post_json('/retailers/',
+        post_response = self.app.post_json('/api/retailers/',
                                            params={"city": "SF", "name": "McJSONs Store", "street_address": "Bush St"})
         self.assertEqual(post_response.status, "201 Created")
 
@@ -33,7 +33,7 @@ class RetailerWebTestCase(WebTest):
 
         new_retailer_id = post_response.json["id"]
 
-        get_response = self.app.get('/retailers/%d/' % new_retailer_id)
+        get_response = self.app.get('/api/retailers/%d/' % new_retailer_id)
 
         self.assertEqual(get_response.status, "200 OK")
         self.assertEqual(len(get_response.json.keys()), 10)
