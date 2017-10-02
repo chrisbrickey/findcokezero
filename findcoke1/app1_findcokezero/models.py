@@ -8,7 +8,7 @@ class Retailer(models.Model):
     name = models.CharField(max_length=100, blank=False)
     street_address = models.CharField(max_length=200, blank=False)
     city = models.CharField(max_length=100, blank=False)
-    postcode = models.IntegerField(blank=True)
+    postcode = models.IntegerField(blank=True, null=True)
     country = models.CharField(max_length=100, blank=True)
     latitude = models.DecimalField(max_digits=40, decimal_places=20, blank=True, null=True)
     longtitude = models.DecimalField(max_digits=40, decimal_places=20, blank=True, null=True)
