@@ -11,7 +11,7 @@ I'm building this app because I love CherryCokeZero, but it's not omni-present. 
 - Run tests: `./manage.py test app1_findcokezero`
 
 ### Major Dependencies
-*see requirements.txt requirements-dev.txt for full list*
+*see requirements.txt and requirements-dev.txt for full list*
 - python 2.7.10
 - pip 9.0.1
 - virualenv 15.1.0
