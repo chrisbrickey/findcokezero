@@ -17,3 +17,10 @@ I'm building this app because I love CherryCokeZero, but it's not omni-present. 
 - virualenv 15.1.0
 - Django-1.11.4
 - pytz-2017.2
+
+### Future Development
+- Add model for soda types and link to retailers with join table  
+- Incorporate Google Maps API to augment retailer objects with latitude / longitude
+- Build client that shows map of retailers based on some geographic input (e.g. current user location or manually entered zip code)
+- Allow users to filter retailers by soda type
+- Allow users to add new retailers (including soda types) to database using form and/or click on map
