@@ -3,3 +3,6 @@ venv/
 
 # python source files
 *.pyc
+
+# local environment variables
+.env
