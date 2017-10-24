@@ -28,7 +28,7 @@ SECRET_KEY = 'ls3(_h5q)p33776sn=*#2m&a!t)hak@r(c_cm$!u=y9ey!9jn4'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['salty-crag-57705.herokuapp.com', 'www.findcokezero.com']
+ALLOWED_HOSTS = ['salty-crag-57705.herokuapp.com', 'www.findcokezero.com', 'localhost']
 
 
 # Application definition
