@@ -1,0 +1,77 @@
+[
+  {
+    "model": "app1_findcokezero.retailer",
+    "pk": 1,
+    "fields": {
+      "name": "Pine & Jones Market",
+      "street_address": "1100 Pine Street",
+      "city": "San Francisco",
+      "postcode": 94109,
+      "country": "USA",
+      "latitude": null,
+      "longtitude": null,
+      "timestamp_last_updated": "2017-10-20T03:16:08.568211Z",
+      "timestamp_created": "2017-10-20T03:16:08.568230Z"
+    }
+  },
+  {
+    "model": "app1_findcokezero.retailer",
+    "pk": 2,
+    "fields": {
+      "name": "Dair's Pine-Taylor Market",
+      "street_address": "996 Pine Street",
+      "city": "San Francisco",
+      "postcode": 94108,
+      "country": "USA",
+      "latitude": null,
+      "longtitude": null,
+      "timestamp_last_updated": "2017-10-20T03:16:46.102767Z",
+      "timestamp_created": "2017-10-20T03:16:46.102787Z"
+    }
+  },
+  {
+    "model": "app1_findcokezero.retailer",
+    "pk": 3,
+    "fields": {
+      "name": "Bush Market",
+      "street_address": "820 Bush Street",
+      "city": "San Francisco",
+      "postcode": 94108,
+      "country": "USA",
+      "latitude": null,
+      "longtitude": null,
+      "timestamp_last_updated": "2017-10-20T03:17:11.211638Z",
+      "timestamp_created": "2017-10-20T03:17:11.211659Z"
+    }
+  },
+  {
+    "model": "app1_findcokezero.retailer",
+    "pk": 4,
+    "fields": {
+      "name": "Target",
+      "street_address": "225 Bush Street",
+      "city": "San Francisco",
+      "postcode": 94104,
+      "country": "USA",
+      "latitude": null,
+      "longtitude": null,
+      "timestamp_last_updated": "2017-10-20T03:17:48.654754Z",
+      "timestamp_created": "2017-10-20T03:17:48.654773Z"
+    }
+  },
+  {
+    "model": "app1_findcokezero.retailer",
+    "pk": 5,
+    "fields": {
+      "name": "CVS",
+      "street_address": "1059 Hyde Street",
+      "city": "San Francisco",
+      "postcode": 94109,
+      "country": "USA",
+      "latitude": null,
+      "longtitude": null,
+      "timestamp_last_updated": "2017-10-20T03:18:51.666188Z",
+      "timestamp_created": "2017-10-20T03:18:51.666208Z"
+    }
+  }
+]
