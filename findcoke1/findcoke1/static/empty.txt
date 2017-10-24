@@ -1,0 +1,2 @@
+The purpose of this file is to force git to recognize the static directory.
+Git will not recognize an empty directory, so I placed this file in it.
