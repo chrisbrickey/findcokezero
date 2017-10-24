@@ -10,6 +10,8 @@ I'm building this app because I love CherryCokeZero, but it's not omni-present. 
 - Migrate the database: `./manage.py makemigrations` then `./manage.py migrate`
 - Load data from seed: `./manage.py loaddata initdata.json`
 - Run development server locally: `./manage.py runserver`
+
+- If static files are not running locally: `./manage.py collectstatic`
 - Run tests: `./manage.py test app1_findcokezero`
 
 ### Major Dependencies
