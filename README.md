@@ -7,6 +7,8 @@ I'm building this app because I love CherryCokeZero, but it's not omni-present. 
 ### Run the Program
 - Open virtual environment: `. venv/bin/activate`
 - Install dependencies: `pip install -r requirements.txt`
+- Migrate the database: `./manage.py makemigrations` then `./manage.py migrate`
+- Load data from seed: `./manage.py loaddata initdata.json`
 - Run development server locally: `./manage.py runserver`
 - Run tests: `./manage.py test app1_findcokezero`
 
