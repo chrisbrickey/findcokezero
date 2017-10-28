@@ -6,3 +6,6 @@ venv/
 
 # local environment variables
 .env
+
+# PyCharm files
+.idea/
