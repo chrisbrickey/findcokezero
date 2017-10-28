@@ -22,6 +22,23 @@ I'm building this app because I love CherryCokeZero, but it's not omni-present. 
 - Django-1.11.4
 - pytz-2017.2
 
+
+## Wireframe Samples
+
+#### Mobile
+![Mobile](https://res.cloudinary.com/dckkkjkuz/image/upload/c_scale,w_300/v1509163977/findcokezero/Mobile.png)
+
+
+#### Web 
+![Web](https://res.cloudinary.com/dckkkjkuz/image/upload/c_scale,w_600/v1509163908/findcokezero/Web.png)
+
+
+
+See all [development documents][docs] 
+
+[docs]: docs/
+
+
 ### Future Development
 - Add model for soda types and link to retailers with join table  
 - Incorporate Google Maps API to augment retailer objects with latitude / longitude
