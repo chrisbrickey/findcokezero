@@ -6,12 +6,17 @@ I'm building this app because I love CherryCokeZero, but it's not omni-present. 
 
 ### Run the Program
 - Open virtual environment: `. venv/bin/activate`
+
 - Install dependencies: `pip install -r requirements.txt`
+
 - Migrate the database: `./manage.py makemigrations` then `./manage.py migrate`
+
 - Load data from seed: `./manage.py loaddata initdata.json`
+
 - Run development server locally: `./manage.py runserver`
 
 - If static files are not running locally: `./manage.py collectstatic`
+
 - Run tests: `./manage.py test app1_findcokezero`
 
 ### Major Dependencies
@@ -29,12 +34,12 @@ I'm building this app because I love CherryCokeZero, but it's not omni-present. 
 ![Mobile](https://res.cloudinary.com/dckkkjkuz/image/upload/c_scale,w_300/v1509163977/findcokezero/Mobile.png)
 
 
-#### Web 
+#### Web
 ![Web](https://res.cloudinary.com/dckkkjkuz/image/upload/c_scale,w_600/v1509163908/findcokezero/Web.png)
 
 
 
-See all [development documents][docs] 
+See all [development documents][docs]
 
 [docs]: docs/
 
