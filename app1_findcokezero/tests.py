@@ -112,22 +112,19 @@ class SodaWebTestCase(WebTest):
         self.assertEqual(get_response.status, "200 OK")
         self.assertEqual(len(get_response.json), 2)
 
-
     def test_view_all_sodas_by_retailer(self):
         # "HTTP get request with retailer ID and 'sodas' in params retrieves all sodas associated with that retailer"
         retailer = Retailer.objects.create(name="Shell", street_address="598 Bryant Street", city="San Francisco", postcode="94107")
-        soda1 = Soda.objects.get(abbreviation="CZ")
+        soda1 = Soda.objects.create(name="Diet Coke", abbreviation="DC", low_calorie=True)
+        retailer.sodas.add(soda1)
         soda2 = Soda.objects.get(abbreviation="CC")
-        retailer.sodas.add(soda1, soda2)
+        retailer.sodas.add(soda2)
 
         retailer_id = retailer.id
-        get_response = self.app.get('/api/retailers/%d/sodas' % retailer_id)
+        get_response = self.app.get("/api/retailers/%d/sodas/" % retailer_id)
 
         self.assertEqual(get_response.status, "200 OK")
         self.assertEqual(len(get_response.json), 2)
-
-
-        get_response = self.app.get('/api/retailers/%d/' % new_retailer_id)
 
 
     def test_create_soda(self):
