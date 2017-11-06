@@ -38,12 +38,11 @@ class RetailerWebTestCase(WebTest):
         Retailer.objects.create(name="Shell", street_address="598 Bryant Street", city="San Francisco", postcode="94107")
         Retailer.objects.create(name="Bush Market", street_address="820 Bush Street", city="San Francisco", postcode="94108")
 
-    def test_show_retailers(self):
+    def test_view_all_retailers(self):
         # "For retailers, HTTP get request with no params retrieves all retailers in database"
         get_response = self.app.get('/api/retailers/')
         self.assertEqual(get_response.status, "200 OK")
         self.assertEqual(len(get_response.json), 2)
-
 
     def test_create_retailer(self):
         # "For retailers, HTTP request post request with valid data results in creation of object and response with all object data"
@@ -70,7 +69,7 @@ class SodaTestCase(TestCase):
         Soda.objects.create(name="CherryCokeZero", abbreviation="CZ", low_calorie=True)
         Soda.objects.create(name="Coke Classic", abbreviation="CC", low_calorie=False)
 
-    def test_database_stores_retailers(self):
+    def test_database_stores_sodas(self):
         """Soda types are stored in database and identified by abbreviation"""
         soda1 = Soda.objects.get(abbreviation="CZ")
         soda2 = Soda.objects.get(abbreviation="CC")
@@ -88,7 +87,6 @@ class SodaTestCase(TestCase):
     #     """For Sodas, duplicate abbreviations are not allowed"""
     #     with self.assertRaises(IntegrityError):
     #         Retailer.objects.create(name="CherryCokeZero2", abbreviation="CZ", low_calorie=False)
-
 
     def test_database_retrieves_soda_by_retailer(self):
         """Sodas are retreived in a group by retailer"""
@@ -108,11 +106,29 @@ class SodaWebTestCase(WebTest):
         Soda.objects.create(name="CherryCokeZero", abbreviation="CZ", low_calorie=True)
         Soda.objects.create(name="Coke Classic", abbreviation="CC", low_calorie=False)
 
-    def test_show_retailers(self):
+    def test_show_sodas(self):
         # "For sodas, HTTP get request with no params retrieves all retailers in database"
         get_response = self.app.get('/api/sodas/')
         self.assertEqual(get_response.status, "200 OK")
         self.assertEqual(len(get_response.json), 2)
+
+
+    def test_view_all_sodas_by_retailer(self):
+        # "HTTP get request with retailer ID and 'sodas' in params retrieves all sodas associated with that retailer"
+        retailer = Retailer.objects.create(name="Shell", street_address="598 Bryant Street", city="San Francisco", postcode="94107")
+        soda1 = Soda.objects.get(abbreviation="CZ")
+        soda2 = Soda.objects.get(abbreviation="CC")
+        retailer.sodas.add(soda1, soda2)
+
+        retailer_id = retailer.id
+        get_response = self.app.get('/api/retailers/%d/sodas' % retailer_id)
+
+        self.assertEqual(get_response.status, "200 OK")
+        self.assertEqual(len(get_response.json), 2)
+
+
+        get_response = self.app.get('/api/retailers/%d/' % new_retailer_id)
+
 
     def test_create_soda(self):
         # """For sodas, HTTP request post request with valid data results in creation of object and response with all object data"""
