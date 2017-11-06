@@ -49,8 +49,8 @@ class RetailerWebTestCase(WebTest):
 
 class SodaTestCase(TestCase):
     def setUp(self):
-        Soda.objects.create(name="CherryCokeZero", abbreviation="CZ", low_calorie="True")
-        Soda.objects.create(name="Coke Classic", abbreviation="CC", low_calorie="False")
+        Soda.objects.create(name="CherryCokeZero", abbreviation="CZ", low_calorie=True)
+        Soda.objects.create(name="Coke Classic", abbreviation="CC", low_calorie=False)
 
     def test_database_stores_retailers(self):
         """Soda types are stored in database and identified by abbreviation"""
@@ -58,6 +58,8 @@ class SodaTestCase(TestCase):
         soda2 = Soda.objects.get(abbreviation="CC")
         self.assertEqual(soda1.name, "CherryCokeZero")
         self.assertEqual(soda2.name, "Coke Classic")
+        self.assertEqual(soda1.low_calorie, True)
+        self.assertEqual(soda2.low_calorie, False)
 
     # def test_database_does_not_allow_duplicate_sodas(self):
     #     """Duplicate soda names and abbreviations are not allowed"""
@@ -77,7 +79,7 @@ class SodaWebTestCase(WebTest):
         self.assertEqual(post_response.status, "201 Created")
 
         self.assertEqual(post_response.json["abbreviation"], "CZ")
-        self.assertEqual(post_response.json["low_calorie"], "True")
+        self.assertEqual(post_response.json["low_calorie"], True)
         self.assertEqual(post_response.json["name"], "Cherry Coke Zero")
         self.assertTrue(post_response.json.has_key("id"), "Expected Retailer object to have key 'id', but it was missing.")
 
@@ -86,5 +88,5 @@ class SodaWebTestCase(WebTest):
         get_response = self.app.get('/api/sodas/%d/' % new_soda_id)
 
         self.assertEqual(get_response.status, "200 OK")
-        self.assertEqual(len(get_response.json.keys()), 10)
+        self.assertEqual(len(get_response.json.keys()), 4)
         self.assertEqual(get_response.json, post_response.json)
