@@ -123,7 +123,7 @@
     "model": "app1_findcokezero.soda",
     "pk": 6,
     "fields": {
-      "name": "Diet Caffeine Free Coke",
+      "name": "Caffeine Free Diet Coke",
       "abbreviation": "DF",
       "low_calorie": true
     }
