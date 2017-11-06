@@ -25,8 +25,23 @@ class SodaViewSet(viewsets.ModelViewSet):
 
 @csrf_exempt
 @api_view(['GET'])
-def retailer_sodas(request, pk):
+def sodas_by_retailer(request, pk):
+    """
+    API endpoint that shows sodas filtered by retailer.
+    """
     retailer = Retailer.objects.filter(id=pk)[0]
     retailer_sodas = retailer.sodas.all()
     serializer = SodaSerializer(retailer_sodas, many=True)
+    return Response(serializer.data)
+
+@csrf_exempt
+@api_view(['GET'])
+def retailers_by_sodas(request, pk):
+    """
+    API endpoint that shows retails filtered by soda.
+    """
+    soda = Soda.objects.filter(id=pk)[0]
+    soda_retailers = soda.retailer_set.all()
+    serializer_context = {'request': request}
+    serializer = RetailerSerializer(soda_retailers, context=serializer_context, many=True)
     return Response(serializer.data)
