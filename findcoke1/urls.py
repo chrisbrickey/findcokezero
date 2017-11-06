@@ -16,9 +16,10 @@ Including another URLconf
 from django.conf.urls import url, include
 from app1_findcokezero import urls as app1_findcokezero_urls
 from django.contrib import admin
-
+from . import views
 
 urlpatterns = [
     url(r'^api/', include(app1_findcokezero_urls)),
-    url(r'^admin/', admin.site.urls)
+    url(r'^admin/', admin.site.urls),
+    url(r'^', views.landing_page)
 ]
