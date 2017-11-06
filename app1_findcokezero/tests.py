@@ -31,6 +31,16 @@ class RetailerTestCase(TestCase):
             Retailer.objects.create(name="Bush Market2", street_address="820 Bush Street", city="San Francisco", postcode="94108")
 
 
+    def test_database_retrieves_retailer_by_soda(self):
+        """Retailers are retreived in a group by soda"""
+        retailer1 = Retailer.objects.get(street_address="598 Bryant Street")
+        retailer2 = Retailer.objects.get(street_address="820 Bush Street")
+        soda = Soda.objects.create(name="Diet Coke", abbreviation="DC", low_calorie=True)
+        retailer1.sodas.add(soda)
+        retailer2.sodas.add(soda)
+        self.assertEqual(soda.retailer_set.get(pk=retailer1.pk), retailer1)
+        self.assertEqual(soda.retailer_set.get(pk=retailer2.pk), retailer2)
+
 class RetailerWebTestCase(WebTest):
     csrf_checks = False
 
@@ -94,7 +104,6 @@ class SodaTestCase(TestCase):
         soda1 = Soda.objects.get(abbreviation="CZ")
         soda2 = Soda.objects.get(abbreviation="CC")
         retailer.sodas.add(soda1, soda2)
-        resulting_query_set = retailer.sodas.all()
         self.assertEqual(retailer.sodas.get(pk=soda1.pk), soda1)
         self.assertEqual(retailer.sodas.get(pk=soda2.pk), soda2)
 
