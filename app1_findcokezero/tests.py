@@ -19,6 +19,9 @@ class RetailerTestCase(TestCase):
         self.assertEqual(retailer1.name, "Shell")
         self.assertEqual(retailer2.name, "Bush Market")
 
+    # def test_database_does_not_allow_duplicate_addresses(self):
+    #     """Duplicate addresses are not allowed"""
+
     # def test_api_retrieves_retailer_group_by_zipcode(self):
     #     """Retailers are retreived in a group by zipcode"""
 
@@ -56,8 +59,32 @@ class SodaTestCase(TestCase):
         self.assertEqual(soda1.name, "CherryCokeZero")
         self.assertEqual(soda2.name, "Coke Classic")
 
+    # def test_database_does_not_allow_duplicate_sodas(self):
+    #     """Duplicate soda names and abbreviations are not allowed"""
+
     # def test_api_retrieves_soda_by_retailer(self):
     #     """Sodas are retreived in a group by retailer"""
 
     # def test_api_retrieves_for_soda_by_zipcode(self):
     #     """Sodas are retreived in a group by zipcode"""
+
+
+class SodaWebTestCase(WebTest):
+    csrf_checks = False
+    def test_create_soda(self):
+        post_response = self.app.post_json('/api/sodas/',
+                                           params={"abbreviation": "CZ", "low_calorie": "True", "name": "Cherry Coke Zero"})
+        self.assertEqual(post_response.status, "201 Created")
+
+        self.assertEqual(post_response.json["abbreviation"], "CZ")
+        self.assertEqual(post_response.json["low_calorie"], "True")
+        self.assertEqual(post_response.json["name"], "Cherry Coke Zero")
+        self.assertTrue(post_response.json.has_key("id"), "Expected Retailer object to have key 'id', but it was missing.")
+
+        new_soda_id = post_response.json["id"]
+
+        get_response = self.app.get('/api/sodas/%d/' % new_soda_id)
+
+        self.assertEqual(get_response.status, "200 OK")
+        self.assertEqual(len(get_response.json.keys()), 10)
+        self.assertEqual(get_response.json, post_response.json)
