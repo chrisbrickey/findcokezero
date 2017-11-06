@@ -1,8 +1,10 @@
 ## FindCokeZero
-iOS mobile app that provides locations of CokeZero retailers based on user input. Django REST framework enables browsable API and administrative management. Link to Google Maps API provides visual map of retailers carrying the multiple flavors of CokeZero.
+Mobile-first web app that provides locations of stores filtered by CokeZero flavors and user location. Django REST framework enables browsable API and administrative management. Integration with Google Maps API supports mapping. 
 
 ### A very serious mission
-I'm building this app because I love CherryCokeZero, but it's not omni-present. When I find myself in a new location, I have to scout out the stores that carry it. Surely, I'm not the only one! This app will keep track of those retailers and capture the knowledge of other CherryCokeZero consumers. This is an especially serious concern now that the Coca-Cola Company has announced the discontinuation of CokeZero.  
+I'm building this app because I love CherryCokeZero, but it's not omni-present and retailer inventories of all Coke flavors fluxuate. 
+When I find myself in a new location, I have to scout out the stores that carry it regularly.  Surely, I'm not the only one! 
+This app keeps track of my store inventory and uses crowd-sourcing to grow the database. 
 
 ### Run the Program
 - Open virtual environment: `. venv/bin/activate`
@@ -45,8 +47,8 @@ See all [development documents][docs]
 
 
 ### Future Development
-- Add model for soda types and link to retailers with join table  
-- Integrate Google Maps API to augment retailer objects with latitude / longitude
+- Integrate Google Maps API to augment retailer objects with latitude / longitude and facilitate maps on frontend
 - Build client that shows map of retailers based on some geographic input (e.g. current user location or manually entered zip code)
-- Allow webapp users to filter retailers by soda type
-- Allow webapp users to add new retailers (including soda types) to database using form and/or click on map
+- Frontend users can add retailers
+- Frontend users can update soda inventory of retailers
+
