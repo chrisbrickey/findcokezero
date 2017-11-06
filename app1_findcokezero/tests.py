@@ -33,6 +33,18 @@ class RetailerTestCase(TestCase):
 
 class RetailerWebTestCase(WebTest):
     csrf_checks = False
+
+    def setUp(self):
+        Retailer.objects.create(name="Shell", street_address="598 Bryant Street", city="San Francisco", postcode="94107")
+        Retailer.objects.create(name="Bush Market", street_address="820 Bush Street", city="San Francisco", postcode="94108")
+
+    def test_show_retailers(self):
+        # "For retailers, HTTP get request with no params retrieves all retailers in database"
+        get_response = self.app.get('/api/retailers/')
+        self.assertEqual(get_response.status, "200 OK")
+        self.assertEqual(len(get_response.json), 2)
+
+
     def test_create_retailer(self):
         # "For retailers, HTTP request post request with valid data results in creation of object and response with all object data"
         post_response = self.app.post_json('/api/retailers/',
@@ -91,15 +103,26 @@ class SodaTestCase(TestCase):
 
 class SodaWebTestCase(WebTest):
     csrf_checks = False
+
+    def setUp(self):
+        Soda.objects.create(name="CherryCokeZero", abbreviation="CZ", low_calorie=True)
+        Soda.objects.create(name="Coke Classic", abbreviation="CC", low_calorie=False)
+
+    def test_show_retailers(self):
+        # "For sodas, HTTP get request with no params retrieves all retailers in database"
+        get_response = self.app.get('/api/sodas/')
+        self.assertEqual(get_response.status, "200 OK")
+        self.assertEqual(len(get_response.json), 2)
+
     def test_create_soda(self):
         # """For sodas, HTTP request post request with valid data results in creation of object and response with all object data"""
         post_response = self.app.post_json('/api/sodas/',
-                                           params={"abbreviation": "CZ", "low_calorie": "True", "name": "Cherry Coke Zero"})
+                                           params={"abbreviation": "DC", "low_calorie": "True", "name": "Diet Coke"})
         self.assertEqual(post_response.status, "201 Created")
 
-        self.assertEqual(post_response.json["abbreviation"], "CZ")
+        self.assertEqual(post_response.json["abbreviation"], "DC")
         self.assertEqual(post_response.json["low_calorie"], True)
-        self.assertEqual(post_response.json["name"], "Cherry Coke Zero")
+        self.assertEqual(post_response.json["name"], "Diet Coke")
         self.assertTrue(post_response.json.has_key("id"), "Expected Retailer object to have key 'id', but it was missing.")
 
         new_soda_id = post_response.json["id"]
