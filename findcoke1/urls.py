@@ -21,5 +21,6 @@ from . import views
 urlpatterns = [
     url(r'^api/', include(app1_findcokezero_urls)),
     url(r'^admin/', admin.site.urls),
-    url(r'^', views.landing_page)
+    url(r'^', views.index, name='index'),
+    # url(r'^', views.landing_page),
 ]
