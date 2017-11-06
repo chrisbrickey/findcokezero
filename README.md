@@ -46,7 +46,7 @@ See all [development documents][docs]
 
 ### Future Development
 - Add model for soda types and link to retailers with join table  
-- Incorporate Google Maps API to augment retailer objects with latitude / longitude
+- Integrate Google Maps API to augment retailer objects with latitude / longitude
 - Build client that shows map of retailers based on some geographic input (e.g. current user location or manually entered zip code)
-- Allow users to filter retailers by soda type
-- Allow users to add new retailers (including soda types) to database using form and/or click on map
+- Allow webapp users to filter retailers by soda type
+- Allow webapp users to add new retailers (including soda types) to database using form and/or click on map
