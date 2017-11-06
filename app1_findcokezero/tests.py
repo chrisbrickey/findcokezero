@@ -4,6 +4,7 @@ from __future__ import unicode_literals
 # using test.TestCase instead of unittest.TestCase to make sure tests run within the suite - not just in isolation
 from django.test import TestCase
 from django_webtest import WebTest
+from django.db import IntegrityError
 
 from app1_findcokezero.models import Retailer, Soda
 
@@ -19,8 +20,11 @@ class RetailerTestCase(TestCase):
         self.assertEqual(retailer1.name, "Shell")
         self.assertEqual(retailer2.name, "Bush Market")
 
-    # def test_database_does_not_allow_duplicate_addresses(self):
-    #     """Duplicate addresses are not allowed"""
+    def test_database_does_not_allow_duplicate_addresses(self):
+        """Duplicate addresses are not allowed"""
+        with self.assertRaises(IntegrityError):
+            Retailer.objects.create(name="Bush Market2", street_address="820 Bush Street", city="San Francisco",
+                                postcode="94108")
 
     # def test_api_retrieves_retailer_group_by_zipcode(self):
     #     """Retailers are retreived in a group by zipcode"""
