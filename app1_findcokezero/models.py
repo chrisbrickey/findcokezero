@@ -15,3 +15,10 @@ class Retailer(models.Model):
 
     timestamp_last_updated = models.DateTimeField(auto_now=True, auto_now_add=False)
     timestamp_created = models.DateTimeField(auto_now=False, auto_now_add=True)
+
+
+class Soda(models.Model):
+
+    name = models.CharField(max_length=100, blank=False)
+    abbreviation = models.CharField(max_length=2, blank=False)
+    low_calorie = models.BooleanField(default=True)
