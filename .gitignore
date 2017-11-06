@@ -9,3 +9,6 @@ venv/
 
 # PyCharm files
 .idea/
+
+# Balamiq files
+.bmpr
