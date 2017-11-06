@@ -73,5 +73,59 @@
       "timestamp_last_updated": "2017-10-20T03:18:51.666188Z",
       "timestamp_created": "2017-10-20T03:18:51.666208Z"
     }
+  },
+  {
+    "model": "app1_findcokezero.soda",
+    "pk": 1,
+    "fields": {
+      "name": "CherryCokeZero",
+      "abbreviation": "CH",
+      "low_calorie": true
+    }
+  },
+   {
+    "model": "app1_findcokezero.soda",
+    "pk": 2,
+    "fields": {
+      "name": "CokeZero",
+      "abbreviation": "CZ",
+      "low_calorie": true
+    }
+  },
+   {
+    "model": "app1_findcokezero.soda",
+    "pk": 3,
+    "fields": {
+      "name": "Coke Classic",
+      "abbreviation": "CC",
+      "low_calorie": false
+    }
+  },
+   {
+    "model": "app1_findcokezero.soda",
+    "pk": 4,
+    "fields": {
+      "name": "Diet Coke",
+      "abbreviation": "DC",
+      "low_calorie": true
+    }
+  },
+   {
+    "model": "app1_findcokezero.soda",
+    "pk": 5,
+    "fields": {
+      "name": "Caffeine Free Coke",
+      "abbreviation": "CF",
+      "low_calorie": false
+    }
+  },
+   {
+    "model": "app1_findcokezero.soda",
+    "pk": 6,
+    "fields": {
+      "name": "Diet Caffeine Free Coke",
+      "abbreviation": "DF",
+      "low_calorie": true
+    }
   }
 ]
