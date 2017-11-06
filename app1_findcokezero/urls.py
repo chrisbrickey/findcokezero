@@ -6,6 +6,7 @@ from . import views
 
 router = routers.DefaultRouter()
 router.register(r'retailers', views.RetailerViewSet)
+router.register(r'sodas', views.SodaViewSet)
 
 urlpatterns = [
     url(r'^', include(router.urls)),
