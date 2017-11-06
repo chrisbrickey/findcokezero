@@ -31,11 +31,11 @@ I'm building this app because I love CherryCokeZero, but it's not omni-present. 
 ## Wireframe Samples
 
 #### Mobile
-![Mobile](https://res.cloudinary.com/dckkkjkuz/image/upload/c_scale,w_300/v1509163977/findcokezero/Mobile.png)
+![Mobile](https://res.cloudinary.com/dckkkjkuz/image/upload/v1509942572/findcokezero/Mobile2.png)
 
 
 #### Web
-![Web](https://res.cloudinary.com/dckkkjkuz/image/upload/c_scale,w_600/v1509163908/findcokezero/Web.png)
+![Web](https://res.cloudinary.com/dckkkjkuz/image/upload/v1509942572/findcokezero/Web1.png)
 
 
 
