@@ -11,7 +11,8 @@
       "latitude": null,
       "longtitude": null,
       "timestamp_last_updated": "2017-10-20T03:16:08.568211Z",
-      "timestamp_created": "2017-10-20T03:16:08.568230Z"
+      "timestamp_created": "2017-10-20T03:16:08.568230Z",
+      "sodas": [2]
     }
   },
   {
@@ -26,7 +27,8 @@
       "latitude": null,
       "longtitude": null,
       "timestamp_last_updated": "2017-10-20T03:16:46.102767Z",
-      "timestamp_created": "2017-10-20T03:16:46.102787Z"
+      "timestamp_created": "2017-10-20T03:16:46.102787Z",
+      "sodas": [2, 3]
     }
   },
   {
@@ -41,7 +43,8 @@
       "latitude": null,
       "longtitude": null,
       "timestamp_last_updated": "2017-10-20T03:17:11.211638Z",
-      "timestamp_created": "2017-10-20T03:17:11.211659Z"
+      "timestamp_created": "2017-10-20T03:17:11.211659Z",
+      "sodas": [1, 2, 3, 4]
     }
   },
   {
@@ -56,7 +59,8 @@
       "latitude": null,
       "longtitude": null,
       "timestamp_last_updated": "2017-10-20T03:17:48.654754Z",
-      "timestamp_created": "2017-10-20T03:17:48.654773Z"
+      "timestamp_created": "2017-10-20T03:17:48.654773Z",
+      "sodas": [2, 3]
     }
   },
   {
@@ -71,7 +75,8 @@
       "latitude": null,
       "longtitude": null,
       "timestamp_last_updated": "2017-10-20T03:18:51.666188Z",
-      "timestamp_created": "2017-10-20T03:18:51.666208Z"
+      "timestamp_created": "2017-10-20T03:18:51.666208Z",
+      "sodas": [1, 2, 4]
     }
   },
   {
