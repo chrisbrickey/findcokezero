@@ -5,7 +5,6 @@ from __future__ import unicode_literals
 from django.test import TestCase
 from django_webtest import WebTest
 from django.db import IntegrityError
-from django.core.exceptions import ValidationError
 
 from app1_findcokezero.models import Retailer, Soda
 
@@ -14,8 +13,8 @@ class RetailerTestCase(TestCase):
         Retailer.objects.create(name="Shell", street_address="598 Bryant Street", city="San Francisco", postcode="94107")
         Retailer.objects.create(name="Bush Market", street_address="820 Bush Street", city="San Francisco", postcode="94108")
 
-    def test_database_stores_retailers(self):
-        """Retailers are stored in database and identified by address"""
+    def test_database_stores_retailers_and_retrieves_by_unique_field(self):
+        """Retailers are stored in database and identified by unique field: address"""
         retailer1 = Retailer.objects.get(street_address="598 Bryant Street")
         retailer2 = Retailer.objects.get(street_address="820 Bush Street")
         self.assertEqual(retailer1.name, "Shell")
@@ -24,17 +23,12 @@ class RetailerTestCase(TestCase):
     def test_database_does_not_allow_duplicate_names(self):
         """For Retailers, duplicate names are not allowed"""
         with self.assertRaises(IntegrityError):
-            Retailer.objects.create(name="Bush Market", street_address="823 Bush Street", city="San Francisco",
-                                postcode="94108")
+            Retailer.objects.create(name="Bush Market", street_address="823 Bush Street", city="San Francisco", postcode="94108")
 
     def test_database_does_not_allow_duplicate_addresses(self):
         """For Retailers, duplicate addresses are not allowed"""
         with self.assertRaises(IntegrityError):
-            Retailer.objects.create(name="Bush Market2", street_address="820 Bush Street", city="San Francisco",
-                                    postcode="94108")
-
-    # def test_api_retrieves_retailer_group_by_zipcode(self):
-    #     """Retailers are retreived in a group by zipcode"""
+            Retailer.objects.create(name="Bush Market2", street_address="820 Bush Street", city="San Francisco", postcode="94108")
 
 
 class RetailerWebTestCase(WebTest):
@@ -83,11 +77,15 @@ class SodaTestCase(TestCase):
     #         Retailer.objects.create(name="CherryCokeZero2", abbreviation="CZ", low_calorie=False)
 
 
-    # def test_api_retrieves_soda_by_retailer(self):
-    #     """Sodas are retreived in a group by retailer"""
-
-    # def test_api_retrieves_for_soda_by_zipcode(self):
-    #     """Sodas are retreived in a group by zipcode"""
+    def test_database_retrieves_soda_by_retailer(self):
+        """Sodas are retreived in a group by retailer"""
+        retailer = Retailer.objects.create(name="Shell", street_address="598 Bryant Street", city="San Francisco", postcode="94107")
+        soda1 = Soda.objects.get(abbreviation="CZ")
+        soda2 = Soda.objects.get(abbreviation="CC")
+        retailer.sodas.add(soda1, soda2)
+        resulting_query_set = retailer.sodas.all()
+        self.assertEqual(retailer.sodas.get(pk=soda1.pk), soda1)
+        self.assertEqual(retailer.sodas.get(pk=soda2.pk), soda2)
 
 
 class SodaWebTestCase(WebTest):
