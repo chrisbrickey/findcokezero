@@ -5,6 +5,7 @@ from __future__ import unicode_literals
 from django.test import TestCase
 from django_webtest import WebTest
 from django.db import IntegrityError
+from django.core.exceptions import ValidationError
 
 from app1_findcokezero.models import Retailer, Soda
 
@@ -20,11 +21,17 @@ class RetailerTestCase(TestCase):
         self.assertEqual(retailer1.name, "Shell")
         self.assertEqual(retailer2.name, "Bush Market")
 
+    def test_database_does_not_allow_duplicate_names(self):
+        """For Retailers, duplicate names are not allowed"""
+        with self.assertRaises(IntegrityError):
+            Retailer.objects.create(name="Bush Market", street_address="823 Bush Street", city="San Francisco",
+                                postcode="94108")
+
     def test_database_does_not_allow_duplicate_addresses(self):
-        """Duplicate addresses are not allowed"""
+        """For Retailers, duplicate addresses are not allowed"""
         with self.assertRaises(IntegrityError):
             Retailer.objects.create(name="Bush Market2", street_address="820 Bush Street", city="San Francisco",
-                                postcode="94108")
+                                    postcode="94108")
 
     # def test_api_retrieves_retailer_group_by_zipcode(self):
     #     """Retailers are retreived in a group by zipcode"""
@@ -65,8 +72,16 @@ class SodaTestCase(TestCase):
         self.assertEqual(soda1.low_calorie, True)
         self.assertEqual(soda2.low_calorie, False)
 
-    # def test_database_does_not_allow_duplicate_sodas(self):
-    #     """Duplicate soda names and abbreviations are not allowed"""
+    def test_database_does_not_allow_duplicate_names(self):
+        """For Sodas, duplicate names are not allowed"""
+        with self.assertRaises(IntegrityError):
+            Soda.objects.create(name="Coke Classic", abbreviation="CL", low_calorie=False)
+
+    # def test_database_does_not_allow_duplicate_abbreviations(self):
+    #     """For Sodas, duplicate abbreviations are not allowed"""
+    #     with self.assertRaises(IntegrityError):
+    #         Retailer.objects.create(name="CherryCokeZero2", abbreviation="CZ", low_calorie=False)
+
 
     # def test_api_retrieves_soda_by_retailer(self):
     #     """Sodas are retreived in a group by retailer"""
