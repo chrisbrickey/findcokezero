@@ -28,13 +28,13 @@ I'm building this app because I love CherryCokeZero, but it's not omni-present. 
 - pytz-2017.2
 
 
-## Wireframe Samples
+## Wireframes
 
-#### Mobile
+#### Mobile Sample
 ![Mobile](https://res.cloudinary.com/dckkkjkuz/image/upload/v1509942572/findcokezero/Mobile2.png)
 
 
-#### Web
+#### Web Sample
 ![Web](https://res.cloudinary.com/dckkkjkuz/image/upload/v1509942572/findcokezero/Web1.png)
 
 
