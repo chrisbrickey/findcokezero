@@ -34,6 +34,7 @@ class RetailerTestCase(TestCase):
 class RetailerWebTestCase(WebTest):
     csrf_checks = False
     def test_create_retailer(self):
+        # "For retailers, HTTP request post request with valid data results in creation of object and response with all object data"
         post_response = self.app.post_json('/api/retailers/',
                                            params={"city": "SF", "name": "McJSONs Store", "street_address": "Bush St"})
         self.assertEqual(post_response.status, "201 Created")
@@ -48,7 +49,7 @@ class RetailerWebTestCase(WebTest):
         get_response = self.app.get('/api/retailers/%d/' % new_retailer_id)
 
         self.assertEqual(get_response.status, "200 OK")
-        self.assertEqual(len(get_response.json.keys()), 10)
+        self.assertEqual(len(get_response.json.keys()), 11)
         self.assertEqual(get_response.json, post_response.json)
 
 
@@ -91,6 +92,7 @@ class SodaTestCase(TestCase):
 class SodaWebTestCase(WebTest):
     csrf_checks = False
     def test_create_soda(self):
+        # """For sodas, HTTP request post request with valid data results in creation of object and response with all object data"""
         post_response = self.app.post_json('/api/sodas/',
                                            params={"abbreviation": "CZ", "low_calorie": "True", "name": "Cherry Coke Zero"})
         self.assertEqual(post_response.status, "201 Created")
