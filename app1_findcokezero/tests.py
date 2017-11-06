@@ -19,6 +19,10 @@ class RetailerTestCase(TestCase):
         self.assertEqual(retailer1.name, "Shell")
         self.assertEqual(retailer2.name, "Bush Market")
 
+    # def test_api_retrieves_retailer_group_by_zipcode(self):
+    #     """Retailers are retreived in a group by zipcode"""
+
+
 class RetailerWebTestCase(WebTest):
     csrf_checks = False
     def test_create_retailer(self):
@@ -51,3 +55,9 @@ class SodaTestCase(TestCase):
         soda2 = Retailer.objects.get(street_address="CC")
         self.assertEqual(soda1.name, "CherryCokeZero")
         self.assertEqual(soda2.name, "Coke Classic")
+
+    # def test_api_retrieves_soda_by_retailer(self):
+    #     """Sodas are retreived in a group by retailer"""
+
+    # def test_api_retrieves_for_soda_by_zipcode(self):
+    #     """Sodas are retreived in a group by zipcode"""
