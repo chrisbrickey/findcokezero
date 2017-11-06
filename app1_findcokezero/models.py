@@ -1,7 +1,17 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
-
 from django.db import models
+
+
+class Soda(models.Model):
+
+    name = models.CharField(max_length=100, blank=False, unique=True)
+    abbreviation = models.CharField(max_length=2, blank=False, unique=True)
+    low_calorie = models.BooleanField(default=False)
+
+    # declares a field to display on the Django admin or anytime you want string representation of the entire object; must be unique
+    def __str__(self):
+        return self.name
 
 
 class Retailer(models.Model):
@@ -17,16 +27,9 @@ class Retailer(models.Model):
     timestamp_last_updated = models.DateTimeField(auto_now=True, auto_now_add=False)
     timestamp_created = models.DateTimeField(auto_now=False, auto_now_add=True)
 
-    # declares a field to display on the Django admin or anytime you want string representation of the entire object; must be unique
-    def __str__(self):
-        return self.name
-
-class Soda(models.Model):
-
-    name = models.CharField(max_length=100, blank=False, unique=True)
-    abbreviation = models.CharField(max_length=2, blank=False, unique=True)
-    low_calorie = models.BooleanField(default=False)
+    sodas = models.ManyToManyField(Soda)
 
     # declares a field to display on the Django admin or anytime you want string representation of the entire object; must be unique
     def __str__(self):
         return self.name
+
