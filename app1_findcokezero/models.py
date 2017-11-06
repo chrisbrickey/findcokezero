@@ -3,6 +3,7 @@ from __future__ import unicode_literals
 
 from django.db import models
 
+
 class Retailer(models.Model):
 
     name = models.CharField(max_length=100, blank=False)
@@ -21,4 +22,4 @@ class Soda(models.Model):
 
     name = models.CharField(max_length=100, blank=False)
     abbreviation = models.CharField(max_length=2, blank=False)
-    low_calorie = models.BooleanField(default=True)
+    low_calorie = models.BooleanField(default=False)
