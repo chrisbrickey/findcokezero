@@ -30,7 +30,6 @@ class RetailerTestCase(TestCase):
         with self.assertRaises(IntegrityError):
             Retailer.objects.create(name="Bush Market2", street_address="820 Bush Street", city="San Francisco", postcode="94108")
 
-
     def test_database_retrieves_retailer_by_soda(self):
         """Retailers are retreived in a group by soda"""
         retailer1 = Retailer.objects.get(street_address="598 Bryant Street")
@@ -51,6 +50,20 @@ class RetailerWebTestCase(WebTest):
     def test_view_all_retailers(self):
         # "For retailers, HTTP get request with no params retrieves all retailers in database"
         get_response = self.app.get('/api/retailers/')
+        self.assertEqual(get_response.status, "200 OK")
+        self.assertEqual(len(get_response.json), 2)
+
+    def test_view_all_retailers_by_soda(self):
+        # "HTTP get request with soda ID and 'retailers' in params retrieves all retailers associated with that soda"
+        retailer1 = Retailer.objects.get(street_address="598 Bryant Street")
+        retailer2 = Retailer.objects.get(street_address="820 Bush Street")
+        soda = Soda.objects.create(name="Diet Coke", abbreviation="DC", low_calorie=True)
+        retailer1.sodas.add(soda)
+        retailer2.sodas.add(soda)
+
+        soda_id = soda.id
+        get_response = self.app.get("/api/sodas/%d/retailers/" % soda_id)
+
         self.assertEqual(get_response.status, "200 OK")
         self.assertEqual(len(get_response.json), 2)
 
