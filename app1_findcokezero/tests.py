@@ -38,3 +38,16 @@ class RetailerWebTestCase(WebTest):
         self.assertEqual(get_response.status, "200 OK")
         self.assertEqual(len(get_response.json.keys()), 10)
         self.assertEqual(get_response.json, post_response.json)
+
+
+class SodaTestCase(TestCase):
+    def setUp(self):
+        Soda.objects.create(name="CherryCokeZero", abbreviation="CZ", low_calorie="True")
+        Soda.objects.create(name="Coke Classic", low_calorie="False")
+
+    def test_database_stores_retailers(self):
+        """Soda types are stored in database and identified by abbreviation"""
+        soda1 = Retailer.objects.get(abbreviation="CZ")
+        soda2 = Retailer.objects.get(street_address="CC")
+        self.assertEqual(soda1.name, "CherryCokeZero")
+        self.assertEqual(soda2.name, "Coke Classic")
