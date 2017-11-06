@@ -5,7 +5,7 @@ from __future__ import unicode_literals
 from django.test import TestCase
 from django_webtest import WebTest
 
-from app1_findcokezero.models import Retailer
+from app1_findcokezero.models import Retailer, Soda
 
 class RetailerTestCase(TestCase):
     def setUp(self):
@@ -47,12 +47,12 @@ class RetailerWebTestCase(WebTest):
 class SodaTestCase(TestCase):
     def setUp(self):
         Soda.objects.create(name="CherryCokeZero", abbreviation="CZ", low_calorie="True")
-        Soda.objects.create(name="Coke Classic", low_calorie="False")
+        Soda.objects.create(name="Coke Classic", abbreviation="CC", low_calorie="False")
 
     def test_database_stores_retailers(self):
         """Soda types are stored in database and identified by abbreviation"""
-        soda1 = Retailer.objects.get(abbreviation="CZ")
-        soda2 = Retailer.objects.get(street_address="CC")
+        soda1 = Soda.objects.get(abbreviation="CZ")
+        soda2 = Soda.objects.get(abbreviation="CC")
         self.assertEqual(soda1.name, "CherryCokeZero")
         self.assertEqual(soda2.name, "Coke Classic")
 
