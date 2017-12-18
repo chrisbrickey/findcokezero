@@ -1,10 +1,10 @@
 # FindCokeZero
-Mobile-first web app that provides locations of stores filtered by CokeZero flavors and user location. Django REST framework enables browsable API and administrative management. Integration with Google Maps API supports mapping. 
+Mobile-first web app that provides locations of stores filtered by CokeZero flavors and user location. Django REST framework enables browsable API and administrative management. Integration with Google Maps API supports mapping.
 
 ## A very serious mission
-I'm building this app because I love CherryCokeZero, but it's not omni-present and retailer inventories of all Coke flavors fluxuate. 
-When I find myself in a new location, I have to scout out the stores that carry it regularly.  Surely, I'm not the only one! 
-This app keeps track of my store inventory and uses crowd-sourcing to grow the database. 
+I'm building this app because I love CherryCokeZero, but it's not omni-present and retailer inventories of all Coke flavors fluctuate.
+When I find myself in a new location, I have to scout out the stores that carry it regularly.  Surely, I'm not the only one!
+This app keeps track of my store inventory and uses crowd-sourcing to grow the database.
 
 ## Run the Program
 - Open virtual environment: `. venv/bin/activate`
@@ -51,4 +51,3 @@ See all [development documents][docs]
 - Build client that shows map of retailers based on some geographic input (e.g. current user location or manually entered zip code)
 - Frontend users can add retailers
 - Frontend users can update soda inventory of retailers
-
