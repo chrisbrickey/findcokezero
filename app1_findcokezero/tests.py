@@ -106,10 +106,10 @@ class SodaTestCase(TestCase):
         with self.assertRaises(IntegrityError):
             Soda.objects.create(name="Coke Classic", abbreviation="CL", low_calorie=False)
 
-    # def test_database_does_not_allow_duplicate_abbreviations(self):
-    #     """For Sodas, duplicate abbreviations are not allowed"""
-    #     with self.assertRaises(IntegrityError):
-    #         Retailer.objects.create(name="CherryCokeZero2", abbreviation="CZ", low_calorie=False)
+    def test_database_does_not_allow_duplicate_abbreviations(self):
+        """For Sodas, duplicate abbreviations are not allowed"""
+        with self.assertRaises(IntegrityError):
+            Soda.objects.create(name="CherryCokeZero2", abbreviation="CZ", low_calorie=False)
 
     def test_database_retrieves_soda_by_retailer(self):
         """Sodas are retreived in a group by retailer"""
