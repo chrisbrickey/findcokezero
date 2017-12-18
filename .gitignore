@@ -12,3 +12,5 @@ venv/
 
 # Balamiq files
 .bmpr
+
+.DS_Store
