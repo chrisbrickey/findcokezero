@@ -21,6 +21,35 @@ This app keeps track of my store inventory and uses crowd-sourcing to grow the d
 
 - Run tests: `./manage.py test app1_findcokezero`
 
+
+## API Endpoints
+
+#### HTML ROOT
+*All urls that omit closing slash will redirect to root and return html, unless url includes a query string*
+
+- `GET /` - serves HTML template  
+
+
+#### JSON API
+*Don't forget closing slash unless url includes a query string*
+
+##### Retailers
+
+- `GET /api/retailers/` - retrieve all retailers
+- `GET /api/retailers/:retailer_id/sodas/` - retrieve all retailers with specific soda
+- `GET /api/retailers/?postcode=post_code` - retrieve all retailers with specific postcode
+- `POST /api/retailers/` - create retailer
+
+
+##### Sodas
+
+- `GET /api/sodas/` - retrieve all sodas
+- `GET /api/sodas/:soda_id/` - retrieve specific soda
+- `GET /api/sodas/:soda_id/retailers/` - retrieve all sodas at specific retailer
+
+
+
+
 ## Major Dependencies
 *see requirements.txt and requirements-dev.txt for full list*
 - python 2.7.10
@@ -47,7 +76,8 @@ See all [development documents][docs]
 
 
 ## Future Development
+- See [development documents][docs] for future API endpoints
 - Integrate Google Maps API to augment retailer objects with latitude / longitude and facilitate maps on frontend
 - Build client that shows map of retailers based on some geographic input (e.g. current user location or manually entered zip code)
-- Frontend users can add retailers
-- Frontend users can update soda inventory of retailers
+
+[docs]: docs/
