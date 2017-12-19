@@ -12,8 +12,18 @@ class RetailerViewSet(viewsets.ModelViewSet):
     """
     API endpoint that allows retailers to be viewed or edited.
     """
-    queryset = Retailer.objects.all()
+
     serializer_class = RetailerSerializer
+    # queryset = Retailer.objects.all()
+
+    def get_queryset(self):
+        queryset = Retailer.objects.all()
+        post_code = self.request.query_params.get('postcode', None)
+        if post_code is not None:
+            queryset = queryset.filter(postcode=post_code)
+            # add conditional to match sodas as well as postcode
+        return queryset
+
 
 class SodaViewSet(viewsets.ModelViewSet):
     """
@@ -38,7 +48,7 @@ def sodas_by_retailer(request, pk):
 @api_view(['GET'])
 def retailers_by_sodas(request, pk):
     """
-    API endpoint that shows retails filtered by soda.
+    API endpoint that shows retailers filtered by soda.
     """
     soda = Soda.objects.filter(id=pk)[0]
     soda_retailers = soda.retailer_set.all()
