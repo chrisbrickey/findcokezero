@@ -40,8 +40,8 @@ class RetailerTestCase(TestCase):
         self.assertEqual(soda.retailer_set.get(pk=retailer1.pk), retailer1)
         self.assertEqual(soda.retailer_set.get(pk=retailer2.pk), retailer2)
 
-    def test_database_retrieves_retailer_by_zip_code(self):
-        """Retailers are retreived by zipcode"""
+    def test_database_retrieves_retailer_by_postcode(self):
+        """Retailers are retreived by postcode"""
         retailer1 = Retailer.objects.get(street_address="598 Bryant Street")
         retailer2 = Retailer.objects.get(street_address="820 Bush Street")
         retailer3 = Retailer.objects.create(name="Retailer3", street_address="abc", city="San Francisco", postcode="94107")
@@ -63,8 +63,8 @@ class RetailerTestCase(TestCase):
         self.assertEqual(array_94107, ['Retailer3', 'Shell'])
         self.assertEqual(array_94108, ['Bush Market'])
 
-    # def test_database_retrieves_retailers_by_zip_code_and_soda(self):
-    #     """Retailers are retreived in a group by soda and zipcode"""
+    # def test_database_retrieves_retailers_by_postcode_and_soda(self):
+    #     """Retailers are retreived in a group by soda and postcode"""
             # retailer3 = Retailer.objects.create(name="Retailer3", street_address="abc", city="San Francisco", postcode="94107")
             # retailer4 = Retailer.objects.create(name="Retailer4", street_address="xyz", city="San Francisco", postcode="94108")
             # soda1 = Soda.objects.create(name="CherryCokeZero", abbreviation="CZ", low_calorie=True)
@@ -73,7 +73,7 @@ class RetailerTestCase(TestCase):
             # retailer2.sodas.add(soda1)
             # retailer3.sodas.add(soda2)
             # retailer4.sodas.add(soda2)
-    
+
 
 class RetailerWebTestCase(WebTest):
     csrf_checks = False
@@ -101,6 +101,17 @@ class RetailerWebTestCase(WebTest):
 
         self.assertEqual(get_response.status, "200 OK")
         self.assertEqual(len(get_response.json), 2)
+
+    def test_view_all_retailers_by_postcode(self):
+        # "HTTP get request with postcode and 'retailers' in params retrieves all retailers associated with that postcode"
+        retailer1 = Retailer.objects.get(street_address="598 Bryant Street")
+        retailer2 = Retailer.objects.get(street_address="820 Bush Street")
+        retailer3 = Retailer.objects.create(name="Retailer3", street_address="abc", city="San Francisco", postcode="94107")
+
+        get_response_94107 = self.app.get("/api/retailers/?postcode=%d" % 94107)
+
+        self.assertEqual(get_response_94107.status, "200 OK")
+        self.assertEqual(len(get_response_94107.json), 2)
 
     def test_create_retailer(self):
         # "For retailers, HTTP request post request with valid data results in creation of object and response with all object data"
