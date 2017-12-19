@@ -65,14 +65,25 @@ class RetailerTestCase(TestCase):
 
     # def test_database_retrieves_retailers_by_postcode_and_soda(self):
     #     """Retailers are retreived in a group by soda and postcode"""
-            # retailer3 = Retailer.objects.create(name="Retailer3", street_address="abc", city="San Francisco", postcode="94107")
-            # retailer4 = Retailer.objects.create(name="Retailer4", street_address="xyz", city="San Francisco", postcode="94108")
-            # soda1 = Soda.objects.create(name="CherryCokeZero", abbreviation="CZ", low_calorie=True)
-            # soda2 = Soda.objects.create(name="Coke Classic", abbreviation="CC", low_calorie=False)
-            # retailer1.sodas.add(soda1)
-            # retailer2.sodas.add(soda1)
-            # retailer3.sodas.add(soda2)
-            # retailer4.sodas.add(soda2)
+    #         retailer3 = Retailer.objects.create(name="Retailer3", street_address="abc", city="San Francisco", postcode="94107")
+    #         retailer4 = Retailer.objects.create(name="Retailer4", street_address="xyz", city="San Francisco", postcode="94108")
+    #         sodaCZ = Soda.objects.create(name="CherryCokeZero", abbreviation="CZ", low_calorie=True)
+    #         sodaCC = Soda.objects.create(name="Coke Classic", abbreviation="CC", low_calorie=False)
+    #         retailer1.sodas.add(sodaCZ)
+    #         retailer1.sodas.add(sodaCC)
+    #         retailer2.sodas.add(sodaCZ)
+    #         retailer3.sodas.add(sodaCZ)
+    #         retailer4.sodas.add(sodaCC)
+    #
+    #         results_94107_CZ = ...insert database query
+    #         array_94107_CZ = ...make array out of retailer names
+    #         results_94108_CC = ...insert database query
+    #         array_94108_CC = ...make array out of retailer names
+    #
+    #         self.assertEqual(len(results_94107_CZ), 2)
+    #         self.assertEqual(len(results_94108_CC), 1)
+    #         self.assertEqual(array_94107_CZ, ['Shell', 'Retailer3'])
+    #         self.assertEqual(array_94108_CC, ['Retailer4'])
 
 
 class RetailerWebTestCase(WebTest):
