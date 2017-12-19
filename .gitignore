@@ -13,4 +13,8 @@ venv/
 # Balamiq files
 .bmpr
 
+# Minified, auto-generated version of all static files
+staticfiles/
+
+#Desktop Services Store(mac Finder)
 .DS_Store
