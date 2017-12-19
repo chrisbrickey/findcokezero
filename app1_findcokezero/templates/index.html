@@ -10,18 +10,60 @@
 
     <body>
         <h1>FindCokeZero</h1>
+
         <div>
-            <p>Please pardon this throwback to the internet of the 90s.<p/>
-            </br>
-            <p>To access and edit store inventories of Coke flavors while I work on this frontend, </p>
+            <p>Please pardon this throwback to the internet of the 90s. To check out wireframes and future API development plans, go to the
+                  <a href="https://github.com/chrisbrickey/findcokezero" target="_blank">github repo</a>.
+            </p>
+
+        </div>
+
+        </br>
+
+        <div>
+            <h3>To use this API now:</h3>
+
+            <h5>Browse and Create</h5>
+
+            <p>To view, filter, create, and edit store inventories of Coke flavors while I work on this interface, </p>
             <p> visit the
                 <a href="https://www.findcokezero.com/api/" target="_blank">Django REST Framework browsable API</a>.
             </p>
+
             </br>
-            <p>To check out development plans and wireframes, </p>
-            <p> go to the
-                <a href="https://github.com/chrisbrickey/findcokezero" target="_blank">github repo</a>.
-            </p>
+
+            <div>
+                <h5>API Endpoints</h5>
+
+                <div>
+
+                    <ul>Retailers
+                        <li>`GET /api/retailers/` - retrieve all retailers</li>
+                        <li>`GET /api/retailers/:retailer_id/` - retrieve specific retailer</li>
+                        <li>`GET /api/retailers/:retailer_id/sodas/` - retrieve all retailers with specific soda</li>
+                        <li>`GET /api/retailers/?postcode=:retailer_postcode` - retrieve all retailers with specific postcode; e.g. "www.findcokezero.com/api/retailers/?postcode=11111"</li>
+                        <li>`POST /api/retailers/` - create retailer</li>
+                        <li>`PATCH /api/retailers/:retailer_id/` - edit retailer</li>
+                        <li>`DELETE /api/retailers/:retailer_id/` - remove retailer</li>
+                    </ul>
+
+                    <ul>Sodas
+                        <li>`GET /api/sodas/` - retrieve all sodas</li>
+                        <li>`GET /api/sodas/:soda_id/` - retrieve specific soda</li>
+                        <li>`GET /api/sodas/:soda_id/retailers/` - retrieve all sodas at specific retailer</li>
+                        <li>`POST /api/sodas/` - create soda</li>
+                        <li>`PATCH /api/sodas/:soda_id/` - edit soda</li>
+                        <li>`DELETE /api/sodas/:soda_id/` - remove soda</li>
+                    </ul>
+
+                    </p>Don't forget closing slash unless url includes a query string</p>
+                    <p>All urls that omit closing slash will redirect to root and return html, unless url includes a query string</p>
+
+                </div>
+            </div>
+
         </div>
+
+
     </body>
 </html>
