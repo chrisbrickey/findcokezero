@@ -5,7 +5,7 @@ from . import views
 
 
 router = routers.DefaultRouter()
-router.register(r'retailers', views.RetailerViewSet)
+router.register(r'retailers', views.RetailerViewSet, base_name='retailer') # added base_name to allow custom get_queryset method 
 router.register(r'sodas', views.SodaViewSet)
 
 urlpatterns = [
