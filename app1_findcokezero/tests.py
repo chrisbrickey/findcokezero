@@ -109,9 +109,12 @@ class RetailerWebTestCase(WebTest):
         retailer3 = Retailer.objects.create(name="Retailer3", street_address="abc", city="San Francisco", postcode="94107")
 
         get_response_94107 = self.app.get("/api/retailers/?postcode=%d" % 94107)
-
         self.assertEqual(get_response_94107.status, "200 OK")
         self.assertEqual(len(get_response_94107.json), 2)
+
+        get_response_94108 = self.app.get("/api/retailers/?postcode=%d" % 94108)
+        self.assertEqual(get_response_94108.status, "200 OK")
+        self.assertEqual(len(get_response_94108.json), 1)
 
     def test_create_retailer(self):
         # "For retailers, HTTP request post request with valid data results in creation of object and response with all object data"
