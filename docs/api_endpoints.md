@@ -17,7 +17,7 @@
 - `GET /api/retailers/` - retrieve all retailers
 - `GET /api/retailers/:retailer_id/` - retrieve specific retailer
 - `GET /api/retailers/:retailer_id/sodas/` - retrieve all retailers with specific soda
-- `GET /api/retailers/?postcode=post_code` - retrieve all retailers with specific postcode
+- `GET /api/retailers/?postcode=:retailer_postcode` - retrieve all retailers with specific postcode
 - `POST /api/retailers/` - create retailer
 - `PATCH /api/retailers/:retailer_id/` - edit retailer
 - `DELETE /api/retailers/:retailer_id/` - remove retailer
