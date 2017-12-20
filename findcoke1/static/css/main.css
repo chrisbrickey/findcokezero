@@ -69,7 +69,7 @@ table {
 /*beginning of custom CSS*/
 
 main {
-  background-color: black;
+  /* background-color: gray; */
   width: 100%;
   height: 100%;
   overflow-y: auto;
@@ -136,7 +136,7 @@ h6 {
 
 
 #head {
-  background-color: pink;
+  /* background-color: pink; */
   width: 100%;
   margin: 0px 10px 0px 10px;
   padding: 5px 10px 5px 10px;
@@ -146,27 +146,28 @@ h6 {
   align-items: center;
   margin: 10px;
   padding: 10px;
+  flex: 0;
 }
 
 #headline {
-  background-color: gray;
-  margin: 5px 10px 5px 10px;
+  /* background-color: gray; */
+  margin: 10px 10px 5px 10px;
   padding: 5px 10px 5px 10px;
   display: flex;
 }
 
 #landingPage {
-  background-color: lightblue;
+  /* background-color: lightblue; */
   width: 100%;
   margin: 0px 10px 0px 10px;
   padding: 5px 10px 5px 10px;
 
   flex: 1;
 
-  display: flex;
+  /* display: flex;
   flex-direction: column;
   justify-content: left;
-  align-items: left;
+  align-items: left; */
 }
 
 #landingPage a {
@@ -178,25 +179,25 @@ h6 {
 }
 
 #temp {
-  background-color: lightgreen;
+  /* background-color: lightgreen; */
   margin: 0px 10px 0px 10px;
   padding: 5px 10px 5px 10px;
 }
 
 #api {
-  background-color: yellow;
+  /* background-color: yellow; */
   margin: 15px 10px 5px 10px;
   padding: 5px 10px 5px 10px;
 }
 
 #apiHeader {
-  background-color: pink;
-  margin: 2px 0px 0px 0px;
+  /* background-color: pink; */
+  margin: 10px 0px 0px 0px;
   padding: 10px 0px 10px 0px;
 }
 
 #apiBody {
-  background-color: orange;
+  /* background-color: orange; */
   margin: 2px 0px 0px 0px;
   padding: 10px 0px 10px 0px;
   display: flex;
@@ -205,40 +206,64 @@ h6 {
 }
 
 .apiSubSection {
-  background-color: lightgreen;
-  margin: 2px 0px 0px 0px;
-  padding: 10px 0px 10px 0px;
+  /* background-color: lightgreen; */
+  margin: 0px 5px 0px 0px;
+  padding: 10px 5px 10px 5px;
+
+  display: flex;
+  flex-direction: column;
+}
+
+#splitter {
+  width: 25px;
 }
 
 .apiSubHeader {
-  background-color: pink;
-  margin: 2px 0px 0px 0px;
+  /* background-color: pink; */
+  margin: 0px;
   padding: 10px 0px 10px 0px;
 }
 
-#tableContainer {
-  background-color: gray;
-  margin: 2px 0px 0px 0px;
-  padding: 10px 0px 10px 0px;
+.apiTableHeader {
+  /* background-color: lightblue; */
+  margin: 10px 0px 0px 0px;
+  padding: 5px 0px 5px 0px;
+}
+
+.endpointTable {
+  margin: 5px;
+  padding: 5px;
+}
+
+.endpointTable li {
+  list-style-type: circle;
+  /* background-color: gray; */
+  line-height: 140%;
+  padding: 5px;
+  margin: 2px 5px 2px 10px;
 }
 
 #foot {
-  background-color: pink;
+  /* background-color: pink; */
   width: 100%;
-  /* margin: 5px 10px 5px 10px;
-  padding: 5px 10px 5px 10px; */
   display: flex;
   justify-content: center;
   align-items: center;
-
+  flex: 0;
 }
 
 #footline {
-  background-color: gray;
+  /* background-color: gray; */
   margin: 0px 10px 0px 10px;
   padding: 5px;
   diplay: flex;
 }
+
+/* <footer id="foot">
+    <div id="footline">
+        <h6>www.chrisbrickey.com</h6>
+    </div>
+</footer> */
 
 
 #map {
