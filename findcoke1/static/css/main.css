@@ -70,12 +70,14 @@ table {
 
 main {
   background-color: lightgreen;
-  width: 100w;
-  height: 100%;
+  width: 100vw;
+  height: 100vh;
+  overflow-y: auto;
+  overflow-x: hidden;
   /* overflow: auto; */
   display: flex;
   flex-direction: column;
-  justify-content: center;
+  justify-content: left;
   align-items: center;
 
   letter-spacing: 1px;
@@ -108,7 +110,7 @@ h1 {
   margin: 10px;
   padding: 10px;
 
-  font-size: 3em;
+  font-size: 2.5em;
   letter-spacing: 2px;
 
   font-family: 'Fjalla One', sans-serif;
@@ -121,11 +123,34 @@ h1 {
 
 }
 
-#foot {
-  background-color: yellow;
+#landingPage {
+  background-color: lightblue;
+  width: 100%;
   margin: 10px;
   padding: 10px;
+
+  flex: 1;
+}
+
+
+
+#foot {
+  background-color: yellow;
+  width: 100%;
+  margin: 5px 10px 5px 10px;
+  padding: 5px 10px 5px 10px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+}
+
+h6 {
+  background-color: gray;
   font-size: 0.75em;
+  margin: 5px 10px 5px 10px;
+  padding: 10px;
+
 }
 
 #map {
