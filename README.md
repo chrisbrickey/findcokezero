@@ -72,11 +72,11 @@ This app keeps track of my store inventory and uses crowd-sourcing to grow the d
 ## Wireframes
 
 #### Mobile Sample
-![Mobile](https://res.cloudinary.com/dckkkjkuz/image/upload/v1509942572/findcokezero/Mobile2.png)
+![Mobile](https://res.cloudinary.com/dckkkjkuz/image/upload/v1513744099/findcokezero/Mobile2.png)
 
 
 #### Web Sample
-![Web](https://res.cloudinary.com/dckkkjkuz/image/upload/v1509942572/findcokezero/Web1.png)
+![Web](https://res.cloudinary.com/dckkkjkuz/image/upload/v1513744057/findcokezero/Web1.png)
 
 
 
