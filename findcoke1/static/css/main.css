@@ -66,16 +66,66 @@ table {
 }
 
 
-p {
-    color: black;
+/*beginning of custom CSS*/
+
+main {
+  background-color: lightgreen;
+  width: 100w;
+  height: 100%;
+  /* overflow: auto; */
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+
+  letter-spacing: 1px;
+
+  font-family: 'Cantarell', sans-serif;
+  /* font-family: Courier; */
+  /* font-family: 'Raleway', sans-serif; */
+  /* font-family: 'Roboto', sans-serif; */
+  /* font-family: 'Montserrat', sans-serif; */
+  /* font-family: 'Bitter', serif; */
+  /* font-family: 'Hind', sans-serif; */
+  /* font-family: 'Domine', serif; */
+  /* font-family: 'Crimson Text', serif; */
 }
 
+
 #head {
+  background-color: pink;
+  width: 100%;
+  margin: 10px;
+  padding: 10px;
+  display: flex;
+  flex-direction: row;
+  justify-content: left;
+  align-items: center;
+}
+
+h1 {
+  background-color: gray;
+  margin: 10px;
+  padding: 10px;
+
+  font-size: 3em;
+  letter-spacing: 2px;
+
+  font-family: 'Fjalla One', sans-serif;
+  /* font-family: 'Lobster', cursive; */
+  /* font-family: 'Courgette', cursive; */
+  /* font-family: 'Fugaz One', cursive; */
+  /* font-family: 'Merriweather', serif; */
+  /* font-family: 'Montserrat', sans-serif; */
+  /* font-family: 'Libre Baskerville', serif; */
 
 }
 
 #foot {
-
+  background-color: yellow;
+  margin: 10px;
+  padding: 10px;
+  font-size: 0.75em;
 }
 
 #map {
