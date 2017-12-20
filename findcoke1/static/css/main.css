@@ -81,6 +81,7 @@ main {
 
   letter-spacing: 1px;
   line-height: 120%;
+  font-size: 90%;
 
   font-family: 'Cantarell', sans-serif;
   /* font-family: Courier; */
@@ -188,8 +189,35 @@ h6 {
   padding: 5px 10px 5px 10px;
 }
 
-.apiSubSection {
+#apiHeader {
+  background-color: pink;
+  margin: 2px 0px 0px 0px;
+  padding: 10px 0px 10px 0px;
+}
+
+#apiBody {
   background-color: orange;
+  margin: 2px 0px 0px 0px;
+  padding: 10px 0px 10px 0px;
+  display: flex;
+  flex-direction: row;
+
+}
+
+.apiSubSection {
+  background-color: lightgreen;
+  margin: 2px 0px 0px 0px;
+  padding: 10px 0px 10px 0px;
+}
+
+.apiSubHeader {
+  background-color: pink;
+  margin: 2px 0px 0px 0px;
+  padding: 10px 0px 10px 0px;
+}
+
+#tableContainer {
+  background-color: gray;
   margin: 2px 0px 0px 0px;
   padding: 10px 0px 10px 0px;
 }

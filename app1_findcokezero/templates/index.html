@@ -37,47 +37,61 @@
                 </div>
 
                 <div id="api">
-                    <div class="apiSubSection">
-                        <h2>To use the API now:</h2>
+
+                    <div id="apiHeader">
+                        <h2>To use the API now...</h2>
                     </div>
 
-                    <div class="apiSubSection">
-                        <h3>Browse and Create</h3>
+                    <div id="apiBody">
 
-                        <p>To view, filter, create, and edit store inventories of Coke flavors while I work on this interface, </p>
-                        <p> visit the
-                            <a href="https://www.findcokezero.com/api/" target="_blank">Django REST Framework browsable API</a>.
-                        </p>
-                    </div>
+                        <div class="apiSubSection">
+                        </div>
 
-                    <div class="apiSubSection">
+                        <div class="apiSubSection">
+                            <div class="apiSubHeader">
+                                <h3>Browse and Create</h3>
+                            </div>
 
-                        <h3>API Endpoints</h3>
+                            <p>To view, filter, create, and edit store inventories of Coke flavors while I work on this interface, </p>
+                            <p> visit the
+                                <a href="https://www.findcokezero.com/api/" target="_blank">Django REST Framework browsable API</a>.
+                            </p>
+                        </div>
 
-                        <div id="tableContainer">
-                            <ul><h4>Retailers</h4>
-                                <li>GET /api/retailers/ - retrieve all retailers</li>
-                                <li>GET /api/retailers/:retailer_id/ - retrieve specific retailer</li>
-                                <li>GET /api/retailers/:retailer_id/sodas/ - retrieve all retailers with specific soda</li>
-                                <li>GET /api/retailers/?postcode=:retailer_postcode - retrieve all retailers with specific postcode; e.g. "www.findcokezero.com/api/retailers/?postcode=11111"</li>
-                                <li>POST /api/retailers/ - create retailer</li>
-                                <li>PATCH /api/retailers/:retailer_id/ - edit retailer</li>
-                                <li>DELETE /api/retailers/:retailer_id/ - remove retailer</li>
-                            </ul>
+                        <div class="apiSubSection">
 
-                            <ul><h4>Sodas</h4>
-                                <li>GET /api/sodas/ - retrieve all sodas</li>
-                                <li>GET /api/sodas/:soda_id/ - retrieve specific soda</li>
-                                <li>GET /api/sodas/:soda_id/retailers/ - retrieve all sodas at specific retailer</li>
-                                <li>POST /api/sodas/ - create soda</li>
-                                <li>PATCH /api/sodas/:soda_id/ - edit soda</li>
-                                <li>DELETE /api/sodas/:soda_id/ - remove soda</li>
-                            </ul>
+                            <div class="apiSubHeader">
+                                <h3>API Endpoints</h3>
+                            </div>
+
+                            <div id="tableContainer">
+                                <ul><h4>Retailers</h4>
+                                    <li>GET /api/retailers/ - retrieve all retailers</li>
+                                    <li>GET /api/retailers/:retailer_id/ - retrieve specific retailer</li>
+                                    <li>GET /api/retailers/:retailer_id/sodas/ - retrieve all retailers with specific soda</li>
+                                    <li>GET /api/retailers/?postcode=:retailer_postcode - retrieve all retailers with specific postcode; e.g. "www.findcokezero.com/api/retailers/?postcode=11111"</li>
+                                    <li>POST /api/retailers/ - create retailer</li>
+                                    <li>PATCH /api/retailers/:retailer_id/ - edit retailer</li>
+                                    <li>DELETE /api/retailers/:retailer_id/ - remove retailer</li>
+                                </ul>
+
+                                <ul><h4>Sodas</h4>
+                                    <li>GET /api/sodas/ - retrieve all sodas</li>
+                                    <li>GET /api/sodas/:soda_id/ - retrieve specific soda</li>
+                                    <li>GET /api/sodas/:soda_id/retailers/ - retrieve all sodas at specific retailer</li>
+                                    <li>POST /api/sodas/ - create soda</li>
+                                    <li>PATCH /api/sodas/:soda_id/ - edit soda</li>
+                                    <li>DELETE /api/sodas/:soda_id/ - remove soda</li>
+                                </ul>
+                            </div>
+
                         </div>
 
                     </div>
 
-        
+
+
+
                 </div>
 
             </section>
