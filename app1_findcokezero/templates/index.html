@@ -37,21 +37,24 @@
                 </div>
 
                 <div id="api">
-                    <h2>To use the API now:</h2>
+                    <div class="apiSubSection">
+                        <h2>To use the API now:</h2>
+                    </div>
 
-                    <h3>Browse and Create</h3>
+                    <div class="apiSubSection">
+                        <h3>Browse and Create</h3>
 
-                    <p>To view, filter, create, and edit store inventories of Coke flavors while I work on this interface, </p>
-                    <p> visit the
-                        <a href="https://www.findcokezero.com/api/" target="_blank">Django REST Framework browsable API</a>.
-                    </p>
+                        <p>To view, filter, create, and edit store inventories of Coke flavors while I work on this interface, </p>
+                        <p> visit the
+                            <a href="https://www.findcokezero.com/api/" target="_blank">Django REST Framework browsable API</a>.
+                        </p>
+                    </div>
 
+                    <div class="apiSubSection">
 
-                    <div>
                         <h3>API Endpoints</h3>
 
-                        <div>
-
+                        <div id="tableContainer">
                             <ul><h4>Retailers</h4>
                                 <li>GET /api/retailers/ - retrieve all retailers</li>
                                 <li>GET /api/retailers/:retailer_id/ - retrieve specific retailer</li>
@@ -70,10 +73,11 @@
                                 <li>PATCH /api/sodas/:soda_id/ - edit soda</li>
                                 <li>DELETE /api/sodas/:soda_id/ - remove soda</li>
                             </ul>
-
                         </div>
+
                     </div>
 
+        
                 </div>
 
             </section>

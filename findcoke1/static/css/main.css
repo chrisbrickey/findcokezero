@@ -137,7 +137,7 @@ h6 {
 #head {
   background-color: pink;
   width: 100%;
-  margin: 5px 10px 5px 10px;
+  margin: 0px 10px 0px 10px;
   padding: 5px 10px 5px 10px;
   display: flex;
   flex-direction: row;
@@ -157,7 +157,7 @@ h6 {
 #landingPage {
   background-color: lightblue;
   width: 100%;
-  margin: 5px 10px 5px 10px;
+  margin: 0px 10px 0px 10px;
   padding: 5px 10px 5px 10px;
 
   flex: 1;
@@ -168,24 +168,30 @@ h6 {
   align-items: left;
 }
 
-#temp {
-  background-color: lightgreen;
-  margin: 5px 10px 5px 10px;
-  padding: 5px 10px 5px 10px;
-}
-
-#api {
-  background-color: yellow;
-  margin: 10px;
-  padding: 10px;
-}
-
 #landingPage a {
   text-decoration: underline;
   color: black;
   &:hover {
     cursor: pointer;
   }
+}
+
+#temp {
+  background-color: lightgreen;
+  margin: 0px 10px 0px 10px;
+  padding: 5px 10px 5px 10px;
+}
+
+#api {
+  background-color: yellow;
+  margin: 15px 10px 5px 10px;
+  padding: 5px 10px 5px 10px;
+}
+
+.apiSubSection {
+  background-color: orange;
+  margin: 2px 0px 0px 0px;
+  padding: 10px 0px 10px 0px;
 }
 
 #foot {
@@ -201,8 +207,8 @@ h6 {
 
 #footline {
   background-color: gray;
-  margin: 5px 10px 5px 10px;
-  padding: 10px;
+  margin: 0px 10px 0px 10px;
+  padding: 5px;
   diplay: flex;
 }
 
