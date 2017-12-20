@@ -132,6 +132,32 @@ h1 {
   flex: 1;
 }
 
+#landingPage a {
+  text-decoration: underline;
+  color: black;
+  &:hover {
+    cursor: pointer;
+  }
+}
+
+h2 {
+  font-family: 'Fjalla One', sans-serif;
+  font-size: 1.75em;
+  text-decoration: bold;
+}
+
+h3 {
+  font-family: 'Fjalla One', sans-serif;
+  font-size: 1.5em;
+  text-decoration: bold;
+}
+
+h4 {
+  font-family: 'Fjalla One', sans-serif;
+  font-size: 1.25em;
+  text-decoration: bold;
+}
+
 
 
 #foot {
