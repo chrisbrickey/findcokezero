@@ -82,18 +82,21 @@ class RetailerTestCase(TestCase):
         array_94107_CZ = []
         results_94107 = Retailer.objects.filter(postcode="94107")
         for retailer in results_94107:
-          if sodaCZ in retailer.sodas: # is it storing the whole soda object or just the soda's id?
+          if sodaCZ in retailer.sodas.all():
             array_94107_CZ.append(str(retailer.name))
         array_94107_CZ.sort()
 
 
-        # array_94108_CC =[]
-        # results_94108 = Retailer.objects.filter(postcode="94108")
-        # results_94108_CC = ...insert database query
-        # array_94108_CC = ...make array out of retailer names
+        array_94108_CC = []
+        results_94108 = Retailer.objects.filter(postcode="94108")
+        for retailer in results_94108:
+          if sodaCC in retailer.sodas.all():
+            array_94108_CC.append(str(retailer.name))
+        array_94108_CC.sort()
 
-        self.assertEqual(len(results_94107_CZ), 2)
-        self.assertEqual(len(results_94108_CC), 1)
+
+        self.assertEqual(len(array_94107_CZ), 2)
+        self.assertEqual(len(array_94108_CC), 1)
         self.assertEqual(array_94107_CZ, ['Retailer3', 'Shell'])
         self.assertEqual(array_94108_CC, ['Retailer4'])
 
