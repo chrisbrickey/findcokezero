@@ -35,6 +35,7 @@ class RetailerTestCase(TestCase):
         retailer1 = Retailer.objects.get(street_address="598 Bryant Street")
         retailer2 = Retailer.objects.get(street_address="820 Bush Street")
         soda = Soda.objects.create(name="Diet Coke", abbreviation="DC", low_calorie=True)
+
         retailer1.sodas.add(soda)
         retailer2.sodas.add(soda)
         self.assertEqual(soda.retailer_set.get(pk=retailer1.pk), retailer1)
@@ -63,27 +64,38 @@ class RetailerTestCase(TestCase):
         self.assertEqual(array_94107, ['Retailer3', 'Shell'])
         self.assertEqual(array_94108, ['Bush Market'])
 
-    # def test_database_retrieves_retailers_by_postcode_and_soda(self):
-    #     """Retailers are retreived in a group by soda and postcode"""
-    #         retailer3 = Retailer.objects.create(name="Retailer3", street_address="abc", city="San Francisco", postcode="94107")
-    #         retailer4 = Retailer.objects.create(name="Retailer4", street_address="xyz", city="San Francisco", postcode="94108")
-    #         sodaCZ = Soda.objects.create(name="CherryCokeZero", abbreviation="CZ", low_calorie=True)
-    #         sodaCC = Soda.objects.create(name="Coke Classic", abbreviation="CC", low_calorie=False)
-    #         retailer1.sodas.add(sodaCZ)
-    #         retailer1.sodas.add(sodaCC)
-    #         retailer2.sodas.add(sodaCZ)
-    #         retailer3.sodas.add(sodaCZ)
-    #         retailer4.sodas.add(sodaCC)
-    #
-    #         results_94107_CZ = ...insert database query
-    #         array_94107_CZ = ...make array out of retailer names
-    #         results_94108_CC = ...insert database query
-    #         array_94108_CC = ...make array out of retailer names
-    #
-    #         self.assertEqual(len(results_94107_CZ), 2)
-    #         self.assertEqual(len(results_94108_CC), 1)
-    #         self.assertEqual(array_94107_CZ, ['Shell', 'Retailer3'])
-    #         self.assertEqual(array_94108_CC, ['Retailer4'])
+    def test_database_retrieves_retailers_by_postcode_and_soda(self):
+        """Retailers are retreived in a group by soda and postcode"""
+        retailer1 = Retailer.objects.get(street_address="598 Bryant Street")
+        retailer2 = Retailer.objects.get(street_address="820 Bush Street")
+        retailer3 = Retailer.objects.create(name="Retailer3", street_address="abc", city="San Francisco", postcode="94107")
+        retailer4 = Retailer.objects.create(name="Retailer4", street_address="xyz", city="San Francisco", postcode="94108")
+
+        sodaCZ = Soda.objects.create(name="CherryCokeZero", abbreviation="CZ", low_calorie=True)
+        sodaCC = Soda.objects.create(name="Coke Classic", abbreviation="CC", low_calorie=False)
+        retailer1.sodas.add(sodaCZ)
+        retailer1.sodas.add(sodaCC)
+        retailer2.sodas.add(sodaCZ)
+        retailer3.sodas.add(sodaCZ)
+        retailer4.sodas.add(sodaCC)
+
+        array_94107_CZ = []
+        results_94107 = Retailer.objects.filter(postcode="94107")
+        for retailer in results_94107:
+          if sodaCZ in retailer.sodas: # is it storing the whole soda object or just the soda's id?
+            array_94107_CZ.append(str(retailer.name))
+        array_94107_CZ.sort()
+
+
+        # array_94108_CC =[]
+        # results_94108 = Retailer.objects.filter(postcode="94108")
+        # results_94108_CC = ...insert database query
+        # array_94108_CC = ...make array out of retailer names
+
+        self.assertEqual(len(results_94107_CZ), 2)
+        self.assertEqual(len(results_94108_CC), 1)
+        self.assertEqual(array_94107_CZ, ['Retailer3', 'Shell'])
+        self.assertEqual(array_94108_CC, ['Retailer4'])
 
 
 class RetailerWebTestCase(WebTest):
@@ -126,6 +138,9 @@ class RetailerWebTestCase(WebTest):
         get_response_94108 = self.app.get("/api/retailers/?postcode=%d" % 94108)
         self.assertEqual(get_response_94108.status, "200 OK")
         self.assertEqual(len(get_response_94108.json), 1)
+
+    # def test_view_all_retailers_by_postcode_and_soda(self):
+        # "HTTP get request with postcode in params and soda types in data retrieves all retailers associated with that postcode and soda"
 
     def test_create_retailer(self):
         # "For retailers, HTTP request post request with valid data results in creation of object and response with all object data"
