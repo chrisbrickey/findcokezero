@@ -151,10 +151,10 @@ class RetailerWebTestCase(WebTest):
         self.assertEqual(get_response_94108.status, "200 OK")
         self.assertEqual(len(get_response_94108.json), 1)
 
-    def test_view_all_retailers_by_postcode_and_soda(self):
-        # "HTTP get request with postcode in params and soda types in data retrieves all retailers associated with that postcode and soda"
-        retailer1 = Retailer.objects.get(street_address="598 Bryant Street")
-        retailer2 = Retailer.objects.get(street_address="820 Bush Street")
+    def test_view_all_retailers_by_postcode_and_one_soda(self):
+        # "HTTP get request with postcode in params and one soda type retrieves all associated retailers"
+        retailer1 = Retailer.objects.get(street_address="598 Bryant Street") # 94107
+        retailer2 = Retailer.objects.get(street_address="820 Bush Street") #94108
         retailer3 = Retailer.objects.create(name="Retailer3", street_address="abc", city="San Francisco", postcode="94107")
         retailer4 = Retailer.objects.create(name="Retailer4", street_address="xyz", city="San Francisco", postcode="94108")
 
@@ -168,7 +168,7 @@ class RetailerWebTestCase(WebTest):
         retailer3.sodas.add(sodaCZ)
         retailer4.sodas.add(sodaCC)
 
-        get_response_94107_CZ = self.app.get("/api/retailers/?postcode=94107", params={"abbreviation": "CZ"})
+        get_response_94107_CZ = self.app.get("/api/retailers/?postcode=94107&sodas=CZ")
         self.assertEqual(get_response_94107_CZ.status, "200 OK")
         self.assertEqual(len(get_response_94107_CZ.json), 2)
 
@@ -177,7 +177,7 @@ class RetailerWebTestCase(WebTest):
         # self.assertEqual(post_response.json["street_address"], "Bush St")
         # self.assertTrue(post_response.json.has_key("id"), "Expected Retailer object to have key 'id', but it was missing.")
 
-        get_response_94108_CC = self.app.get("/api/retailers/?postcode=%d" % 94108, params={"abbreviation": "CC"})
+        get_response_94108_CC = self.app.get("/api/retailers/?postcode=94108&sodas=CC")
         self.assertEqual(get_response_94108_CC.status, "200 OK")
         self.assertEqual(len(get_response_94108_CC.json), 1)
 
@@ -186,11 +186,28 @@ class RetailerWebTestCase(WebTest):
         # self.assertEqual(post_response.json["street_address"], "Bush St")
         # self.assertTrue(post_response.json.has_key("id"), "Expected Retailer object to have key 'id', but it was missing.")
 
-        get_response_94108_DC = self.app.get("/api/retailers/?postcode=%d" % 94108, params={"abbreviation": "DC"})
+        get_response_94108_DC = self.app.get("/api/retailers/?postcode=94108&sodas=DC")
         self.assertEqual(get_response_94108_DC.status, "200 OK")
         self.assertEqual(len(get_response_94108_DC.json), 0)
 
+    def test_view_all_retailers_by_postcode_and_multiple_sodas(self):
+        # "HTTP get request with postcode in params and multiple soda types retrieves all associated retailers"
+        retailer1 = Retailer.objects.get(street_address="598 Bryant Street") # 94107
+        retailer3 = Retailer.objects.create(name="Retailer3", street_address="abc", city="San Francisco", postcode="94107")
+        sodaCZ = Soda.objects.create(name="CherryCokeZero", abbreviation="CZ", low_calorie=True)
+        sodaDC = Soda.objects.create(name="Diet Coke", abbreviation="DC", low_calorie=True)
+        retailer1.sodas.add(sodaCZ)
+        retailer1.sodas.add(sodaDC)
+        retailer3.sodas.add(sodaCZ)
 
+        get_response_94107_CZ_DC = self.app.get("/api/retailers/?postcode=94107&sodas=CZ,DC")
+        self.assertEqual(get_response_94107_CZ_DC.status, "200 OK")
+        self.assertEqual(len(get_response_94107_CZ_DC.json), 1)
+
+        # self.assertEqual(post_response.json["name"], "McJSONs Store")
+        # self.assertEqual(post_response.json["city"], "SF")
+        # self.assertEqual(post_response.json["street_address"], "Bush St")
+        # self.assertTrue(post_response.json.has_key("id"), "Expected Retailer object to have key 'id', but it was missing.")
 
     def test_create_retailer(self):
         # "For retailers, HTTP request post request with valid data results in creation of object and response with all object data"
