@@ -19,9 +19,30 @@ class RetailerViewSet(viewsets.ModelViewSet):
     def get_queryset(self):
         queryset = Retailer.objects.all()
         post_code = self.request.query_params.get('postcode', None)
+        sodas= self.request.query_params.get('sodas', None)
+
         if post_code is not None:
             queryset = queryset.filter(postcode=post_code)
-            # add conditional to match sodas as well as postcode
+
+        if sodas is not None:
+            soda_array = list(map(lambda x: str(x), sodas.split(",")))
+
+            new_queryset = []
+            for retailer in queryset:
+
+                queryset_sodas = retailer.sodas.all()
+                queryset_soda_abbrevs = list(map(lambda x: x.abbreviation, queryset_sodas))
+                has_all = True
+
+                for soda in soda_array:
+                    if soda not in queryset_soda_abbrevs:
+                        has_all = False
+
+                if has_all == True:
+                    new_queryset.append(retailer)
+
+            queryset = new_queryset
+
         return queryset
 
 
