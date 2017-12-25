@@ -40,6 +40,7 @@ This app keeps track of my store inventory and uses crowd-sourcing to grow the d
 | GET /api/retailers/:retailer_id/                | retrieve specific retailer                    |
 | GET /api/retailers/:retailer_id/sodas/          | retrieve all retailers with specific soda     | www.findcokezero.com/api/retailers/2/sodas/
 | GET /api/retailers/?postcode=:retailer_postcode | retrieve all retailers with specific postcode | www.findcokezero.com/api/retailers/?postcode=11111
+| GET /api/retailers/?postcode=:retailer_postcode&sodas=:soda_abbreviations | retrieve all retailers with specific postcode and selection of soda types | www.findcokezero.com/api/retailers/?postcode=94107&sodas=CZ,DC
 | POST /api/retailers                             | create retailer                               |
 | PATCH /api/retailers/:retailer_id/              | edit retailer                                 |
 | DELETE /api/retailers/:retailer_id/             | remove retailer                               |
