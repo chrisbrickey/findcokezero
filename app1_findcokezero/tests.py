@@ -203,24 +203,34 @@ class RetailerWebTestCase(WebTest):
         self.assertEqual(get_response_94108_DC.status, "200 OK")
         self.assertEqual(len(get_response_94108_DC.json), 0)
 
-    # def test_view_all_retailers_by_postcode_and_multiple_sodas(self):
-    #     # "HTTP get request with postcode and multiple soda types in params retrieves all associated retailers"
-    #     retailer1 = Retailer.objects.get(street_address="598 Bryant Street") # 94107
-    #     retailer3 = Retailer.objects.create(name="Retailer3", street_address="abc", city="San Francisco", postcode="94107")
-    #     retailer5 = Retailer.objects.create(name="Retailer5", street_address="xyz", city="San Francisco", postcode="94107")
-    #
-    #     sodaCZ = Soda.objects.create(name="CherryCokeZero", abbreviation="CZ", low_calorie=True)
-    #     sodaDC = Soda.objects.create(name="Diet Coke", abbreviation="DC", low_calorie=True)
-    #
-    #     retailer1.sodas.add(sodaCZ)
-    #     retailer1.sodas.add(sodaDC)
-    #     retailer3.sodas.add(sodaCZ)
-    #     retailer5.sodas.add(sodaCZ)
-    #     retailer5.sodas.add(sodaDC)
-    #
-    #     get_response_94107_CZ_DC = self.app.get("/api/retailers/?postcode=94107&sodas=CZ,DC")
-    #     self.assertEqual(get_response_94107_CZ_DC.status, "200 OK")
-    #     self.assertEqual(len(get_response_94107_CZ_DC.json), 2)
+    def test_view_all_retailers_by_postcode_and_multiple_sodas(self):
+        # "HTTP get request with postcode and multiple soda types in params retrieves all associated retailers"
+        retailer1 = Retailer.objects.get(street_address="598 Bryant Street") # 94107
+        retailer3 = Retailer.objects.create(name="Retailer3", street_address="abc", city="San Francisco", postcode="94107")
+        retailer4 = Retailer.objects.create(name="Retailer4", street_address="opq", city="San Francisco", postcode="94108")
+        retailer5 = Retailer.objects.create(name="Retailer5", street_address="xyz", city="San Francisco", postcode="94107")
+
+        sodaCZ = Soda.objects.create(name="CherryCokeZero", abbreviation="CZ", low_calorie=True)
+        sodaCC = Soda.objects.create(name="Coke Classic", abbreviation="CC", low_calorie=False)
+        sodaDC = Soda.objects.create(name="Diet Coke", abbreviation="DC", low_calorie=True)
+
+        retailer1.sodas.add(sodaCZ)
+        retailer1.sodas.add(sodaDC)
+        retailer1.sodas.add(sodaCC)
+        retailer3.sodas.add(sodaCZ)
+        retailer3.sodas.add(sodaCC)
+        retailer4.sodas.add(sodaCZ)
+        retailer5.sodas.add(sodaCZ)
+        retailer5.sodas.add(sodaDC)
+
+        get_response_94107_CZ_DC = self.app.get("/api/retailers/?postcode=94107&sodas=CZ,DC")
+        self.assertEqual(get_response_94107_CZ_DC.status, "200 OK")
+        self.assertEqual(len(get_response_94107_CZ_DC.json), 2)
+
+        result_names = [str(get_response_94107_CZ_DC.json[0]["name"]), str(get_response_94107_CZ_DC.json[1]["name"])]
+        self.assertTrue("Shell" in result_names)
+        self.assertTrue("Retailer5" in result_names)
+        self.assertEqual(get_response_94107_CZ_DC.json[0]["postcode"], 94107)
 
     def test_create_retailer(self):
         # "For retailers, HTTP request post request with valid data results in creation of object and response with all object data"
@@ -240,7 +250,6 @@ class RetailerWebTestCase(WebTest):
         self.assertEqual(get_response.status, "200 OK")
         self.assertEqual(len(get_response.json.keys()), 11)
         self.assertEqual(get_response.json, post_response.json)
-
 
 class SodaTestCase(TestCase):
     def setUp(self):
