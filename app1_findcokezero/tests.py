@@ -152,39 +152,43 @@ class RetailerWebTestCase(WebTest):
         self.assertEqual(len(get_response_94108.json), 1)
 
     def test_view_all_retailers_by_postcode_and_soda(self):
-        pass
         # "HTTP get request with postcode in params and soda types in data retrieves all retailers associated with that postcode and soda"
-        # retailer1 = Retailer.objects.get(street_address="598 Bryant Street")
-        # retailer2 = Retailer.objects.get(street_address="820 Bush Street")
-        # retailer3 = Retailer.objects.create(name="Retailer3", street_address="abc", city="San Francisco", postcode="94107")
-        # retailer4 = Retailer.objects.create(name="Retailer4", street_address="xyz", city="San Francisco", postcode="94108")
-        #
-        # sodaCZ = Soda.objects.create(name="CherryCokeZero", abbreviation="CZ", low_calorie=True)
-        # sodaCC = Soda.objects.create(name="Coke Classic", abbreviation="CC", low_calorie=False)
-        # retailer1.sodas.add(sodaCZ)
-        # retailer1.sodas.add(sodaCC)
-        # retailer2.sodas.add(sodaCZ)
-        # retailer3.sodas.add(sodaCZ)
-        # retailer4.sodas.add(sodaCC)
+        retailer1 = Retailer.objects.get(street_address="598 Bryant Street")
+        retailer2 = Retailer.objects.get(street_address="820 Bush Street")
+        retailer3 = Retailer.objects.create(name="Retailer3", street_address="abc", city="San Francisco", postcode="94107")
+        retailer4 = Retailer.objects.create(name="Retailer4", street_address="xyz", city="San Francisco", postcode="94108")
 
-        # params_CZ = {"abbreviation": "CZ"}
-        # get_response_94107_CZ = self.app.get("/api/retailers/?postcode=94107", params={"abbreviation": "CZ"})
-        # self.assertEqual(get_response_94107_CZ.status, "200 OK")
-        # self.assertEqual(len(get_response_94107_CZ.json), 2)
+        sodaCZ = Soda.objects.create(name="CherryCokeZero", abbreviation="CZ", low_calorie=True)
+        sodaCC = Soda.objects.create(name="Coke Classic", abbreviation="CC", low_calorie=False)
+        sodaDC = Soda.objects.create(name="Diet Coke", abbreviation="DC", low_calorie=True)
+
+        retailer1.sodas.add(sodaCZ)
+        retailer1.sodas.add(sodaCC)
+        retailer2.sodas.add(sodaCZ)
+        retailer3.sodas.add(sodaCZ)
+        retailer4.sodas.add(sodaCC)
+
+        get_response_94107_CZ = self.app.get("/api/retailers/?postcode=94107", params={"abbreviation": "CZ"})
+        self.assertEqual(get_response_94107_CZ.status, "200 OK")
+        self.assertEqual(len(get_response_94107_CZ.json), 2)
+
+        # self.assertEqual(post_response.json["name"], "McJSONs Store")
+        # self.assertEqual(post_response.json["city"], "SF")
+        # self.assertEqual(post_response.json["street_address"], "Bush St")
+        # self.assertTrue(post_response.json.has_key("id"), "Expected Retailer object to have key 'id', but it was missing.")
+
+        get_response_94108_CC = self.app.get("/api/retailers/?postcode=%d" % 94108, params={"abbreviation": "CC"})
+        self.assertEqual(get_response_94108_CC.status, "200 OK")
+        self.assertEqual(len(get_response_94108_CC.json), 1)
 
         # self.assertEqual(post_response.json["name"], "McJSONs Store")
         # self.assertEqual(post_response.json["city"], "SF")
         # self.assertEqual(post_response.json["street_address"], "Bush St")
         # self.assertTrue(post_response.json.has_key("id"), "Expected Retailer object to have key 'id', but it was missing.")
 
-        # get_response_94108_CC = self.app.get("/api/retailers/?postcode=%d" % 94108, params={"abbreviation": "CC"})
-        # self.assertEqual(get_response_94108_CC.status, "200 OK")
-        # self.assertEqual(len(get_response_94108_CC.json), 1)
-
-        # self.assertEqual(post_response.json["name"], "McJSONs Store")
-        # self.assertEqual(post_response.json["city"], "SF")
-        # self.assertEqual(post_response.json["street_address"], "Bush St")
-        # self.assertTrue(post_response.json.has_key("id"), "Expected Retailer object to have key 'id', but it was missing.")
+        get_response_94108_DC = self.app.get("/api/retailers/?postcode=%d" % 94108, params={"abbreviation": "DC"})
+        self.assertEqual(get_response_94108_DC.status, "200 OK")
+        self.assertEqual(len(get_response_94108_DC.json), 0)
 
 
 
