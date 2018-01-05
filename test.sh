@@ -21,5 +21,5 @@ print "%d", asdf
 #   -H 'X-CSRFTOKEN: pSwozdb6EOg99b1hT6fy7ZswiZrByyzvM32PlfxQrixAdexiErLsrrPJkGp8GHZo' \
 #   -H 'X-Requested-With: XMLHttpRequest' \
 #   -H 'Connection: keep-alive' \
-#   --data-binary $'{"city": "SF", "name": "McJSONs Store", "country": "", "longtitude": null, "postcode": null,  "latitude": null, "street_address": "Bush St"}' \
+#   --data-binary $'{"city": "SF", "name": "McJSONs Store", "country": "", "longitude": null, "postcode": null,  "latitude": null, "street_address": "Bush St"}' \
 #   --compressed
