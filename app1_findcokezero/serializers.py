@@ -24,7 +24,19 @@ class RetailerSerializer(serializers.HyperlinkedModelSerializer):
             lon = location["lng"]
             validated_data["latitude"] = lat
             validated_data["longitude"] = lon
-        return Retailer.objects.create(**validated_data)
+
+        sodas_list = []
+        if "sodas" in validated_data:
+            sodas_list = validated_data["sodas"]
+            del validated_data["sodas"]
+
+        saved_retailer = Retailer.objects.create(**validated_data)
+
+        for soda in sodas_list:
+            saved_retailer.sodas.add(soda)
+
+
+        return saved_retailer
 
     class Meta:
         model = Retailer
@@ -36,4 +48,4 @@ class RetailerSerializer(serializers.HyperlinkedModelSerializer):
 class SodaSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Soda
-        fields = ('id', 'name', 'abbreviation', 'low_calorie')
+        fields = ('id', 'name', 'abbreviation', 'low_calorie', 'url')

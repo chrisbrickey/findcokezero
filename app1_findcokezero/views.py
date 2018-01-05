@@ -62,7 +62,8 @@ def sodas_by_retailer(request, pk):
     """
     retailer = Retailer.objects.filter(id=pk)[0]
     retailer_sodas = retailer.sodas.all()
-    serializer = SodaSerializer(retailer_sodas, many=True)
+    serializer_context = {'request': request}
+    serializer = SodaSerializer(retailer_sodas, many=True, context=serializer_context)
     return Response(serializer.data)
 
 @csrf_exempt

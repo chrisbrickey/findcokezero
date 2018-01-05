@@ -87,5 +87,5 @@ class SodaWebTestCase(WebTest):
         get_response = self.app.get('/api/sodas/%d/' % new_soda_id)
 
         self.assertEqual(get_response.status, "200 OK")
-        self.assertEqual(len(get_response.json.keys()), 4)
+        self.assertEqual(len(get_response.json.keys()), 5)
         self.assertEqual(get_response.json, post_response.json)

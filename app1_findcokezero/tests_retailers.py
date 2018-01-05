@@ -250,7 +250,7 @@ class RetailerWebTestCase(WebTest):
         self.assertTrue("Retailer5" in result_names)
         self.assertEqual(get_response_94107_CZ_DC.json[0]["postcode"], 94107)
 
-    def test_create_retailer(self):
+    def test_create_retailer_without_sodas(self):
         # "For retailers, HTTP request post request with valid data results in creation of object and response with all object data"
         post_response = self.app.post_json('/api/retailers/',
                                            params={"city": "SF", "name": "McJSONs Store", "street_address": "Bush St"})
@@ -286,9 +286,33 @@ class RetailerWebTestCase(WebTest):
 
         self.assertEqual(get_dictionary, post_dictionary)
 
+    def test_create_retailer_with_sodas(self):
+        post_soda_response = self.app.post_json('/api/sodas/',
+                                                params={"name": "FavoriteSoda", "abbreviation": "FS"})
+
+        new_soda_url = post_soda_response.json["url"]
+
+        post_retailer_response = self.app.post_json('/api/retailers/',
+                                                    params={"city": "SF",
+                                                            "name": "McJSONs Store",
+                                                            "street_address": "Bush St",
+                                                            "sodas": [new_soda_url]})
+
+        new_retailer_id = post_retailer_response.json["id"]
+
+        get_retailer_response = self.app.get('/api/retailers/%d/' % new_retailer_id)
+
+        self.assertEqual(get_retailer_response.status, "200 OK")
+
+        sodas_list = get_retailer_response.json["sodas"]
+
+        self.assertEqual(len(sodas_list), 1)
+        # self.assertEqual(get_retailer_response.json["longitude"], "-122.42269170000000144682")
+
     def test_creating_retailer_populates_latlong(self):
         post_response = self.app.post_json('/api/retailers/',
-                                           params={"city": "SF", "name": "McJSONs Store", "street_address": "Bush St"})
+                                           params={"city": "SF", "name": "McJSONs Store", "street_address": "Bush St",
+                                                   "sodas": []})
 
         new_retailer_id = post_response.json["id"]
 
