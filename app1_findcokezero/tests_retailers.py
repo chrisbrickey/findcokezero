@@ -8,10 +8,13 @@ from django.db import IntegrityError
 
 from app1_findcokezero.models import Retailer, Soda
 
+
 class RetailerTestCase(TestCase):
     def setUp(self):
-        Retailer.objects.create(name="Shell", street_address="598 Bryant Street", city="San Francisco", postcode="94107")
-        Retailer.objects.create(name="Bush Market", street_address="820 Bush Street", city="San Francisco", postcode="94108")
+        Retailer.objects.create(name="Shell", street_address="598 Bryant Street", city="San Francisco",
+                                postcode="94107")
+        Retailer.objects.create(name="Bush Market", street_address="820 Bush Street", city="San Francisco",
+                                postcode="94108")
 
     def test_database_stores_retailers_and_retrieves_by_unique_field(self):
         """Retailers are stored in database and identified by unique field: address"""
@@ -23,12 +26,14 @@ class RetailerTestCase(TestCase):
     def test_database_does_not_allow_duplicate_names(self):
         """For Retailers, duplicate names are not allowed"""
         with self.assertRaises(IntegrityError):
-            Retailer.objects.create(name="Bush Market", street_address="823 Bush Street", city="San Francisco", postcode="94108")
+            Retailer.objects.create(name="Bush Market", street_address="823 Bush Street", city="San Francisco",
+                                    postcode="94108")
 
     def test_database_does_not_allow_duplicate_addresses(self):
         """For Retailers, duplicate addresses are not allowed"""
         with self.assertRaises(IntegrityError):
-            Retailer.objects.create(name="Bush Market2", street_address="820 Bush Street", city="San Francisco", postcode="94108")
+            Retailer.objects.create(name="Bush Market2", street_address="820 Bush Street", city="San Francisco",
+                                    postcode="94108")
 
     def test_database_retrieves_retailer_by_soda(self):
         """Retailers are retreived in a group by soda"""
@@ -45,7 +50,8 @@ class RetailerTestCase(TestCase):
         """Retailers are retreived by postcode"""
         retailer1 = Retailer.objects.get(street_address="598 Bryant Street")
         retailer2 = Retailer.objects.get(street_address="820 Bush Street")
-        retailer3 = Retailer.objects.create(name="Retailer3", street_address="abc", city="San Francisco", postcode="94107")
+        retailer3 = Retailer.objects.create(name="Retailer3", street_address="abc", city="San Francisco",
+                                            postcode="94107")
 
         results_94107 = Retailer.objects.filter(postcode="94107")
         array_94107 = []
@@ -68,8 +74,10 @@ class RetailerTestCase(TestCase):
         """Retailers are retreived in a group by soda and postcode"""
         retailer1 = Retailer.objects.get(street_address="598 Bryant Street")
         retailer2 = Retailer.objects.get(street_address="820 Bush Street")
-        retailer3 = Retailer.objects.create(name="Retailer3", street_address="abc", city="San Francisco", postcode="94107")
-        retailer4 = Retailer.objects.create(name="Retailer4", street_address="xyz", city="San Francisco", postcode="94108")
+        retailer3 = Retailer.objects.create(name="Retailer3", street_address="abc", city="San Francisco",
+                                            postcode="94107")
+        retailer4 = Retailer.objects.create(name="Retailer4", street_address="xyz", city="San Francisco",
+                                            postcode="94108")
 
         sodaCZ = Soda.objects.create(name="CherryCokeZero", abbreviation="CZ", low_calorie=True)
         sodaCC = Soda.objects.create(name="Coke Classic", abbreviation="CC", low_calorie=False)
@@ -84,23 +92,21 @@ class RetailerTestCase(TestCase):
         array_94107_CZ = []
         results_94107 = Retailer.objects.filter(postcode="94107")
         for retailer in results_94107:
-          if sodaCZ in retailer.sodas.all():
-            array_94107_CZ.append(str(retailer.name))
+            if sodaCZ in retailer.sodas.all():
+                array_94107_CZ.append(str(retailer.name))
         array_94107_CZ.sort()
-
 
         array_94108_CC = []
         results_94108 = Retailer.objects.filter(postcode="94108")
         for retailer in results_94108:
-          if sodaCC in retailer.sodas.all():
-            array_94108_CC.append(str(retailer.name))
+            if sodaCC in retailer.sodas.all():
+                array_94108_CC.append(str(retailer.name))
         array_94108_CC.sort()
 
         array_94108_DC = []
         for retailer in results_94108:
-          if sodaDC in retailer.sodas.all():
-            array_94108_DC.append(str(retailer.name))
-
+            if sodaDC in retailer.sodas.all():
+                array_94108_DC.append(str(retailer.name))
 
         self.assertEqual(len(array_94107_CZ), 2)
         self.assertEqual(len(array_94108_CC), 1)
@@ -110,12 +116,15 @@ class RetailerTestCase(TestCase):
         self.assertEqual(array_94108_CC, ['Retailer4'])
 
 
+# remove actions on database from below web tests; use http requests to create and augment objects that you need to work with
 class RetailerWebTestCase(WebTest):
     csrf_checks = False
 
     def setUp(self):
-        Retailer.objects.create(name="Shell", street_address="598 Bryant Street", city="San Francisco", postcode="94107")
-        Retailer.objects.create(name="Bush Market", street_address="820 Bush Street", city="San Francisco", postcode="94108")
+        Retailer.objects.create(name="Shell", street_address="598 Bryant Street", city="San Francisco",
+                                postcode="94107")
+        Retailer.objects.create(name="Bush Market", street_address="820 Bush Street", city="San Francisco",
+                                postcode="94108")
 
     def test_view_all_retailers(self):
         # "For retailers, HTTP get request with no params retrieves all retailers in database"
@@ -141,7 +150,8 @@ class RetailerWebTestCase(WebTest):
         # "HTTP get request with postcode and 'retailers' in params retrieves all retailers associated with that postcode"
         retailer1 = Retailer.objects.get(street_address="598 Bryant Street")
         retailer2 = Retailer.objects.get(street_address="820 Bush Street")
-        retailer3 = Retailer.objects.create(name="Retailer3", street_address="abc", city="San Francisco", postcode="94107")
+        retailer3 = Retailer.objects.create(name="Retailer3", street_address="abc", city="San Francisco",
+                                            postcode="94107")
 
         get_response_94107 = self.app.get("/api/retailers/?postcode=%d" % 94107)
         self.assertEqual(get_response_94107.status, "200 OK")
@@ -153,8 +163,9 @@ class RetailerWebTestCase(WebTest):
 
     def test_view_one_retailer_by_postcode_and_one_soda(self):
         # "HTTP get request with postcode and one soda type in query string retrieves one associated retailer"
-        retailer1 = Retailer.objects.get(street_address="598 Bryant Street") # 94107
-        retailer3 = Retailer.objects.create(name="Retailer3", street_address="abc", city="San Francisco", postcode="94107")
+        retailer1 = Retailer.objects.get(street_address="598 Bryant Street")  # 94107
+        retailer3 = Retailer.objects.create(name="Retailer3", street_address="abc", city="San Francisco",
+                                            postcode="94107")
 
         sodaCZ = Soda.objects.create(name="CherryCokeZero", abbreviation="CZ", low_calorie=True)
         sodaCC = Soda.objects.create(name="Coke Classic", abbreviation="CC", low_calorie=False)
@@ -172,10 +183,12 @@ class RetailerWebTestCase(WebTest):
 
     def test_view_all_retailers_by_postcode_and_one_soda(self):
         # "HTTP get request with postcode and one soda type in query string retrieves all associated retailers"
-        retailer1 = Retailer.objects.get(street_address="598 Bryant Street") # 94107
-        retailer2 = Retailer.objects.get(street_address="820 Bush Street") #94108
-        retailer3 = Retailer.objects.create(name="Retailer3", street_address="abc", city="San Francisco", postcode="94107")
-        retailer4 = Retailer.objects.create(name="Retailer4", street_address="xyz", city="San Francisco", postcode="94108")
+        retailer1 = Retailer.objects.get(street_address="598 Bryant Street")  # 94107
+        retailer2 = Retailer.objects.get(street_address="820 Bush Street")  # 94108
+        retailer3 = Retailer.objects.create(name="Retailer3", street_address="abc", city="San Francisco",
+                                            postcode="94107")
+        retailer4 = Retailer.objects.create(name="Retailer4", street_address="xyz", city="San Francisco",
+                                            postcode="94108")
 
         sodaCZ = Soda.objects.create(name="CherryCokeZero", abbreviation="CZ", low_calorie=True)
         sodaCC = Soda.objects.create(name="Coke Classic", abbreviation="CC", low_calorie=False)
@@ -205,12 +218,16 @@ class RetailerWebTestCase(WebTest):
 
     def test_view_all_retailers_by_postcode_and_multiple_sodas(self):
         # "HTTP get request with postcode and multiple soda types in params retrieves all associated retailers"
-        retailer1 = Retailer.objects.get(street_address="598 Bryant Street") # 94107
-        retailer3 = Retailer.objects.create(name="Retailer3", street_address="abc", city="San Francisco", postcode="94107")
-        retailer4 = Retailer.objects.create(name="Retailer4", street_address="opq", city="San Francisco", postcode="94108")
-        retailer5 = Retailer.objects.create(name="Retailer5", street_address="xyz", city="San Francisco", postcode="94107")
+        retailer1 = Retailer.objects.get(street_address="598 Bryant Street")  # 94107
+        retailer3 = Retailer.objects.create(name="Retailer3", street_address="abc", city="San Francisco",
+                                            postcode="94107")
+        retailer4 = Retailer.objects.create(name="Retailer4", street_address="opq", city="San Francisco",
+                                            postcode="94108")
+        retailer5 = Retailer.objects.create(name="Retailer5", street_address="xyz", city="San Francisco",
+                                            postcode="94107")
 
-        sodaCZ = Soda.objects.create(name="CherryCokeZero", abbreviation="CZ", low_calorie=True)
+        cherry_coke_dict = {"name": "CherryCokeZero", "abbreviation": "CZ", "low_calorie": True}
+        sodaCZ = Soda.objects.create(**cherry_coke_dict)
         sodaCC = Soda.objects.create(name="Coke Classic", abbreviation="CC", low_calorie=False)
         sodaDC = Soda.objects.create(name="Diet Coke", abbreviation="DC", low_calorie=True)
 
@@ -241,7 +258,8 @@ class RetailerWebTestCase(WebTest):
         self.assertEqual(post_response.json["name"], "McJSONs Store")
         self.assertEqual(post_response.json["city"], "SF")
         self.assertEqual(post_response.json["street_address"], "Bush St")
-        self.assertTrue(post_response.json.has_key("id"), "Expected Retailer object to have key 'id', but it was missing.")
+        self.assertTrue(post_response.json.has_key("id"),
+                        "Expected Retailer object to have key 'id', but it was missing.")
 
         new_retailer_id = post_response.json["id"]
 
@@ -250,3 +268,15 @@ class RetailerWebTestCase(WebTest):
         self.assertEqual(get_response.status, "200 OK")
         self.assertEqual(len(get_response.json.keys()), 11)
         self.assertEqual(get_response.json, post_response.json)
+
+    def test_creating_retailer_populates_latlong(self):
+        post_response = self.app.post_json('/api/retailers/',
+                                           params={"city": "SF", "name": "McJSONs Store", "street_address": "Bush St"})
+
+        new_retailer_id = post_response.json["id"]
+
+        get_response = self.app.get('/api/retailers/%d/' % new_retailer_id)
+
+        self.assertEqual(get_response.status, "200 OK")
+        self.assertEqual(get_response.json["latitude"], "37.78839980000000053906")
+        self.assertEqual(get_response.json["longitude"], "-122.42269170000000144682")
