@@ -64,50 +64,50 @@ class RetailerTestCase(TestCase):
         self.assertEqual(array_94107, ['Retailer3', 'Shell'])
         self.assertEqual(array_94108, ['Bush Market'])
 
-    # def test_database_retrieves_retailers_by_postcode_and_soda(self):
-    #     """Retailers are retreived in a group by soda and postcode"""
-    #     retailer1 = Retailer.objects.get(street_address="598 Bryant Street")
-    #     retailer2 = Retailer.objects.get(street_address="820 Bush Street")
-    #     retailer3 = Retailer.objects.create(name="Retailer3", street_address="abc", city="San Francisco", postcode="94107")
-    #     retailer4 = Retailer.objects.create(name="Retailer4", street_address="xyz", city="San Francisco", postcode="94108")
-    #
-    #     sodaCZ = Soda.objects.create(name="CherryCokeZero", abbreviation="CZ", low_calorie=True)
-    #     sodaCC = Soda.objects.create(name="Coke Classic", abbreviation="CC", low_calorie=False)
-    #     sodaDC = Soda.objects.create(name="Diet Coke", abbreviation="DC", low_calorie=True)
-    #
-    #     retailer1.sodas.add(sodaCZ)
-    #     retailer1.sodas.add(sodaCC)
-    #     retailer2.sodas.add(sodaCZ)
-    #     retailer3.sodas.add(sodaCZ)
-    #     retailer4.sodas.add(sodaCC)
-    #
-    #     array_94107_CZ = []
-    #     results_94107 = Retailer.objects.filter(postcode="94107")
-    #     for retailer in results_94107:
-    #       if sodaCZ in retailer.sodas.all():
-    #         array_94107_CZ.append(str(retailer.name))
-    #     array_94107_CZ.sort()
-    #
-    #
-    #     array_94108_CC = []
-    #     results_94108 = Retailer.objects.filter(postcode="94108")
-    #     for retailer in results_94108:
-    #       if sodaCC in retailer.sodas.all():
-    #         array_94108_CC.append(str(retailer.name))
-    #     array_94108_CC.sort()
-    #
-    #     array_94108_DC = []
-    #     for retailer in results_94108:
-    #       if sodaDC in retailer.sodas.all():
-    #         array_94108_DC.append(str(retailer.name))
-    #
-    #
-    #     self.assertEqual(len(array_94107_CZ), 2)
-    #     self.assertEqual(len(array_94108_CC), 1)
-    #     self.assertEqual(len(array_94108_DC), 0)
-    #
-    #     self.assertEqual(array_94107_CZ, ['Retailer3', 'Shell'])
-    #     self.assertEqual(array_94108_CC, ['Retailer4'])
+    def test_database_retrieves_retailers_by_postcode_and_soda(self):
+        """Retailers are retreived in a group by soda and postcode"""
+        retailer1 = Retailer.objects.get(street_address="598 Bryant Street")
+        retailer2 = Retailer.objects.get(street_address="820 Bush Street")
+        retailer3 = Retailer.objects.create(name="Retailer3", street_address="abc", city="San Francisco", postcode="94107")
+        retailer4 = Retailer.objects.create(name="Retailer4", street_address="xyz", city="San Francisco", postcode="94108")
+
+        sodaCZ = Soda.objects.create(name="CherryCokeZero", abbreviation="CZ", low_calorie=True)
+        sodaCC = Soda.objects.create(name="Coke Classic", abbreviation="CC", low_calorie=False)
+        sodaDC = Soda.objects.create(name="Diet Coke", abbreviation="DC", low_calorie=True)
+
+        retailer1.sodas.add(sodaCZ)
+        retailer1.sodas.add(sodaCC)
+        retailer2.sodas.add(sodaCZ)
+        retailer3.sodas.add(sodaCZ)
+        retailer4.sodas.add(sodaCC)
+
+        array_94107_CZ = []
+        results_94107 = Retailer.objects.filter(postcode="94107")
+        for retailer in results_94107:
+          if sodaCZ in retailer.sodas.all():
+            array_94107_CZ.append(str(retailer.name))
+        array_94107_CZ.sort()
+
+
+        array_94108_CC = []
+        results_94108 = Retailer.objects.filter(postcode="94108")
+        for retailer in results_94108:
+          if sodaCC in retailer.sodas.all():
+            array_94108_CC.append(str(retailer.name))
+        array_94108_CC.sort()
+
+        array_94108_DC = []
+        for retailer in results_94108:
+          if sodaDC in retailer.sodas.all():
+            array_94108_DC.append(str(retailer.name))
+
+
+        self.assertEqual(len(array_94107_CZ), 2)
+        self.assertEqual(len(array_94108_CC), 1)
+        self.assertEqual(len(array_94108_DC), 0)
+
+        self.assertEqual(array_94107_CZ, ['Retailer3', 'Shell'])
+        self.assertEqual(array_94108_CC, ['Retailer4'])
 
 
 class RetailerWebTestCase(WebTest):
