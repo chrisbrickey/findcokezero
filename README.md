@@ -10,9 +10,7 @@ This app keeps track of my store inventory and uses crowd-sourcing to grow the d
 ## Run the Program
 1. Add your own GoogleMaps API key
   - Get an Google Maps API key [here](https://developers.google.com/maps/documentation/geocoding/get-api-key).
-  - Add that string to the secrets.template file, e.g. `GOOGLEMAPS_KEY="copy/paste your key here"`.
-  - Rename that file from secrets.template to secrets.py.
-  - Remove that file from your version control.
+  - Add that string to your local environment variables, e.g. `GOOGLEMAPS_KEY="copy/paste your key here"`.
 2. Enter the virtual environment
   - `. venv/bin/activate`
 3. Install dependencies
