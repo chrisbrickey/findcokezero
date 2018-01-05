@@ -6,22 +6,29 @@ I'm building this app because I love CherryCokeZero, but it's not omni-present a
 When I find myself in a new location, I have to scout out the stores that carry it regularly.  Surely, I'm not the only one!
 This app keeps track of my store inventory and uses crowd-sourcing to grow the database.
 
+
 ## Run the Program
-- Open virtual environment: `. venv/bin/activate`
-
-- Install dependencies: `pip install -r requirements.txt`
-
-- Migrate the database: `./manage.py makemigrations` then `./manage.py migrate`
-
-- Load data from seed: `./manage.py loaddata initdata.json`
-
-- Run development server locally: `./manage.py runserver`
-
-- If static files are not running locally: `./manage.py collectstatic`
-
-- Run tests: `./manage.py test app1_findcokezero`
-
-
+1. Add your own GoogleMaps API key
+  - Get an Google Maps API key [here](https://developers.google.com/maps/documentation/geocoding/get-api-key).
+  - Add that string to the secrets.template file, e.g. `GOOGLEMAPS_KEY="copy/paste your key here"`.
+  - Rename that file from secrets.template to secrets.py.
+  - Remove that file from your version control.
+2. Enter the virtual environment
+  - `. venv/bin/activate`
+3. Install dependencies
+  - `pip install -r requirements.txt`
+4. Migrate the database
+  - `./manage.py makemigrations` then `./manage.py migrate`
+5. Load data from seed
+  - `./manage.py loaddata initdata.json`
+6. Run development server locally
+  - `./manage.py runserver`
+7. If static files are not running locally: 
+  - `./manage.py collectstatic`
+8. Run tests: 
+  - `./manage.py test app1_findcokezero`
+  
+  
 ## API Endpoints
 
 #### HTML LANDING PAGE
