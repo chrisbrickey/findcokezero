@@ -1,6 +1,7 @@
 from rest_framework import serializers
 from .models import Retailer, Soda
 from django.conf import settings
+from decimal import Decimal
 
 import urllib, requests
 
@@ -8,6 +9,9 @@ import urllib, requests
 class RetailerSerializer(serializers.HyperlinkedModelSerializer):
 
     def create(self, validated_data):
+
+        saved_retailer = super(RetailerSerializer, self).create(validated_data)
+
         address_string = "%s, %s, CA %s" % (validated_data["street_address"],
                                             validated_data["city"],
                                             validated_data.get("postcode", "")) # postcode can be null so use 'get' method with default value
@@ -22,19 +26,9 @@ class RetailerSerializer(serializers.HyperlinkedModelSerializer):
             location = results[0]["geometry"]["location"]
             lat = location["lat"]
             lon = location["lng"]
-            validated_data["latitude"] = lat
-            validated_data["longitude"] = lon
-
-        sodas_list = []
-        if "sodas" in validated_data:
-            sodas_list = validated_data["sodas"]
-            del validated_data["sodas"]
-
-        saved_retailer = Retailer.objects.create(**validated_data)
-
-        for soda in sodas_list:
-            saved_retailer.sodas.add(soda)
-
+            saved_retailer.latitude = Decimal(lat)
+            saved_retailer.longitude = Decimal(lon)
+            saved_retailer.save()
 
         return saved_retailer
 
