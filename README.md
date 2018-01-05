@@ -21,12 +21,12 @@ This app keeps track of my store inventory and uses crowd-sourcing to grow the d
   - `./manage.py loaddata initdata.json`
 6. Run development server locally
   - `./manage.py runserver`
-7. If static files are not running locally: 
+7. If static files are not running locally:
   - `./manage.py collectstatic`
-8. Run tests: 
+8. Run tests:
   - `./manage.py test app1_findcokezero`
-  
-  
+
+
 ## API Endpoints
 
 #### HTML LANDING PAGE
@@ -92,7 +92,6 @@ See all [development documents][docs]
 
 
 ## Future Development
-- Integrate Google Maps API to augment retailer objects with latitude / longitude and facilitate maps on frontend
 - Build client that shows map of retailers based on some geographic input (e.g. current user location or manually entered zip code)
 
 [docs]: docs/
