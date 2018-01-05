@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
+from decimal import Decimal
 
 # using test.TestCase instead of unittest.TestCase to make sure tests run within the suite - not just in isolation
 from django.test import TestCase
@@ -267,7 +268,23 @@ class RetailerWebTestCase(WebTest):
 
         self.assertEqual(get_response.status, "200 OK")
         self.assertEqual(len(get_response.json.keys()), 11)
-        self.assertEqual(get_response.json, post_response.json)
+
+        get_latitude = Decimal(get_response.json["latitude"])
+        get_longitude = Decimal(get_response.json["longitude"])
+        post_latitude = Decimal(post_response.json["latitude"])
+        post_longitude = Decimal(post_response.json["longitude"])
+
+        self.assertAlmostEqual(get_latitude, post_latitude, places=10)
+        self.assertAlmostEqual(get_longitude, post_longitude, places=10)
+
+        get_dictionary = get_response.json
+        post_dictionary = post_response.json
+        del get_dictionary["latitude"]
+        del get_dictionary["longitude"]
+        del post_dictionary["latitude"]
+        del post_dictionary["longitude"]
+
+        self.assertEqual(get_dictionary, post_dictionary)
 
     def test_creating_retailer_populates_latlong(self):
         post_response = self.app.post_json('/api/retailers/',
