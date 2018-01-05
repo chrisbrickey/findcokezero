@@ -6,6 +6,7 @@ venv/
 
 # local environment variables
 .env
+app-env
 
 # PyCharm files
 .idea/
@@ -18,3 +19,5 @@ staticfiles/
 
 #Desktop Services Store(mac Finder)
 .DS_Store
+
+
