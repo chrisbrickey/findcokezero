@@ -144,7 +144,7 @@ class RetailerWebTestCase(WebTest):
         self.assertEqual(get_response_94107_CZ_DC.json[0]["postcode"], 94107)
 
     def test_create_retailer_without_sodas(self):
-        # "For retailers, HTTP request post request with valid data results in creation of object and response with all object data"
+        # "For retailers, HTTP request post request with required data results in creation of object and response with all object data"
         post_response = self.app.post_json('/api/retailers/',
                                            params={"city": "SF", "name": "McJSONs Store", "street_address": "Bush St"})
         self.assertEqual(post_response.status, "201 Created")
@@ -180,6 +180,7 @@ class RetailerWebTestCase(WebTest):
         self.assertEqual(get_dictionary, post_dictionary)
 
     def test_create_retailer_with_sodas(self):
+        # "For retailers, HTTP request post request with soda data results in creation of object and response with all object data"
         post_soda_response = self.app.post_json('/api/sodas/',
                                                 params={"name": "FavoriteSoda", "abbreviation": "FS"})
 
@@ -203,6 +204,7 @@ class RetailerWebTestCase(WebTest):
         # self.assertEqual(get_retailer_response.json["longitude"], "-122.42269170000000144682")
 
     def test_creating_retailer_populates_latlong(self):
+        # "For retailers, HTTP request post request populates latitude and longitude for user"
         post_response = self.app.post_json('/api/retailers/',
                                            params={"city": "SF", "name": "McJSONs Store", "street_address": "Bush St",
                                                    "sodas": []})
