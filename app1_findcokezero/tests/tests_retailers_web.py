@@ -35,8 +35,15 @@ class RetailerWebTestCase(WebTest):
 
     def test_view_all_retailers_by_soda(self):
         # "HTTP get request with soda ID and 'retailers' in params retrieves all retailers associated with that soda"
-        retailer1 = Retailer.objects.get(street_address="598 Bryant Street")
-        retailer2 = Retailer.objects.get(street_address="820 Bush Street")
+
+        # post_soda_response_DC = self.app.post_json('/api/sodas/',
+        #                                            params={"abbreviation": "DC",
+        #                                                    "low_calorie": "True",
+        #                                                    "name": "Diet Coke"})
+        # soda_url_DC = post_soda_response_DC.json["url"]
+
+        retailer1 = Retailer.objects.get(street_address="598 Bryant Street")  # shell
+        retailer2 = Retailer.objects.get(street_address="820 Bush Street")  # bush
         soda = Soda.objects.create(name="Diet Coke", abbreviation="DC", low_calorie=True)
         retailer1.sodas.add(soda)
         retailer2.sodas.add(soda)
@@ -190,7 +197,6 @@ class RetailerWebTestCase(WebTest):
         # "For retailers, HTTP request post request with soda data results in creation of object and response with all object data"
         post_soda_response = self.app.post_json('/api/sodas/',
                                                 params={"name": "FavoriteSoda", "abbreviation": "FS"})
-
         new_soda_url = post_soda_response.json["url"]
 
         post_retailer_response = self.app.post_json('/api/retailers/',
@@ -213,7 +219,9 @@ class RetailerWebTestCase(WebTest):
     def test_creating_retailer_populates_latlong(self):
         # "For retailers, HTTP request post request populates latitude and longitude for user"
         post_response = self.app.post_json('/api/retailers/',
-                                           params={"city": "SF", "name": "McJSONs Store", "street_address": "Bush St",
+                                           params={"city": "SF",
+                                                   "name": "McJSONs Store",
+                                                   "street_address": "Bush St",
                                                    "sodas": []})
 
         new_retailer_id = post_response.json["id"]
@@ -223,3 +231,35 @@ class RetailerWebTestCase(WebTest):
         self.assertEqual(get_response.status, "200 OK")
         self.assertEqual(get_response.json["latitude"], "37.78839980000000053906")
         self.assertEqual(get_response.json["longitude"], "-122.42269170000000144682")
+
+    def test_update_retailer_with_sodas(self):
+        # "For retailers, HTTP request put request with new data (including soda) updates retailer"
+        post_soda_response_DC = self.app.post_json('/api/sodas/',
+                                                   params={"abbreviation": "DC",
+                                                           "low_calorie": "True",
+                                                           "name": "Diet Coke"})
+        soda_url_DC = post_soda_response_DC.json["url"]
+
+        post_retailer_response_McJSON = self.app.post_json('/api/retailers/',
+                                                           params={"city": "SF",
+                                                                   "name": "McJSONs Store",
+                                                                   "street_address": "Bush St"})
+
+        self.assertEqual(post_retailer_response_McJSON.json["name"], "McJSONs Store")
+        sodas_list_before = post_retailer_response_McJSON.json["sodas"]
+        self.assertEqual(len(sodas_list_before), 0)
+
+        retailer_id_McJSON = post_retailer_response_McJSON.json["id"]
+        city_McJSON = post_retailer_response_McJSON.json["city"]
+        address_McJSON = post_retailer_response_McJSON.json["street_address"]
+
+        put_retailer_response_McJSON = self.app.put_json('/api/retailers/%d/' % retailer_id_McJSON,
+                                                         params={"name": "McJSON2",
+                                                                 "city": city_McJSON,
+                                                                 "sodas": [soda_url_DC],
+                                                                 "street_address": address_McJSON})
+
+        self.assertEqual(put_retailer_response_McJSON.json["name"], "McJSON2")
+
+        sodas_list_after = put_retailer_response_McJSON.json["sodas"]
+        self.assertEqual(len(sodas_list_after), 1)
