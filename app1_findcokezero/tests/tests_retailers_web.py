@@ -29,12 +29,14 @@ class RetailerWebTestCase(WebTest):
 
     def test_view_all_retailers(self):
         # "For retailers, HTTP get request with no params retrieves all retailers in database"
+
         get_response = self.app.get('/api/retailers/')
         self.assertEqual(get_response.status, "200 OK")
         self.assertEqual(len(get_response.json), 2)
 
     def test_view_all_retailers_by_soda(self):
         # "HTTP get request with soda ID and 'retailers' in params retrieves all retailers associated with that soda"
+
         post_soda_response = self.app.post_json('/api/sodas/',
                                                 params={"abbreviation": "DC",
                                                         "low_calorie": "True",
@@ -44,9 +46,10 @@ class RetailerWebTestCase(WebTest):
 
         self.app.post_json('/api/retailers/',
                            params={"city": "San Francisco",
-                                   "name": "Target",
+                                   "name": "CVS",
+                                   "postcode": "94109",
                                    "sodas": [new_soda_url],
-                                   "street_address": "225 Bush St"})
+                                   "street_address": "225 Bush Street"})
 
         self.app.post_json('/api/retailers/',
                            params={"city": "San Francisco",
@@ -61,10 +64,12 @@ class RetailerWebTestCase(WebTest):
 
     def test_view_all_retailers_by_postcode(self):
         # "HTTP get request with postcode and 'retailers' in params retrieves all retailers associated with that postcode"
-        retailer1 = Retailer.objects.get(street_address="598 Bryant Street")
-        retailer2 = Retailer.objects.get(street_address="820 Bush Street")
-        retailer3 = Retailer.objects.create(name="Retailer3", street_address="abc", city="San Francisco",
-                                            postcode="94107")
+
+        self.app.post_json('/api/retailers/',
+                           params={"city": "San Francisco",
+                                   "name": "Walgreens",
+                                   "postcode": "94107",
+                                   "street_address": "670 4th Street"})
 
         get_response_94107 = self.app.get("/api/retailers/?postcode=%d" % 94107)
         self.assertEqual(get_response_94107.status, "200 OK")
@@ -76,6 +81,7 @@ class RetailerWebTestCase(WebTest):
 
     def test_view_one_retailer_by_postcode_and_one_soda(self):
         # "HTTP get request with postcode and one soda type in query string retrieves one associated retailer"
+
         retailer1 = Retailer.objects.get(street_address="598 Bryant Street")  # 94107
         retailer3 = Retailer.objects.create(name="Retailer3", street_address="abc", city="San Francisco",
                                             postcode="94107")
@@ -96,6 +102,7 @@ class RetailerWebTestCase(WebTest):
 
     def test_view_all_retailers_by_postcode_and_one_soda(self):
         # "HTTP get request with postcode and one soda type in query string retrieves all associated retailers"
+
         retailer1 = Retailer.objects.get(street_address="598 Bryant Street")  # 94107
         retailer2 = Retailer.objects.get(street_address="820 Bush Street")  # 94108
         retailer3 = Retailer.objects.create(name="Retailer3", street_address="abc", city="San Francisco",
@@ -131,6 +138,7 @@ class RetailerWebTestCase(WebTest):
 
     def test_view_all_retailers_by_postcode_and_multiple_sodas(self):
         # "HTTP get request with postcode and multiple soda types in params retrieves all associated retailers"
+
         retailer1 = Retailer.objects.get(street_address="598 Bryant Street")  # 94107
         retailer3 = Retailer.objects.create(name="Retailer3", street_address="abc", city="San Francisco",
                                             postcode="94107")
@@ -164,6 +172,7 @@ class RetailerWebTestCase(WebTest):
 
     def test_create_retailer_without_sodas(self):
         # "For retailers, HTTP request post request with required data results in creation of object and response with all object data"
+
         post_response = self.app.post_json('/api/retailers/',
                                            params={"city": "SF",
                                                    "name": "McJSONs Store",
@@ -202,6 +211,7 @@ class RetailerWebTestCase(WebTest):
 
     def test_create_retailer_with_sodas(self):
         # "For retailers, HTTP request post request with soda data results in creation of object and response with all object data"
+
         post_soda_response = self.app.post_json('/api/sodas/',
                                                 params={"name": "FavoriteSoda", "abbreviation": "FS"})
         new_soda_url = post_soda_response.json["url"]
@@ -220,6 +230,7 @@ class RetailerWebTestCase(WebTest):
 
     def test_creating_retailer_populates_latlong(self):
         # "For retailers, HTTP request post request populates latitude and longitude for user"
+
         post_response = self.app.post_json('/api/retailers/',
                                            params={"city": "SF",
                                                    "name": "McJSONs Store",
@@ -236,6 +247,7 @@ class RetailerWebTestCase(WebTest):
 
     def test_update_retailer_with_sodas(self):
         # "For retailers, HTTP request put request with new data (including soda) updates retailer"
+
         post_soda_response_DC = self.app.post_json('/api/sodas/',
                                                    params={"abbreviation": "DC",
                                                            "low_calorie": "True",
