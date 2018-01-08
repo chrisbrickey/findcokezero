@@ -10,15 +10,22 @@ from django.db import IntegrityError
 from app1_findcokezero.models import Retailer, Soda
 
 
-# remove actions on database from below web tests; use http requests to create and augment objects that you need to work with
+# web tests should not use objects created and stored in database; that is testing behavior of both the http application and the database (too much)
 class RetailerWebTestCase(WebTest):
     csrf_checks = False
 
     def setUp(self):
-        Retailer.objects.create(name="Shell", street_address="598 Bryant Street", city="San Francisco",
-                                postcode="94107")
-        Retailer.objects.create(name="Bush Market", street_address="820 Bush Street", city="San Francisco",
-                                postcode="94108")
+        self.app.post_json('/api/retailers/',
+                           params={"city": "San Francisco",
+                                   "name": "Shell",
+                                   "postcode": "94107",
+                                   "street_address": "598 Bryant Street"})
+
+        self.app.post_json('/api/retailers/',
+                           params={"city": "San Francisco",
+                                   "name": "Bush Market",
+                                   "postcode": "94108",
+                                   "street_address": "820 Bush Street"})
 
     def test_view_all_retailers(self):
         # "For retailers, HTTP get request with no params retrieves all retailers in database"
