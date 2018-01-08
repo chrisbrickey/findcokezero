@@ -119,38 +119,66 @@ class RetailerWebTestCase(WebTest):
     def test_view_all_retailers_by_postcode_and_one_soda(self):
         # "HTTP get request with postcode and one soda type in query string retrieves all associated retailers"
 
-        retailer1 = Retailer.objects.get(street_address="598 Bryant Street")  # 94107
-        retailer2 = Retailer.objects.get(street_address="820 Bush Street")  # 94108
-        retailer3 = Retailer.objects.create(name="Retailer3", street_address="abc", city="San Francisco",
-                                            postcode="94107")
-        retailer4 = Retailer.objects.create(name="Retailer4", street_address="xyz", city="San Francisco",
-                                            postcode="94108")
+        post_soda_response_CH = self.app.post_json('/api/sodas/',
+                                                   params={"abbreviation": "CH",
+                                                           "low_calorie": "True",
+                                                           "name": "CherryCokeZero"})
+        CH_url = post_soda_response_CH.json["url"]
 
-        sodaCZ = Soda.objects.create(name="CherryCokeZero", abbreviation="CZ", low_calorie=True)
-        sodaCC = Soda.objects.create(name="Coke Classic", abbreviation="CC", low_calorie=False)
-        sodaDC = Soda.objects.create(name="Diet Coke", abbreviation="DC", low_calorie=True)
+        post_soda_response_CC = self.app.post_json('/api/sodas/',
+                                                   params={"abbreviation": "CC",
+                                                           "low_calorie": "False",
+                                                           "name": "Coke Classic"})
+        CC_url = post_soda_response_CC.json["url"]
 
-        retailer1.sodas.add(sodaCZ)
-        retailer1.sodas.add(sodaCC)
-        retailer2.sodas.add(sodaCZ)
-        retailer3.sodas.add(sodaCZ)
-        retailer4.sodas.add(sodaCC)
+        self.app.post_json('/api/sodas/',
+                           params={"abbreviation": "DC",
+                                   "low_calorie": "True",
+                                   "name": "Diet Coke"})
 
-        get_response_94107_CZ = self.app.get("/api/retailers/?postcode=94107&sodas=CZ")
-        self.assertEqual(get_response_94107_CZ.status, "200 OK")
-        self.assertEqual(len(get_response_94107_CZ.json), 2)
+        self.app.post_json('/api/retailers/',
+                           params={"city": "San Francisco",
+                                   "name": "Walgreens",
+                                   "postcode": "94107",
+                                   "sodas": [CH_url, CC_url],
+                                   "street_address": "670 4th Street"})
 
-        get_response_94108_CC = self.app.get("/api/retailers/?postcode=94108&sodas=CC")
-        self.assertEqual(get_response_94108_CC.status, "200 OK")
-        self.assertEqual(len(get_response_94108_CC.json), 1)
-        self.assertEqual(get_response_94108_CC.json[0]["name"], "Retailer4")
-        self.assertEqual(get_response_94108_CC.json[0]["street_address"], "xyz")
-        self.assertEqual(get_response_94108_CC.json[0]["city"], "San Francisco")
-        self.assertEqual(get_response_94108_CC.json[0]["postcode"], 94108)
+        self.app.post_json('/api/retailers/',
+                           params={"city": "San Francisco",
+                                   "name": "Safeway",
+                                   "postcode": "94107",
+                                   "sodas": [CH_url],
+                                   "street_address": "298 King Street"})
 
-        get_response_94108_DC = self.app.get("/api/retailers/?postcode=94108&sodas=DC")
-        self.assertEqual(get_response_94108_DC.status, "200 OK")
-        self.assertEqual(len(get_response_94108_DC.json), 0)
+        self.app.post_json('/api/retailers/',
+                           params={"city": "San Francisco",
+                                   "name": "CVS",
+                                   "postcode": "94109",
+                                   "sodas": [CH_url],
+                                   "street_address": "225 Bush Street"})
+
+        self.app.post_json('/api/retailers/',
+                           params={"city": "San Francisco",
+                                   "name": "Le Beau",
+                                   "postcode": "94109",
+                                   "sodas": [CC_url],
+                                   "street_address": "1415 Clay Street"})
+
+        get_response_94107_CH = self.app.get("/api/retailers/?postcode=94107&sodas=CH")
+        self.assertEqual(get_response_94107_CH.status, "200 OK")
+        self.assertEqual(len(get_response_94107_CH.json), 2)
+
+        get_response_94109_CC = self.app.get("/api/retailers/?postcode=94109&sodas=CC")
+        self.assertEqual(get_response_94109_CC.status, "200 OK")
+        self.assertEqual(len(get_response_94109_CC.json), 1)
+        self.assertEqual(get_response_94109_CC.json[0]["name"], "Le Beau")
+        self.assertEqual(get_response_94109_CC.json[0]["street_address"], "1415 Clay Street")
+        self.assertEqual(get_response_94109_CC.json[0]["city"], "San Francisco")
+        self.assertEqual(get_response_94109_CC.json[0]["postcode"], 94109)
+
+        get_response_94109_DC = self.app.get("/api/retailers/?postcode=94109&sodas=DC")
+        self.assertEqual(get_response_94109_DC.status, "200 OK")
+        self.assertEqual(len(get_response_94109_DC.json), 0)
 
     def test_view_all_retailers_by_postcode_and_multiple_sodas(self):
         # "HTTP get request with postcode and multiple soda types in params retrieves all associated retailers"
