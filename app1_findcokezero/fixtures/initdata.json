@@ -3,6 +3,22 @@
     "model": "app1_findcokezero.retailer",
     "pk": 1,
     "fields": {
+      "name": "Le Beau Market",
+      "street_address": "1415 Clay Street",
+      "city": "San Francisco",
+      "postcode": 94109,
+      "country": "USA",
+      "latitude": "37.79287329999999656138",
+      "longitude": "-122.41642729999999517077",
+      "timestamp_last_updated": "2017-10-20T03:18:51.666188Z",
+      "timestamp_created": "2017-10-20T03:18:51.666208Z",
+      "sodas": [2]
+    }
+  },
+  {
+    "model": "app1_findcokezero.retailer",
+    "pk": 2,
+    "fields": {
       "name": "Pine & Jones Market",
       "street_address": "1100 Pine Street",
       "city": "San Francisco",
@@ -17,7 +33,7 @@
   },
   {
     "model": "app1_findcokezero.retailer",
-    "pk": 2,
+    "pk": 3,
     "fields": {
       "name": "Dair's Pine-Taylor Market",
       "street_address": "996 Pine Street",
@@ -33,7 +49,7 @@
   },
   {
     "model": "app1_findcokezero.retailer",
-    "pk": 3,
+    "pk": 4,
     "fields": {
       "name": "Bush Market",
       "street_address": "820 Bush Street",
@@ -49,7 +65,7 @@
   },
   {
     "model": "app1_findcokezero.retailer",
-    "pk": 4,
+    "pk": 5,
     "fields": {
       "name": "Target",
       "street_address": "225 Bush Street",
@@ -65,7 +81,7 @@
   },
   {
     "model": "app1_findcokezero.retailer",
-    "pk": 5,
+    "pk": 6,
     "fields": {
       "name": "CVS",
       "street_address": "1059 Hyde Street",
