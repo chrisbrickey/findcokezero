@@ -8,6 +8,7 @@ from django.db import IntegrityError
 
 from app1_findcokezero.models import Retailer, Soda
 
+
 # web tests should not use objects created and stored in database; that is testing behavior of both the http application and the database (too much)
 class SodaWebTestCase(WebTest):
     csrf_checks = False
@@ -36,13 +37,11 @@ class SodaWebTestCase(WebTest):
                                                            "name": "Diet Coke"})
         soda_url_DC = post_soda_response_DC.json["url"]
 
-
         post_soda_response_CF = self.app.post_json('/api/sodas/',
                                                    params={"abbreviation": "CF",
                                                            "low_calorie": "True",
                                                            "name": "Caffeine Free Diet Coke"})
         soda_url_CF = post_soda_response_CF.json["url"]
-
 
         post_retailer_response_Shell = self.app.post_json('/api/retailers/',
                                                           params={"city": "San Francisco",
@@ -59,7 +58,9 @@ class SodaWebTestCase(WebTest):
     def test_create_soda(self):
         # "For sodas, HTTP request post request with valid data results in creation of object and response with all object data"
         post_response = self.app.post_json('/api/sodas/',
-                                           params={"abbreviation": "DC", "low_calorie": "True", "name": "Diet Coke"})
+                                           params={"abbreviation": "DC",
+                                                   "low_calorie": "True",
+                                                   "name": "Diet Coke"})
         self.assertEqual(post_response.status, "201 Created")
 
         self.assertEqual(post_response.json["abbreviation"], "DC")
