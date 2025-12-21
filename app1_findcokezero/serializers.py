@@ -3,7 +3,7 @@ from .models import Retailer, Soda
 from django.conf import settings
 from decimal import Decimal
 
-import urllib, requests
+import urllib.parse, requests
 
 
 class RetailerSerializer(serializers.HyperlinkedModelSerializer):
@@ -17,7 +17,7 @@ class RetailerSerializer(serializers.HyperlinkedModelSerializer):
                                             validated_data.get("postcode", "")) # postcode can be null so use 'get' method with default value
 
         query_params = {'address': address_string.strip(), 'key': settings.GOOGLEMAPS_KEY} #remove empty space at end of address if postcode is None
-        query_string = urllib.urlencode(query_params)
+        query_string = urllib.parse.urlencode(query_params)
         url = "https://maps.googleapis.com/maps/api/geocode/json?%s" % (query_string,)
         json_response = requests.get(url).json()
 

@@ -1,16 +1,16 @@
 
-from django.conf.urls import url, include
+from django.urls import re_path, include
 from rest_framework import routers
 from . import views
 
 
 router = routers.DefaultRouter()
-router.register(r'retailers', views.RetailerViewSet, base_name='retailer') # added base_name to allow custom get_queryset method 
+router.register(r'retailers', views.RetailerViewSet, basename='retailer') # added basename to allow custom get_queryset method
 router.register(r'sodas', views.SodaViewSet)
 
 urlpatterns = [
-    url(r'^retailers/(?P<pk>[0-9]+)/sodas/$', views.sodas_by_retailer),
-    url(r'^sodas/(?P<pk>[0-9]+)/retailers/$', views.retailers_by_sodas),
-    url(r'^', include(router.urls)),
-    url(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework')),
+    re_path(r'^retailers/(?P<pk>[0-9]+)/sodas/$', views.sodas_by_retailer),
+    re_path(r'^sodas/(?P<pk>[0-9]+)/retailers/$', views.retailers_by_sodas),
+    re_path(r'^', include(router.urls)),
+    re_path(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework')),
 ]

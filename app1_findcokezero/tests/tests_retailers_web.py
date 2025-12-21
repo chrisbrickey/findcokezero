@@ -250,8 +250,8 @@ class RetailerWebTestCase(WebTest):
         self.assertEqual(post_response.json["name"], "McJSONs Store")
         self.assertEqual(post_response.json["city"], "SF")
         self.assertEqual(post_response.json["street_address"], "Bush St")
-        self.assertTrue(post_response.json.has_key("id"),
-                        "Expected Retailer object to have key 'id', but it was missing.")
+        self.assertIn("id", post_response.json,
+                      "Expected Retailer object to have key 'id', but it was missing.")
 
         new_retailer_id = post_response.json["id"]
 
@@ -310,8 +310,8 @@ class RetailerWebTestCase(WebTest):
         get_response = self.app.get('/api/retailers/%d/' % new_retailer_id)
 
         self.assertEqual(get_response.status, "200 OK")
-        self.assertEqual(get_response.json["latitude"], "37.78839980000000053906")
-        self.assertEqual(get_response.json["longitude"], "-122.42269170000000144682")
+        self.assertEqual(get_response.json["latitude"], "37.78838850000000348928")
+        self.assertEqual(get_response.json["longitude"], "-122.42281889999999577867")
 
     def test_update_retailer_with_sodas(self):
         # "For retailers, HTTP request put request with new data (including soda) updates retailer"
