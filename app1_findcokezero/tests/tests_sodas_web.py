@@ -66,8 +66,8 @@ class SodaWebTestCase(WebTest):
         self.assertEqual(post_response.json["abbreviation"], "DC")
         self.assertEqual(post_response.json["low_calorie"], True)
         self.assertEqual(post_response.json["name"], "Diet Coke")
-        self.assertTrue(post_response.json.has_key("id"),
-                        "Expected Retailer object to have key 'id', but it was missing.")
+        self.assertIn("id", post_response.json,
+                      "Expected Retailer object to have key 'id', but it was missing.")
 
         new_soda_id = post_response.json["id"]
 
