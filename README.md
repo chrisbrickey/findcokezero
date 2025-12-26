@@ -5,6 +5,11 @@ Test-driven Django REST Framework API that maps convenience stores and filters b
 - Landing page with API documentation: www.findcokezero.com 
 - Browsable API: www.findcokezero.com/api/ 
 
+<p align="center">
+  <img src="./docs/images/findcokezero-landing-page-slim.png" height="300" style="margin-right: 10px;" />
+  <img src="./docs/images/findcokezero-api-sodas-by-retailer-slim.png" height="300" />
+</p>
+
 ## Background
 This app tracks CokeZero™ flavor inventories by store and uses crowd-sourcing to grow the database in hopes of always knowing where to reliably find CherryCokeZero™.
 Why? I built this app during a time when I drank a LOT of CherryCokeZero™. 
@@ -215,14 +220,21 @@ _Django automatically creates and destroys a test database when running tests. T
 
 ## API Endpoints
 
-#### LANDING PAGE
+### LANDING PAGE
 
 - `GET /` - serves HTML template at www.findcokezero.com
 
-#### JSON API
+![landing page screenshot](./docs/images/findcokezero-landing-page.png)
+
+### JSON API
 *Don't forget closing slash unless url includes a query string*
 
-### Retailers
+- `GET /api/` - serves root of browsable API at www.findcokezero.com/api/
+
+![root of browsable api](./docs/images/findcokezero-api-root.jpg)
+
+
+#### Retailers
 
 |Endpoint                                         | Description                                   | Example
 |-------------------------------------------------|-----------------------------------------------|------------
@@ -235,8 +247,9 @@ _Django automatically creates and destroys a test database when running tests. T
 | PATCH /api/retailers/:retailer_id/              | edit retailer                                 |
 | DELETE /api/retailers/:retailer_id/             | remove retailer                               |
 
+![screenshot retailers filtered by soda](./docs/images/findcokezero-api-sodas-by-retailer.jpg)
 
-### Sodas
+#### Sodas
 
 |Endpoint                             | Description                               | Example
 |-------------------------------------|-------------------------------------------|------------
@@ -251,6 +264,10 @@ _Django automatically creates and destroys a test database when running tests. T
 Build client that shows map of retailers based on some geographic input (e.g., current user location or manually entered zip code)
 
 ### Wireframes
-- [development docs](./docs/)
-- [mobile sample](https://res.cloudinary.com/dckkkjkuz/image/upload/v1513744099/findcokezero/Mobile2.png)
-- [web sample](https://res.cloudinary.com/dckkkjkuz/image/upload/v1513744057/findcokezero/Web1.png)
+Mobile and web wireframes in [development docs](./docs/).
+
+#### Mobile sample
+![mobile sample](./docs/wireframes/Mobile2.png)
+
+#### Web sample
+![web sample](./docs/wireframes/Web1.png)
