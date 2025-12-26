@@ -224,14 +224,14 @@ _Django automatically creates and destroys a test database when running tests. T
 
 - `GET /` - serves HTML template at www.findcokezero.com
 
-![landing page screenshot](./docs/images/findcokezero-landing-page.png)
+<img src="./docs/images/findcokezero-landing-page.png" height="300" />
 
 ### JSON API
 *Don't forget closing slash unless url includes a query string*
 
 - `GET /api/` - serves root of browsable API at www.findcokezero.com/api/
 
-![root of browsable api](./docs/images/findcokezero-api-root.jpg)
+<img src="./docs/images/findcokezero-api-root.jpg" height="300" />
 
 
 #### Retailers
@@ -247,7 +247,7 @@ _Django automatically creates and destroys a test database when running tests. T
 | PATCH /api/retailers/:retailer_id/              | edit retailer                                 |
 | DELETE /api/retailers/:retailer_id/             | remove retailer                               |
 
-![screenshot retailers filtered by soda](./docs/images/findcokezero-api-sodas-by-retailer.jpg)
+<img src="./docs/images/findcokezero-api-sodas-by-retailer.jpg" height="300" />
 
 #### Sodas
 
@@ -267,7 +267,7 @@ Build client that shows map of retailers based on some geographic input (e.g., c
 Mobile and web wireframes in [development docs](./docs/).
 
 #### Mobile sample
-![mobile sample](./docs/wireframes/Mobile2.png)
+<img src="./docs/wireframes/Mobile2.png" height="300" />
 
 #### Web sample
-![web sample](./docs/wireframes/Web1.png)
+<img src="./docs/wireframes/Web1.png" height="300" />
