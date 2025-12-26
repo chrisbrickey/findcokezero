@@ -3,7 +3,6 @@ venv/
 .venv/
 
 # uv
-.python-version
 uv.lock
 
 # python source files
