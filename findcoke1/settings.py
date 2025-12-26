@@ -154,8 +154,18 @@ STATICFILES_DIRS = (
     os.path.join(PROJECT_ROOT, 'static'),
 )
 
-
 # Simplified static file serving. Added this because Django does not automatically support serving static files in production.
 # https://warehouse.python.org/project/whitenoise/
 
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+
+# Detect Heroku environment (historicaly used for production)
+ON_HEROKU = os.environ.get('DYNO') is not None
+
+# HTTPS/SSL Configuration for Heroku, which automates provision of SSL certificates
+if ON_HEROKU:
+    # redirect all HTTP requests to HTTPS
+    SECURE_SSL_REDIRECT = True
+
+    # tell Django to trust the X-Forwarded-Proto header from Heroku's load balancer
+    SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
