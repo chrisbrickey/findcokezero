@@ -17,6 +17,76 @@ I was living in San Francisco, where the inventory of CokeZero™ flavors fluctu
 Surely, I was not the only person frustrated by this. So I built this app primarily to learn about the Django framework
 and secondarily to more reliably find the original formula of CherryCokeZero™ in local stores.
 
+## Architecture
+This project uses a classic django structure with two major directories: a project directory (manages common infrastructure)
+and an app directory (manages business logic). As this project grows, more app directories could be added to manage additional domains.
+
+The diagram below illustrates the current structure with a sample of directories and files.
+
+```
+findcokezero/                      # root includes files that manage dependencies, environments, and deployments
+│
+├── findcoke1/                     # PROJECT: entry point, configuration, and infrastructure
+│   ├── settings.py                # primary configuration file for django
+│   ├── wsgi.py                    # web server entry point
+│   ├── urls.py                    # root URL routing
+│   ├── views.py                   # landing page view
+│   └── static/                    # static assets (CSS, JavaScript)
+│
+└── app1_findcokezero/             # APP: domain logic & business functionality (e.g., sodas, retailers)
+    ├── urls.py                    # API URL routing
+    ├── views.py                   # API endpoints
+    ├── serializers.py             # API serializers
+    ├── models.py
+    ├── migrations/                # database migrations
+    ├── fixtures/
+    │   └── initdata.json          # seed data
+    └── tests/                     # test suite
+```
+
+## API Endpoints
+
+### LANDING PAGE
+
+- `GET /` - serves HTML template at www.findcokezero.com
+
+<img src="./docs/images/findcokezero-landing-page.png" height="300" />
+
+### JSON API
+*Don't forget closing slash unless url includes a query string*
+
+- `GET /api/` - serves root of browsable API at www.findcokezero.com/api/
+
+<img src="./docs/images/findcokezero-api-root.jpg" height="300" />
+
+
+#### Retailers
+
+|Endpoint                                         | Description                                   | Example
+|-------------------------------------------------|-----------------------------------------------|------------
+| GET /api/retailers/                             | retrieve all retailers                        | www.findcokezero.com/api/retailers/
+| GET /api/retailers/:retailer_id/                | retrieve specific retailer                    |
+| GET /api/retailers/:retailer_id/sodas/          | retrieve all retailers with specific soda     | www.findcokezero.com/api/retailers/2/sodas/
+| GET /api/retailers/?postcode=:retailer_postcode | retrieve all retailers with specific postcode | www.findcokezero.com/api/retailers/?postcode=11111
+| GET /api/retailers/?postcode=:retailer_postcode&sodas=:soda_abbreviations | retrieve all retailers with specific postcode and selection of soda types | www.findcokezero.com/api/retailers/?postcode=94108&sodas=CH,CZ
+| POST /api/retailers                             | create retailer                               |
+| PATCH /api/retailers/:retailer_id/              | edit retailer                                 |
+| DELETE /api/retailers/:retailer_id/             | remove retailer                               |
+
+<img src="./docs/images/findcokezero-api-sodas-by-retailer.jpg" height="300" />
+
+#### Sodas
+
+|Endpoint                             | Description                               | Example
+|-------------------------------------|-------------------------------------------|------------
+| GET /api/sodas/                     | retrieve all sodas                        | www.findcokezero.com/api/sodas
+| GET /api/sodas/:soda_id/            | retrieve specific soda                    |
+| GET /api/sodas/:soda_id/retailers/  | retrieve all sodas at a specific retailer | www.findcokezero.com/api/sodas/2/retailers/
+| POST /api/sodas/                    | create soda                               |
+| PATCH /api/sodas/:soda_id/          | edit soda                                 |
+| DELETE /api/sodas/:soda_id/         | remove soda                               |
+
+
 ## Tech Stack
 *see pyproject.toml for full list*
 
@@ -159,17 +229,38 @@ _NB: These terminal exports are temporary and only persist for the current termi
 
 ## Run the Program
 
-1. Start development server
+### Development Server
+1. Start Django development server
    ```
-    ./manage.py runserver
-   
+   ./manage.py runserver
+
    # alternatively with uv
    uv run ./manage.py runserver
    ```
-
+   
 2. View in browser
-- Landing page with API documentation: http://127.0.0.1:8000/
-- Browsable API:  http://127.0.0.1:8000/api/
+   - Landing page with API documentation: http://127.0.0.1:8000/
+   - Browsable API: http://127.0.0.1:8000/api/
+
+### Production Server (for local testing)
+The production environment of this project is hosted on Heroku, where the entry point for the WSGI server is `wsgi.py`. 
+Gunicorn is a production WSGI server that we can use to test this entry point.
+But for day to day development, use Django's development server instead.
+
+1. Start the production server locally.
+   ```
+   gunicorn findcoke1.wsgi:application
+
+   # with logging to console (matches Heroku configuration)
+   gunicorn findcoke1.wsgi:application --log-file -
+
+   # alternatively with uv
+   uv run gunicorn findcoke1.wsgi:application --log-file -
+   ```
+   
+2. View in browser
+   - Landing page with API documentation: http://127.0.0.1:8000/
+   - Browsable API: http://127.0.0.1:8000/api/
 
 ## Local Development
 
@@ -247,48 +338,6 @@ The test database is named `test_findcoke_dev1` and is isolated from development
    ./manage.py migrate
    ./manage.py loaddata initdata.json
    ```
-
-## API Endpoints
-
-### LANDING PAGE
-
-- `GET /` - serves HTML template at www.findcokezero.com
-
-<img src="./docs/images/findcokezero-landing-page.png" height="300" />
-
-### JSON API
-*Don't forget closing slash unless url includes a query string*
-
-- `GET /api/` - serves root of browsable API at www.findcokezero.com/api/
-
-<img src="./docs/images/findcokezero-api-root.jpg" height="300" />
-
-
-#### Retailers
-
-|Endpoint                                         | Description                                   | Example
-|-------------------------------------------------|-----------------------------------------------|------------
-| GET /api/retailers/                             | retrieve all retailers                        | www.findcokezero.com/api/retailers/
-| GET /api/retailers/:retailer_id/                | retrieve specific retailer                    |
-| GET /api/retailers/:retailer_id/sodas/          | retrieve all retailers with specific soda     | www.findcokezero.com/api/retailers/2/sodas/
-| GET /api/retailers/?postcode=:retailer_postcode | retrieve all retailers with specific postcode | www.findcokezero.com/api/retailers/?postcode=11111
-| GET /api/retailers/?postcode=:retailer_postcode&sodas=:soda_abbreviations | retrieve all retailers with specific postcode and selection of soda types | www.findcokezero.com/api/retailers/?postcode=94108&sodas=CH,CZ
-| POST /api/retailers                             | create retailer                               |
-| PATCH /api/retailers/:retailer_id/              | edit retailer                                 |
-| DELETE /api/retailers/:retailer_id/             | remove retailer                               |
-
-<img src="./docs/images/findcokezero-api-sodas-by-retailer.jpg" height="300" />
-
-#### Sodas
-
-|Endpoint                             | Description                               | Example
-|-------------------------------------|-------------------------------------------|------------
-| GET /api/sodas/                     | retrieve all sodas                        | www.findcokezero.com/api/sodas
-| GET /api/sodas/:soda_id/            | retrieve specific soda                    |
-| GET /api/sodas/:soda_id/retailers/  | retrieve all sodas at a specific retailer | www.findcokezero.com/api/sodas/2/retailers/
-| POST /api/sodas/                    | create soda                               |
-| PATCH /api/sodas/:soda_id/          | edit soda                                 |
-| DELETE /api/sodas/:soda_id/         | remove soda                               |
 
 ## Future Development
 Build client that shows map of retailers based on some geographic input (e.g., current user location or manually entered zip code)
