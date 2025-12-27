@@ -221,6 +221,30 @@ _Django automatically creates and destroys a test database when running tests. T
    ./manage.py loaddata initdata.json
    ```
 
+## Architecture
+This project uses a classic django structure with two major directories: a project directory and an app directory.
+As this project grows, more app directories could be added to manage different domains.
+
+Below illustrates the structure with a sampling of directories and files.
+
+```
+findcokezero/                      # root includes files that manage dependencies, environments, and deployments
+│
+├── findcoke1/                     # PROJECT: entry point, configuration, and infrastructure
+│   ├── urls.py                    # root URL routing
+│   └── wsgi.py                    # web server entry point
+│
+└── app1_findcokezero/             # APP: domain logic & business functionality (e.g., sodas, retailers)
+    ├── urls.py                    # API URL routing              
+    ├── views.py                   # API endpoints (ViewSets)
+    ├── serializers.py             # API serializers
+    ├── models.py    
+    ├── migrations/                # database migrations
+    ├── fixtures/
+    │   └── initdata.json          # seed data
+    └── tests/                     # test suite
+```
+
 ## API Endpoints
 
 ### LANDING PAGE
