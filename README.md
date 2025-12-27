@@ -18,7 +18,7 @@ Surely, I was not the only person frustrated by this. So I built this app primar
 and secondarily to more reliably find the original formula of CherryCokeZero™ in local stores.
 
 ## Tech Stack
-*see requirements.txt and requirements-dev.txt for full list*
+*see pyproject.toml for full list*
 
 - uv (package management)
 - Python 3.12.1 
@@ -102,18 +102,18 @@ _NB: These terminal exports are temporary and only persist for the current termi
 
 3. Install dependencies
    ```
-   # to install only core dependencies sufficient for running the app locally
-   uv pip install -r requirements.txt
+   # to install only dependencies sufficient for running the app locally and in production
+   uv sync
 
-   # to install core dependencies plus additional tools for testing, debugging, and development work
-   uv pip install -r requirements.txt -r requirements-dev.txt
+   # to install all dependencies including additional tools for testing, debugging, and development work
+   uv sync --group dev
    ```
 
 4. Activate the virtual environment
    ```
    source .venv/bin/activate
    ```
-   
+
 ### Database
 
 1. Install PostgreSQL
@@ -173,7 +173,7 @@ _NB: These terminal exports are temporary and only persist for the current termi
 
 ## Local Development
 
-### Run tests
+### Test Suite
    ```
    ./manage.py test app1_findcokezero
    
@@ -182,13 +182,37 @@ _NB: These terminal exports are temporary and only persist for the current termi
    ```
 _Django automatically creates and destroys a test database when running tests. The test database is named `test_findcoke_dev1` and is isolated from your development data._
 
-### Working with static files
+### Static Files
    **If static files are not running locally:**
    ```
    ./manage.py collectstatic
    ```
 
-### Common Database Operations
+### Dependency Management
+
+   **Add a dependency:**
+   ```
+   # core/production dependency
+   uv add package-name
+   
+   # development-only dependency
+   uv add --dev package-name
+   ```
+   
+   **Remove a dependency:**
+   ```
+   uv remove package-name
+   ```
+   
+   **Upgrade a dependency:**
+   ```
+   uv lock --upgrade-package package-name
+   
+   # upgrade all packages
+   uv lock --upgrade
+   ```
+
+### Database Operations
 
    **Create new migrations after model changes**
    ```
