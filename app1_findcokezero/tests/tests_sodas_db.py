@@ -1,6 +1,3 @@
-# -*- coding: utf-8 -*-
-from __future__ import unicode_literals
-
 # using test.TestCase instead of unittest.TestCase to make sure tests run within the suite - not just in isolation
 from django.test import TestCase
 from django_webtest import WebTest
