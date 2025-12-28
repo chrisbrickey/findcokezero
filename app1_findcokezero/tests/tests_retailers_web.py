@@ -60,6 +60,14 @@ class RetailerWebTestCase(WebTest):
         self.assertEqual(get_response.status, "200 OK")
         self.assertEqual(len(get_response.json), 2)
 
+    def test_view_all_retailers_by_bad_soda_returns_404(self):
+        # "HTTP get request with invalid soda ID returns 404 (not 500 index error)"
+
+        # soda id 99999 will not exist in the test database
+        get_response = self.app.get('/api/sodas/99999/retailers/', expect_errors=True)
+
+        self.assertEqual(get_response.status, "404 Not Found")
+
     def test_view_all_retailers_by_postcode(self):
         # "HTTP get request with postcode and 'retailers' in params retrieves all retailers associated with that postcode"
 

@@ -52,6 +52,14 @@ class SodaWebTestCase(WebTest):
         self.assertEqual(get_response.status, "200 OK")
         self.assertEqual(len(get_response.json), 2)
 
+    def test_view_all_sodas_by_bad_retailer_returns_404(self):
+        # "HTTP get request with invalid retailer ID returns 404 (not 500 index error)"
+
+        # retailer id 99999 will not exist in the test database
+        get_response = self.app.get('/api/retailers/99999/sodas/', expect_errors=True)
+
+        self.assertEqual(get_response.status, "404 Not Found")
+
     def test_create_soda(self):
         # "For sodas, HTTP request post request with valid data results in creation of object and response with all object data"
         post_response = self.app.post_json('/api/sodas/',
