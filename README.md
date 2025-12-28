@@ -26,6 +26,10 @@ The diagram below illustrates the current structure with a sample of directories
 ```
 findcokezero/                      # root includes files that manage dependencies, environments, and deployments
 │
+├── manage.py                      # django command-line utility
+├── pyproject.toml                 # dependency management and project metadata
+├── Procfile                       # heroku deployment configuration
+│
 ├── findcoke1/                     # PROJECT: entry point, configuration, and infrastructure
 │   ├── settings.py                # primary configuration file for django
 │   ├── wsgi.py                    # web server entry point
