@@ -1,6 +1,8 @@
-from django.urls import path, include
-from app1_findcokezero import urls as app1_findcokezero_urls
 from django.contrib import admin
+from django.urls import path, include
+
+from app1_findcokezero import urls as app1_findcokezero_urls
+
 from . import views
 
 urlpatterns = [

@@ -1,9 +1,11 @@
-from rest_framework import serializers
-from .models import Retailer, Soda
-from django.conf import settings
 from decimal import Decimal
+import requests
+import urllib.parse
 
-import urllib.parse, requests
+from django.conf import settings
+from rest_framework import serializers
+
+from .models import Retailer, Soda
 
 
 class RetailerSerializer(serializers.HyperlinkedModelSerializer):
