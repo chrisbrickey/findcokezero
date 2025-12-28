@@ -12,13 +12,14 @@ class RetailerSerializer(serializers.HyperlinkedModelSerializer):
 
         saved_retailer = super(RetailerSerializer, self).create(validated_data)
 
-        address_string = "%s, %s, CA %s" % (validated_data["street_address"],
-                                            validated_data["city"],
-                                            validated_data.get("postcode", "")) # postcode can be null so use 'get' method with default value
+        # TODO: Remove hard-coding to California state but remember that postcode can be null
+        address_string = f"{validated_data['street_address']}, {validated_data['city']}, CA {validated_data.get('postcode', '')}"
 
-        query_params = {'address': address_string.strip(), 'key': settings.GOOGLEMAPS_KEY} #remove empty space at end of address if postcode is None
+        # Remove empty space at end of address_string for some cases (e.g., postcode is None)
+        query_params = {'address': address_string.strip(), 'key': settings.GOOGLEMAPS_KEY}
+
         query_string = urllib.parse.urlencode(query_params)
-        url = "https://maps.googleapis.com/maps/api/geocode/json?%s" % (query_string,)
+        url = f"https://maps.googleapis.com/maps/api/geocode/json?{query_string}"
         json_response = requests.get(url).json()
 
         results = json_response["results"]

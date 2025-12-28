@@ -48,7 +48,7 @@ class SodaWebTestCase(WebTest):
                                                                   "sodas": [soda_url_DC, soda_url_CF]})
         retailer_id_Shell = post_retailer_response_Shell.json["id"]
 
-        get_response = self.app.get("/api/retailers/%d/sodas/" % retailer_id_Shell)
+        get_response = self.app.get(f"/api/retailers/{retailer_id_Shell}/sodas/")
         self.assertEqual(get_response.status, "200 OK")
         self.assertEqual(len(get_response.json), 2)
 
@@ -68,7 +68,7 @@ class SodaWebTestCase(WebTest):
 
         new_soda_id = post_response.json["id"]
 
-        get_response = self.app.get('/api/sodas/%d/' % new_soda_id)
+        get_response = self.app.get(f'/api/sodas/{new_soda_id}/')
 
         self.assertEqual(get_response.status, "200 OK")
         self.assertEqual(len(get_response.json.keys()), 5)
