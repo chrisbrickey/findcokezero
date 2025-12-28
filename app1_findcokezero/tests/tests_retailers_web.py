@@ -56,7 +56,7 @@ class RetailerWebTestCase(WebTest):
                                    "sodas": [new_soda_url],
                                    "street_address": "1415 Clay Street"})
 
-        get_response = self.app.get("/api/sodas/%d/retailers/" % new_soda_id)
+        get_response = self.app.get(f"/api/sodas/{new_soda_id}/retailers/")
         self.assertEqual(get_response.status, "200 OK")
         self.assertEqual(len(get_response.json), 2)
 
@@ -69,11 +69,11 @@ class RetailerWebTestCase(WebTest):
                                    "postcode": "94107",
                                    "street_address": "670 4th Street"})
 
-        get_response_94107 = self.app.get("/api/retailers/?postcode=%d" % 94107)
+        get_response_94107 = self.app.get(f"/api/retailers/?postcode={94107}")
         self.assertEqual(get_response_94107.status, "200 OK")
         self.assertEqual(len(get_response_94107.json), 2)
 
-        get_response_94108 = self.app.get("/api/retailers/?postcode=%d" % 94108)
+        get_response_94108 = self.app.get(f"/api/retailers/?postcode={94108}")
         self.assertEqual(get_response_94108.status, "200 OK")
         self.assertEqual(len(get_response_94108.json), 1)
 
@@ -253,7 +253,7 @@ class RetailerWebTestCase(WebTest):
 
         new_retailer_id = post_response.json["id"]
 
-        get_response = self.app.get('/api/retailers/%d/' % new_retailer_id)
+        get_response = self.app.get(f'/api/retailers/{new_retailer_id}/')
 
         self.assertEqual(get_response.status, "200 OK")
         self.assertEqual(len(get_response.json.keys()), 11)
@@ -289,7 +289,7 @@ class RetailerWebTestCase(WebTest):
                                                             "sodas": [new_soda_url]})
         new_retailer_id = post_retailer_response.json["id"]
 
-        get_retailer_response = self.app.get('/api/retailers/%d/' % new_retailer_id)
+        get_retailer_response = self.app.get(f'/api/retailers/{new_retailer_id}/')
         self.assertEqual(get_retailer_response.status, "200 OK")
         sodas_list = get_retailer_response.json["sodas"]
         self.assertEqual(len(sodas_list), 1)
@@ -305,7 +305,7 @@ class RetailerWebTestCase(WebTest):
 
         new_retailer_id = post_response.json["id"]
 
-        get_response = self.app.get('/api/retailers/%d/' % new_retailer_id)
+        get_response = self.app.get(f'/api/retailers/{new_retailer_id}/')
 
         self.assertEqual(get_response.status, "200 OK")
         self.assertEqual(get_response.json["latitude"], "37.78838850000000348928")
@@ -333,7 +333,7 @@ class RetailerWebTestCase(WebTest):
         city_McJSON = post_retailer_response_McJSON.json["city"]
         address_McJSON = post_retailer_response_McJSON.json["street_address"]
 
-        put_retailer_response_McJSON = self.app.put_json('/api/retailers/%d/' % retailer_id_McJSON,
+        put_retailer_response_McJSON = self.app.put_json(f'/api/retailers/{retailer_id_McJSON}/',
                                                          params={"name": "McJSON2",
                                                                  "city": city_McJSON,
                                                                  "sodas": [soda_url_DC],
