@@ -96,12 +96,12 @@ findcokezero/                      # root includes files that manage dependencie
 
 - uv (package management)
 - Python 3.12.1 
-- Django 4.2.8 LTS 
-- Django REST Framework 3.14.0
+- Django 4.2.18 LTS
+- Django REST Framework 3.15.2
 - PostgreSQL 
 - psycopg2-binary (python driver/adaptor for postreSQL)
-- WhiteNoise 6.6.0 (static file serving)
-- Gunicorn 21.2.0 (production server)
+- WhiteNoise 6.8.2 (static file serving)
+- Gunicorn 23.0.0 (production server)
 
 ## Setup
 
@@ -176,11 +176,7 @@ _NB: These terminal exports are temporary and only persist for the current termi
 
 3. Install dependencies
    ```
-   # to install only dependencies sufficient for running the app locally and in production
    uv sync
-
-   # to install all dependencies including additional tools for testing, debugging, and development work
-   uv sync --group dev
    ```
 
 4. Activate the virtual environment
@@ -274,10 +270,10 @@ The test database is named `test_findcoke_dev1` and is isolated from development
 
    **Run tests:**
    ```
-   ./manage.py test app1_findcokezero
+   ./manage.py test
    
    # alternatively with uv
-   uv run ./manage.py test app1_findcokezero
+   uv run ./manage.py test
    ```
 
 
@@ -293,11 +289,7 @@ The test database is named `test_findcoke_dev1` and is isolated from development
 
    **Add a dependency:**
    ```
-   # core/production dependency
    uv add package-name
-   
-   # development-only dependency
-   uv add --dev package-name
    ```
    
    **Remove a dependency:**
