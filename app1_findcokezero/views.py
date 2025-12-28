@@ -1,10 +1,10 @@
 from django.shortcuts import render
-from .models import Retailer, Soda
 from rest_framework import viewsets
-from .serializers import RetailerSerializer, SodaSerializer
-from django.views.decorators.csrf import csrf_exempt
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
+
+from .models import Retailer, Soda
+from .serializers import RetailerSerializer, SodaSerializer
 
 class RetailerViewSet(viewsets.ModelViewSet):
     """
@@ -52,7 +52,6 @@ class SodaViewSet(viewsets.ModelViewSet):
     serializer_class = SodaSerializer
 
 
-@csrf_exempt
 @api_view(['GET'])
 def sodas_by_retailer(request, pk):
     """
@@ -64,7 +63,6 @@ def sodas_by_retailer(request, pk):
     serializer = SodaSerializer(retailer_sodas, many=True, context=serializer_context)
     return Response(serializer.data)
 
-@csrf_exempt
 @api_view(['GET'])
 def retailers_by_sodas(request, pk):
     """

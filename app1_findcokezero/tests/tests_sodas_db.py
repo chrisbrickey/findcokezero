@@ -1,7 +1,7 @@
 # using test.TestCase instead of unittest.TestCase to make sure tests run within the suite - not just in isolation
+from django.db import IntegrityError
 from django.test import TestCase
 from django_webtest import WebTest
-from django.db import IntegrityError
 
 from app1_findcokezero.models import Retailer, Soda
 
