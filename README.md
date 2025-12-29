@@ -35,6 +35,7 @@ findcokezero/                      # root includes files that manage dependencie
 │   ├── wsgi.py                    # web server entry point
 │   ├── urls.py                    # root URL routing
 │   ├── views.py                   # landing page view
+│   ├── templates/                 
 │   └── static/                    # static assets (CSS, JavaScript)
 │
 └── inventory/                     # APP: domain logic & business functionality (e.g., sodas, retailers)
