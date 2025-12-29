@@ -1,6 +1,6 @@
 [
   {
-    "model": "app1_findcokezero.retailer",
+    "model": "inventory.retailer",
     "pk": 1,
     "fields": {
       "name": "Le Beau Market",
@@ -16,7 +16,7 @@
     }
   },
   {
-    "model": "app1_findcokezero.retailer",
+    "model": "inventory.retailer",
     "pk": 2,
     "fields": {
       "name": "Pine & Jones Market",
@@ -32,7 +32,7 @@
     }
   },
   {
-    "model": "app1_findcokezero.retailer",
+    "model": "inventory.retailer",
     "pk": 3,
     "fields": {
       "name": "Dair's Pine-Taylor Market",
@@ -48,7 +48,7 @@
     }
   },
   {
-    "model": "app1_findcokezero.retailer",
+    "model": "inventory.retailer",
     "pk": 4,
     "fields": {
       "name": "Bush Market",
@@ -64,7 +64,7 @@
     }
   },
   {
-    "model": "app1_findcokezero.retailer",
+    "model": "inventory.retailer",
     "pk": 5,
     "fields": {
       "name": "Target",
@@ -80,7 +80,7 @@
     }
   },
   {
-    "model": "app1_findcokezero.retailer",
+    "model": "inventory.retailer",
     "pk": 6,
     "fields": {
       "name": "CVS",
@@ -96,7 +96,7 @@
     }
   },
   {
-    "model": "app1_findcokezero.soda",
+    "model": "inventory.soda",
     "pk": 1,
     "fields": {
       "name": "CherryCokeZero",
@@ -105,7 +105,7 @@
     }
   },
    {
-    "model": "app1_findcokezero.soda",
+    "model": "inventory.soda",
     "pk": 2,
     "fields": {
       "name": "CokeZero",
@@ -114,7 +114,7 @@
     }
   },
    {
-    "model": "app1_findcokezero.soda",
+    "model": "inventory.soda",
     "pk": 3,
     "fields": {
       "name": "Coke Classic",
@@ -123,7 +123,7 @@
     }
   },
    {
-    "model": "app1_findcokezero.soda",
+    "model": "inventory.soda",
     "pk": 4,
     "fields": {
       "name": "Diet Coke",
@@ -132,7 +132,7 @@
     }
   },
    {
-    "model": "app1_findcokezero.soda",
+    "model": "inventory.soda",
     "pk": 5,
     "fields": {
       "name": "Caffeine Free Coke",
@@ -141,7 +141,7 @@
     }
   },
    {
-    "model": "app1_findcokezero.soda",
+    "model": "inventory.soda",
     "pk": 6,
     "fields": {
       "name": "Caffeine Free Diet Coke",

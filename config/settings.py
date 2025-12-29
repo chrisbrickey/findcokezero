@@ -45,7 +45,7 @@ ALLOWED_HOSTS = [
 # Application definition
 
 INSTALLED_APPS = [
-    'app1_findcokezero.apps.App1FindcokezeroConfig',
+    'inventory.apps.InventoryConfig',
     'rest_framework',
     'django.contrib.admin',
     'django.contrib.auth',
@@ -70,7 +70,7 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-ROOT_URLCONF = 'findcoke1.urls'
+ROOT_URLCONF = 'config.urls'
 
 TEMPLATES = [
     {
@@ -88,7 +88,7 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = 'findcoke1.wsgi.application'
+WSGI_APPLICATION = 'config.wsgi.application'
 
 
 # Database
@@ -97,7 +97,7 @@ WSGI_APPLICATION = 'findcoke1.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'findcoke_dev1',
+        'NAME': 'findcokezero_dev2',
         'USER': os.environ.get('DB_USER', ''),
         'PASSWORD': '',
         'HOST': 'localhost',    # 'localhost' explicitly uses TCP/IP; empty string defaults to Unix domain socket
