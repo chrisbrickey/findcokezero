@@ -74,9 +74,9 @@
                             <ul class="endpointTable">
                                 <li>GET /api/retailers/ - retrieve all retailers</li>
                                 <li>GET /api/retailers/:retailer_id/ - retrieve specific retailer</li>
-                                <li>GET /api/retailers/:retailer_id/sodas/ - retrieve all retailers with specific soda</li>
+                                <li>GET /api/retailers/:retailer_id/sodas/ - retrieve all sodas at specific retailer</li>
                                 <li>GET /api/retailers/?postcode=:retailer_postcode - retrieve all retailers with specific postcode; e.g. "www.findcokezero.com/api/retailers/?postcode=11111"</li>
-                                <li>GET /api/retailers/?postcode=:retailer_postcode&amp;sodas=:soda_abbreviations - retrieve all retailers with specific postcode and selection of soda types</li> 
+                                <li>GET /api/retailers/?postcode=:retailer_postcode&amp;sodas=:soda_abbreviations - retrieve all retailers with specific postcode and selection of soda types</li>
                                 <li>POST /api/retailers/ - create retailer</li>
                                 <li>PATCH /api/retailers/:retailer_id/ - edit retailer</li>
                                 <li>DELETE /api/retailers/:retailer_id/ - remove retailer</li>
@@ -89,7 +89,7 @@
                             <ul class="endpointTable">
                                 <li>GET /api/sodas/ - retrieve all sodas</li>
                                 <li>GET /api/sodas/:soda_id/ - retrieve specific soda</li>
-                                <li>GET /api/sodas/:soda_id/retailers/ - retrieve all sodas at specific retailer</li>
+                                <li>GET /api/sodas/:soda_id/retailers/ - retrieve all retailers with specific soda</li>
                                 <li>POST /api/sodas/ - create soda</li>
                                 <li>PATCH /api/sodas/:soda_id/ - edit soda</li>
                                 <li>DELETE /api/sodas/:soda_id/ - remove soda</li>
