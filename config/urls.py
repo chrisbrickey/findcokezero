@@ -1,12 +1,12 @@
 from django.contrib import admin
 from django.urls import path, include
 
-from app1_findcokezero import urls as app1_findcokezero_urls
+from inventory import urls as inventory_urls
 
 from . import views
 
 urlpatterns = [
-    path('api/', include(app1_findcokezero_urls)),
+    path('api/', include(inventory_urls)),
     path('admin/', admin.site.urls),
     path('', views.index, name='index'), # landing page
 ]

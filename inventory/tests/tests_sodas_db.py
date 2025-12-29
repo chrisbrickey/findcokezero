@@ -3,7 +3,7 @@ from django.db import IntegrityError
 from django.test import TestCase
 from django_webtest import WebTest
 
-from app1_findcokezero.models import Retailer, Soda
+from inventory.models import Retailer, Soda
 
 
 class SodaDBTestCase(TestCase):

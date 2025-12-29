@@ -5,7 +5,7 @@ from django.db import IntegrityError
 from django.test import TestCase
 from django_webtest import WebTest
 
-from app1_findcokezero.models import Retailer, Soda
+from inventory.models import Retailer, Soda
 
 
 # web tests should not use objects created and stored in database; that is testing behavior of both the http application and the database (too much)
