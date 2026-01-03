@@ -67,6 +67,10 @@ table {
 
 /*beginning of custom CSS*/
 
+:root {
+  --coke-red: #E61E2A;
+}
+
 main {
   background-color: black;
   width: 100%;
@@ -117,6 +121,151 @@ h6 {
   font-size: 0.75em;
 }
 
+/* Hero section */
+.hero {
+  text-align: center;
+  padding: 60px 20px 40px 20px;
+  margin-bottom: 20px;
+}
+
+.hero h1 {
+  font-size: 3em;
+  margin-bottom: 20px;
+  line-height: 120%;
+}
+
+.hero .tagline {
+  font-size: 1.3em;
+  margin-bottom: 15px;
+  line-height: 140%;
+}
+
+.hero .description {
+  font-size: 1.1em;
+  line-height: 150%;
+  max-width: 700px;
+  margin: 0 auto 30px auto;
+}
+
+.accent-text {
+  color: var(--coke-red);
+}
+
+/* CTA buttons */
+.cta-container {
+  display: flex;
+  justify-content: center;
+  gap: 15px;
+  flex-wrap: wrap;
+  margin-top: 20px;
+}
+
+.cta-button {
+  display: inline-block;
+  padding: 12px 24px;
+  border: 2px solid white;
+  transition: all 0.3s;
+  text-decoration: none;
+  font-size: 1.1em;
+}
+
+.cta-button.primary {
+  background-color: var(--coke-red);
+  border-color: var(--coke-red);
+  color: white;
+}
+
+.cta-button:hover {
+  background-color: white;
+  color: black;
+  cursor: pointer;
+}
+
+/* Features section */
+.features {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 40px;
+  margin: 40px 20px;
+  padding: 20px;
+}
+
+.feature-column h3 {
+  margin-bottom: 20px;
+}
+
+.feature-column ul {
+  list-style: none;
+}
+
+.feature-column li {
+  padding: 8px 0;
+  line-height: 140%;
+}
+
+.feature-column li:before {
+  content: "→ ";
+  color: var(--coke-red);
+  font-weight: bold;
+  margin-right: 8px;
+}
+
+/* Quick start section */
+.quick-start {
+  margin: 40px 20px;
+  padding: 20px;
+}
+
+.quick-start h2 {
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+.quick-start-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 40px;
+}
+
+.quick-start-grid h3 {
+  margin-bottom: 15px;
+}
+
+/* Community section */
+.community {
+  text-align: center;
+  padding: 40px 20px;
+  margin: 40px 0;
+}
+
+.community p {
+  font-size: 1.2em;
+  line-height: 150%;
+  margin-bottom: 15px;
+}
+
+/* Mobile responsiveness */
+@media (max-width: 768px) {
+  .hero h1 {
+    font-size: 2.2em;
+  }
+
+  .features,
+  .quick-start-grid {
+    grid-template-columns: 1fr;
+    gap: 30px;
+  }
+
+  .cta-container {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .cta-button {
+    width: 80%;
+    text-align: center;
+  }
+}
 
 #head {
   width: 100%;
