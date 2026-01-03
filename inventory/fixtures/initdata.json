@@ -76,7 +76,7 @@
       "longitude": "-122.40157250000000033197",
       "timestamp_last_updated": "2017-10-20T03:17:48.654754Z",
       "timestamp_created": "2017-10-20T03:17:48.654773Z",
-      "sodas": [2, 3]
+      "sodas": [1, 2, 3, 4, 7, 8, 9]
     }
   },
   {
@@ -92,7 +92,247 @@
       "longitude": "-122.41815099999999461033",
       "timestamp_last_updated": "2017-10-20T03:18:51.666188Z",
       "timestamp_created": "2017-10-20T03:18:51.666208Z",
-      "sodas": [1, 2, 4]
+      "sodas": [1, 2, 4, 7, 9, 10]
+    }
+  },
+  {
+    "model": "inventory.retailer",
+    "pk": 7,
+    "fields": {
+      "name": "CVS - West Village",
+      "street_address": "158 Bleecker Street",
+      "city": "New York",
+      "postcode": 10012,
+      "country": "USA",
+      "latitude": "40.72843000000000000000",
+      "longitude": "-73.99988000000000000000",
+      "timestamp_last_updated": "2026-01-03T00:00:00Z",
+      "timestamp_created": "2026-01-03T00:00:00Z",
+      "sodas": [1, 2, 3, 4, 7, 9]
+    }
+  },
+  {
+    "model": "inventory.retailer",
+    "pk": 8,
+    "fields": {
+      "name": "Duane Reade - West Village",
+      "street_address": "77 7th Avenue",
+      "city": "New York",
+      "postcode": 10011,
+      "country": "USA",
+      "latitude": "40.73919700000000000000",
+      "longitude": "-73.99913000000000000000",
+      "timestamp_last_updated": "2026-01-03T00:00:00Z",
+      "timestamp_created": "2026-01-03T00:00:00Z",
+      "sodas": [1, 2, 7, 8]
+    }
+  },
+  {
+    "model": "inventory.retailer",
+    "pk": 9,
+    "fields": {
+      "name": "7-Eleven - East Village",
+      "street_address": "351 Bowery",
+      "city": "New York",
+      "postcode": 10003,
+      "country": "USA",
+      "latitude": "40.72671000000000000000",
+      "longitude": "-73.99272000000000000000",
+      "timestamp_last_updated": "2026-01-03T00:00:00Z",
+      "timestamp_created": "2026-01-03T00:00:00Z",
+      "sodas": [1, 2, 3]
+    }
+  },
+  {
+    "model": "inventory.retailer",
+    "pk": 10,
+    "fields": {
+      "name": "CVS - East Village",
+      "street_address": "253 First Avenue",
+      "city": "New York",
+      "postcode": 10003,
+      "country": "USA",
+      "latitude": "40.73188680000000000000",
+      "longitude": "-73.98247700000000000000",
+      "timestamp_last_updated": "2026-01-03T00:00:00Z",
+      "timestamp_created": "2026-01-03T00:00:00Z",
+      "sodas": [1, 2, 4, 7, 9, 10]
+    }
+  },
+  {
+    "model": "inventory.retailer",
+    "pk": 11,
+    "fields": {
+      "name": "Duane Reade - SoHo",
+      "street_address": "60 Spring Street",
+      "city": "New York",
+      "postcode": 10012,
+      "country": "USA",
+      "latitude": "40.72200000000000000000",
+      "longitude": "-73.99700000000000000000",
+      "timestamp_last_updated": "2026-01-03T00:00:00Z",
+      "timestamp_created": "2026-01-03T00:00:00Z",
+      "sodas": [1, 2, 7, 8, 9]
+    }
+  },
+  {
+    "model": "inventory.retailer",
+    "pk": 12,
+    "fields": {
+      "name": "Walgreens - SoHo",
+      "street_address": "459 Broadway",
+      "city": "New York",
+      "postcode": 10013,
+      "country": "USA",
+      "latitude": "40.72089000000000000000",
+      "longitude": "-74.00129000000000000000",
+      "timestamp_last_updated": "2026-01-03T00:00:00Z",
+      "timestamp_created": "2026-01-03T00:00:00Z",
+      "sodas": [1, 2, 3, 7, 8]
+    }
+  },
+  {
+    "model": "inventory.retailer",
+    "pk": 13,
+    "fields": {
+      "name": "CVS - NoHo",
+      "street_address": "65 5th Avenue",
+      "city": "New York",
+      "postcode": 10003,
+      "country": "USA",
+      "latitude": "40.73543000000000000000",
+      "longitude": "-73.99340000000000000000",
+      "timestamp_last_updated": "2026-01-03T00:00:00Z",
+      "timestamp_created": "2026-01-03T00:00:00Z",
+      "sodas": [1, 2, 4, 7, 9]
+    }
+  },
+  {
+    "model": "inventory.retailer",
+    "pk": 14,
+    "fields": {
+      "name": "7-Eleven - NoHo",
+      "street_address": "82 Greenwich Street",
+      "city": "New York",
+      "postcode": 10014,
+      "country": "USA",
+      "latitude": "40.73128000000000000000",
+      "longitude": "-74.00973000000000000000",
+      "timestamp_last_updated": "2026-01-03T00:00:00Z",
+      "timestamp_created": "2026-01-03T00:00:00Z",
+      "sodas": [2, 3, 4]
+    }
+  },
+  {
+    "model": "inventory.retailer",
+    "pk": 15,
+    "fields": {
+      "name": "7-Eleven - Venice Beach",
+      "street_address": "2580 Venice Boulevard",
+      "city": "Los Angeles",
+      "postcode": 90291,
+      "country": "USA",
+      "latitude": "33.99825000000000000000",
+      "longitude": "-118.46550000000000000000",
+      "timestamp_last_updated": "2026-01-03T00:00:00Z",
+      "timestamp_created": "2026-01-03T00:00:00Z",
+      "sodas": [1, 2, 3, 7]
+    }
+  },
+  {
+    "model": "inventory.retailer",
+    "pk": 16,
+    "fields": {
+      "name": "CVS - Venice Beach",
+      "street_address": "119 S Lincoln Boulevard",
+      "city": "Los Angeles",
+      "postcode": 90291,
+      "country": "USA",
+      "latitude": "34.00195700000000000000",
+      "longitude": "-118.46993300000000000000",
+      "timestamp_last_updated": "2026-01-03T00:00:00Z",
+      "timestamp_created": "2026-01-03T00:00:00Z",
+      "sodas": [1, 2, 3, 4, 7, 8, 9]
+    }
+  },
+  {
+    "model": "inventory.retailer",
+    "pk": 17,
+    "fields": {
+      "name": "Walgreens - Santa Monica",
+      "street_address": "1932 Wilshire Boulevard",
+      "city": "Los Angeles",
+      "postcode": 90403,
+      "country": "USA",
+      "latitude": "34.03097400000000000000",
+      "longitude": "-118.48315200000000000000",
+      "timestamp_last_updated": "2026-01-03T00:00:00Z",
+      "timestamp_created": "2026-01-03T00:00:00Z",
+      "sodas": [1, 2, 4, 7, 8, 9, 10]
+    }
+  },
+  {
+    "model": "inventory.retailer",
+    "pk": 18,
+    "fields": {
+      "name": "7-Eleven - Santa Monica",
+      "street_address": "1334 3rd Street Promenade",
+      "city": "Los Angeles",
+      "postcode": 90401,
+      "country": "USA",
+      "latitude": "34.01789000000000000000",
+      "longitude": "-118.49735000000000000000",
+      "timestamp_last_updated": "2026-01-03T00:00:00Z",
+      "timestamp_created": "2026-01-03T00:00:00Z",
+      "sodas": [2, 3, 7]
+    }
+  },
+  {
+    "model": "inventory.retailer",
+    "pk": 19,
+    "fields": {
+      "name": "Walgreens - Downtown SF",
+      "street_address": "1301 Market Street",
+      "city": "San Francisco",
+      "postcode": 94103,
+      "country": "USA",
+      "latitude": "37.77713900000000000000",
+      "longitude": "-122.41643300000000000000",
+      "timestamp_last_updated": "2026-01-03T00:00:00Z",
+      "timestamp_created": "2026-01-03T00:00:00Z",
+      "sodas": [1, 2, 3, 4, 7, 8, 9]
+    }
+  },
+  {
+    "model": "inventory.retailer",
+    "pk": 20,
+    "fields": {
+      "name": "CVS - Downtown SF",
+      "street_address": "789 Mission Street",
+      "city": "San Francisco",
+      "postcode": 94103,
+      "country": "USA",
+      "latitude": "37.78481400000000000000",
+      "longitude": "-122.40378700000000000000",
+      "timestamp_last_updated": "2026-01-03T00:00:00Z",
+      "timestamp_created": "2026-01-03T00:00:00Z",
+      "sodas": [1, 2, 4, 7, 9, 10]
+    }
+  },
+  {
+    "model": "inventory.retailer",
+    "pk": 21,
+    "fields": {
+      "name": "7-Eleven - Downtown SF",
+      "street_address": "500 West 7th Street",
+      "city": "San Francisco",
+      "postcode": 94102,
+      "country": "USA",
+      "latitude": "37.77745000000000000000",
+      "longitude": "-122.40950000000000000000",
+      "timestamp_last_updated": "2026-01-03T00:00:00Z",
+      "timestamp_created": "2026-01-03T00:00:00Z",
+      "sodas": [2, 3, 7]
     }
   },
   {
@@ -146,6 +386,42 @@
     "fields": {
       "name": "Caffeine Free Diet Coke",
       "abbreviation": "DF",
+      "low_calorie": true
+    }
+  },
+  {
+    "model": "inventory.soda",
+    "pk": 7,
+    "fields": {
+      "name": "Vanilla Coke Zero",
+      "abbreviation": "VZ",
+      "low_calorie": true
+    }
+  },
+  {
+    "model": "inventory.soda",
+    "pk": 8,
+    "fields": {
+      "name": "Orange Vanilla Coke Zero",
+      "abbreviation": "OV",
+      "low_calorie": true
+    }
+  },
+  {
+    "model": "inventory.soda",
+    "pk": 9,
+    "fields": {
+      "name": "Coke Zero Sugar",
+      "abbreviation": "C2",
+      "low_calorie": true
+    }
+  },
+  {
+    "model": "inventory.soda",
+    "pk": 10,
+    "fields": {
+      "name": "Cherry Float Coke Zero",
+      "abbreviation": "FL",
       "low_calorie": true
     }
   }
