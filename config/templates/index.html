@@ -10,8 +10,10 @@
           href="https://res.cloudinary.com/dckkkjkuz/image/upload/w_32,h_32,f_png,q_auto/v1766751992/findcokezero/soda-bottle_favicon.jpg"
           type="image/png"/>
 
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
         <link
-            rel="stylesheet" href="https://fonts.googleapis.com/css?family=Bitter|Cantarell|Crimson+Text|Domine|Fjalla+One|Hind|Libre+Baskerville|Merriweather|Montserrat|Raleway|Bungee|Courgette|Fugaz+One|Lobster|Roboto" >
+            rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cantarell&family=Fjalla+One&display=swap" >
 
         <link
             rel="stylesheet"
@@ -30,75 +32,92 @@
 
             <section id="landingPage">
 
-                <div id="temp">
-                    <p>Welcome! Human interface is WIP. Check out wireframes and future API development plans at
-                          <a href="https://github.com/chrisbrickey/findcokezero" target="_blank">github repo</a>.
+                <!-- Hero Section -->
+                <div class="hero">
+                    <h1>Can't find your favorite flavor of <span class="accent-text">CokeZero™</span>?</h1>
+                    <p class="tagline">Let's fix that together.</p>
+                    <p class="description">
+                        FindCokeZero is a crowd-sourced map of CokeZero™ flavors at convenience stores near you.
+                        Never come up empty-handed again.
                     </p>
-
+                    <div class="cta-container">
+                        <a href="https://www.findcokezero.com/api/" class="cta-button primary" target="_blank">Explore the API →</a>
+                        <a href="https://github.com/chrisbrickey/findcokezero" class="cta-button" target="_blank">View Roadmap</a>
+                    </div>
                 </div>
 
-                <div id="api">
-
-                    <div id="apiHeader">
-                        <h2>To use the API now...</h2>
+                <!-- Features Section -->
+                <div class="features">
+                    <div class="feature-column">
+                        <h3>For Flavor Hunters 🥤</h3>
+                        <ul>
+                            <li>Search by postcode</li>
+                            <li>Filter by flavor (e.g., Cherry, Vanilla)</li>
+                            <li>See real-time inventory</li>
+                            <li>Community-updated data</li>
+                            <li>Interactive map (see roadmap)</li>
+                        </ul>
                     </div>
+                    <div class="feature-column">
+                        <h3>For Developers 🔌</h3>
+                        <ul>
+                            <li>Browsable API interface</li>
+                            <li>Geo-location enabled</li>
+                            <li>CRUD operations for retailers &amp; sodas</li>
+                            <li>JSON responses</li>
+                            <li>No auth required</li>
+                        </ul>
+                    </div>
+                </div>
 
-                    <div id="apiBody">
-
-                        <div class="apiSubSection">
-                            <div class="apiSubHeader">
-                                <h3>Browse and Create</h3>
-                            </div>
-
-                            <p>To view, filter, create, and edit store inventories of Coke flavors while I work on this interface, </p>
-                            <p> visit the
-                                <a href="https://www.findcokezero.com/api/" target="_blank">Django REST Framework browsable API</a>.
+                <!-- Quick Start Section -->
+                <div class="quick-start">
+                    <h2>Get Started Now</h2>
+                    <div class="quick-start-grid">
+                        <div>
+                            <h3>Find a Flavor</h3>
+                            <p>Search for stores with specific CokeZero™ flavors using the browsable API:</p>
+                            <p style="margin-top: 15px;">
+                                <a href="https://www.findcokezero.com/api/retailers/?postcode=94109" target="_blank">
+                                    Example: retailers/?postcode=94109 →
+                                </a>
+                            </p>
+                            <p style="margin-top: 10px;">
+                                <a href="https://www.findcokezero.com/api/retailers/?sodas=CH" target="_blank">
+                                    Example: Filter by CherryCokeZero™ →
+                                </a>
                             </p>
                         </div>
-
-                        <div class="apiSubSection" id="splitter">
-                        </div>
-
-
-                        <div class="apiSubSection">
-
-                            <div class="apiSubHeader">
-                                <h3>API Endpoints</h3>
-                            </div>
-
-
-                            <div class="apiTableHeader">
-                                <h4>Retailers</h4>
-                            </div>
-
-                            <ul class="endpointTable">
-                                <li>GET /api/retailers/ - retrieve all retailers</li>
-                                <li>GET /api/retailers/:retailer_id/ - retrieve specific retailer</li>
-                                <li>GET /api/retailers/:retailer_id/sodas/ - retrieve all sodas at specific retailer</li>
-                                <li>GET /api/retailers/?postcode=:retailer_postcode - retrieve all retailers with specific postcode; e.g. "www.findcokezero.com/api/retailers/?postcode=11111"</li>
-                                <li>GET /api/retailers/?postcode=:retailer_postcode&amp;sodas=:soda_abbreviations - retrieve all retailers with specific postcode and selection of soda types</li>
-                                <li>POST /api/retailers/ - create retailer</li>
-                                <li>PATCH /api/retailers/:retailer_id/ - edit retailer</li>
-                                <li>DELETE /api/retailers/:retailer_id/ - remove retailer</li>
+                        <div>
+                            <h3>API Quick Reference</h3>
+                            <p><strong>Retailers</strong></p>
+                            <ul style="margin: 10px 0; padding-left: 20px;">
+                                <li style="list-style-type: circle; margin: 5px 0;">GET /api/retailers/ - all retailers</li>
+                                <li style="list-style-type: circle; margin: 5px 0;">Full CRUD support including filtering</li>
                             </ul>
-
-                            <div class="apiTableHeader">
-                                <h4>Sodas</h4>
-                            </div>
-
-                            <ul class="endpointTable">
-                                <li>GET /api/sodas/ - retrieve all sodas</li>
-                                <li>GET /api/sodas/:soda_id/ - retrieve specific soda</li>
-                                <li>GET /api/sodas/:soda_id/retailers/ - retrieve all retailers with specific soda</li>
-                                <li>POST /api/sodas/ - create soda</li>
-                                <li>PATCH /api/sodas/:soda_id/ - edit soda</li>
-                                <li>DELETE /api/sodas/:soda_id/ - remove soda</li>
+                            <p style="margin-top: 15px;"><strong>Sodas</strong></p>
+                            <ul style="margin: 10px 0; padding-left: 20px;">
+                                <li style="list-style-type: circle; margin: 5px 0;">GET /api/sodas/ - all flavors</li>
+                                <li style="list-style-type: circle; margin: 5px 0;">Full CRUD support including filtering</li>
                             </ul>
-
+                            <p style="margin-top: 15px;">
+                                <a href="https://www.findcokezero.com/api/" target="_blank">
+                                    View complete API docs →
+                                </a>
+                            </p>
                         </div>
-
                     </div>
+                </div>
 
+                <!-- Community Section -->
+                <div class="community">
+                    <p>This database grows when <span class="accent-text">you</span> contribute.</p>
+                    <p>Spotted VanillaCokeZero™ at your local 7-Eleven?</p>
+                    <p>
+                        <a href="https://www.findcokezero.com/api/retailers" target="_blank" class="accent-text">
+                            Add it to the database →
+                        </a>
+                    </p>
                 </div>
 
             </section>
