@@ -19,8 +19,8 @@ class Retailer(models.Model):
     city = models.CharField(max_length=100, blank=False)
     postcode = models.IntegerField(blank=True, null=True)
     country = models.CharField(max_length=100, blank=True)
-    latitude = models.DecimalField(max_digits=40, decimal_places=20, blank=True, null=True)
-    longitude = models.DecimalField(max_digits=40, decimal_places=20, blank=True, null=True)
+    latitude = models.DecimalField(max_digits=10, decimal_places=7, blank=True, null=True)
+    longitude = models.DecimalField(max_digits=10, decimal_places=7, blank=True, null=True)
 
     timestamp_last_updated = models.DateTimeField(auto_now=True, auto_now_add=False)
     timestamp_created = models.DateTimeField(auto_now=False, auto_now_add=True)

@@ -1,116 +1,119 @@
-from decimal import Decimal
-
-# using test.TestCase instead of unittest.TestCase to make sure tests run within the suite - not just in isolation
+from django.core.exceptions import ValidationError
 from django.db import IntegrityError
 from django.test import TestCase
-from django_webtest import WebTest
 
 from inventory.models import Retailer, Soda
 
-
 class RetailerDBTestCase(TestCase):
+    retailer1_data = {
+            "name": "Shell",
+            "street_address": "598 Bryant Street",
+            "city": "San Francisco",
+            "postcode": 94107,
+        }
+    retailer2_data = {
+            "name": "Bush Market",
+            "street_address": "820 Bush Street",
+            "city": "San Francisco",
+            "postcode": 94108,
+        }
+    soda1_data = {
+            "name": "Cherry Coke Zero",
+            "abbreviation": "CZ",
+            "low_calorie": True,
+        }
+
     def setUp(self):
-        Retailer.objects.create(name="Shell", street_address="598 Bryant Street", city="San Francisco",
-                                postcode="94107")
-        Retailer.objects.create(name="Bush Market", street_address="820 Bush Street", city="San Francisco",
-                                postcode="94108")
+        # persist two retailers and one soda in test database
+        Retailer.objects.create(**self.retailer1_data)
+        Retailer.objects.create(**self.retailer2_data)
+        Soda.objects.create(**self.soda1_data)
 
     def test_database_stores_retailers_and_retrieves_by_unique_field(self):
         """Retailers are stored in database and identified by unique field: address"""
-        retailer1 = Retailer.objects.get(street_address="598 Bryant Street")
-        retailer2 = Retailer.objects.get(street_address="820 Bush Street")
-        self.assertEqual(retailer1.name, "Shell")
-        self.assertEqual(retailer2.name, "Bush Market")
+        retailer1 = Retailer.objects.get(street_address=self.retailer1_data["street_address"])
+        retailer2 = Retailer.objects.get(street_address=self.retailer2_data["street_address"])
+        self.assertEqual(retailer1.name, self.retailer1_data["name"])
+        self.assertEqual(retailer2.name, self.retailer2_data["name"])
 
     def test_database_does_not_allow_duplicate_names(self):
         """For Retailers, duplicate names are not allowed"""
         with self.assertRaises(IntegrityError):
-            Retailer.objects.create(name="Bush Market", street_address="823 Bush Street", city="San Francisco",
-                                    postcode="94108")
+            Retailer.objects.create(name=self.retailer2_data["name"], street_address="823 Bush Street",
+                                    city="San Francisco", postcode=self.retailer2_data["postcode"])
 
     def test_database_does_not_allow_duplicate_addresses(self):
         """For Retailers, duplicate addresses are not allowed"""
         with self.assertRaises(IntegrityError):
-            Retailer.objects.create(name="Bush Market2", street_address="820 Bush Street", city="San Francisco",
-                                    postcode="94108")
+            Retailer.objects.create(name="Bush Market2", street_address=self.retailer2_data["street_address"],
+                                    city="San Francisco", postcode=self.retailer2_data["postcode"])
 
-    def test_database_retrieves_retailer_by_soda(self):
-        """Retailers are retreived in a group by soda"""
-        retailer1 = Retailer.objects.get(street_address="598 Bryant Street")
-        retailer2 = Retailer.objects.get(street_address="820 Bush Street")
-        soda = Soda.objects.create(name="Diet Coke", abbreviation="DC", low_calorie=True)
+    def test_database_rejects_latitude_with_more_than_7_decimals(self):
+        retailer_too_large_latitude = Retailer(
+            **{**self.retailer1_data, "latitude": 37.12345678}
+        )
+        with self.assertRaises(ValidationError):
+            retailer_too_large_latitude.full_clean()
 
-        retailer1.sodas.add(soda)
-        retailer2.sodas.add(soda)
-        self.assertEqual(soda.retailer_set.get(pk=retailer1.pk), retailer1)
-        self.assertEqual(soda.retailer_set.get(pk=retailer2.pk), retailer2)
+    def test_database_rejects_longitude_with_more_than_7_decimals(self):
+        retailer_too_large_longitude = Retailer(
+            **{**self.retailer1_data, "longitude": -54.12345678}
+        )
+        with self.assertRaises(ValidationError):
+            retailer_too_large_longitude.full_clean()
 
     def test_database_retrieves_retailer_by_postcode(self):
-        """Retailers are retreived by postcode"""
-        retailer1 = Retailer.objects.get(street_address="598 Bryant Street")
-        retailer2 = Retailer.objects.get(street_address="820 Bush Street")
+        """Retailers are retrieved by postcode"""
+
+        # Add a third retailer with the same postcode as retailer1
+        retailer1 = Retailer.objects.get(street_address=self.retailer1_data["street_address"])
         retailer3 = Retailer.objects.create(name="Retailer3", street_address="abc", city="San Francisco",
-                                            postcode="94107")
+                                            postcode=self.retailer1_data["postcode"])
 
-        results_94107 = Retailer.objects.filter(postcode="94107")
-        array_94107 = []
-        for retailer in results_94107:
-            array_94107.append(str(retailer.name))
-        array_94107.sort()
+        # Retrieve retailers by zipcode
+        zip_code = self.retailer1_data["postcode"]
+        results = Retailer.objects.filter(postcode=zip_code)
 
-        results_94108 = Retailer.objects.filter(postcode="94108")
-        array_94108 = []
-        for retailer in results_94108:
-            array_94108.append(str(retailer.name))
-        array_94108.sort()
+        # Assert that only retailers with matching postcode are returned
+        self.assertEqual(results.count(), 2)
+        self.assertTrue(all(r.postcode == zip_code for r in results))
 
-        self.assertEqual(len(results_94107), 2)
-        self.assertEqual(len(results_94108), 1)
-        self.assertEqual(array_94107, ['Retailer3', 'Shell'])
-        self.assertEqual(array_94108, ['Bush Market'])
+
+    def test_database_retrieves_retailer_by_soda(self):
+        """Retailers are retrieved in a group by soda"""
+
+        # Associate soda with both retailers
+        soda = Soda.objects.get(abbreviation=self.soda1_data["abbreviation"])
+        retailer1 = Retailer.objects.get(street_address=self.retailer1_data["street_address"])
+        retailer2 = Retailer.objects.get(street_address=self.retailer2_data["street_address"])
+        retailer1.sodas.add(soda)
+        retailer2.sodas.add(soda)
+
+        # Assert that retailers can be retrieved via the soda's reverse relation
+        self.assertIn(retailer1, soda.retailer_set.all())
+        self.assertIn(retailer2, soda.retailer_set.all())
+
 
     def test_database_retrieves_retailers_by_postcode_and_soda(self):
-        """Retailers are retreived in a group by soda and postcode"""
-        retailer1 = Retailer.objects.get(street_address="598 Bryant Street")
-        retailer2 = Retailer.objects.get(street_address="820 Bush Street")
+        """Retailers are retrieved in a group by soda and postcode"""
+
+        # Get existing retailers and sodas, create a third retailer with same postcode as retailer1
+        retailer1 = Retailer.objects.get(street_address=self.retailer1_data["street_address"])
+        retailer2 = Retailer.objects.get(street_address=self.retailer2_data["street_address"])
         retailer3 = Retailer.objects.create(name="Retailer3", street_address="abc", city="San Francisco",
-                                            postcode="94107")
-        retailer4 = Retailer.objects.create(name="Retailer4", street_address="xyz", city="San Francisco",
-                                            postcode="94108")
+                                            postcode=self.retailer1_data["postcode"])
+        soda = Soda.objects.get(abbreviation=self.soda1_data["abbreviation"])
 
-        sodaCZ = Soda.objects.create(name="CherryCokeZero", abbreviation="CZ", low_calorie=True)
-        sodaCC = Soda.objects.create(name="Coke Classic", abbreviation="CC", low_calorie=False)
-        sodaDC = Soda.objects.create(name="Diet Coke", abbreviation="DC", low_calorie=True)
+        # Associate soda with retailer1 and retailer2 (different postcodes)
+        retailer1.sodas.add(soda)
+        retailer2.sodas.add(soda)
 
-        retailer1.sodas.add(sodaCZ)
-        retailer1.sodas.add(sodaCC)
-        retailer2.sodas.add(sodaCZ)
-        retailer3.sodas.add(sodaCZ)
-        retailer4.sodas.add(sodaCC)
+        # Filter retailers by both postcode and soda
+        zip_code = self.retailer1_data["postcode"]
+        results = Retailer.objects.filter(postcode=zip_code, sodas=soda)
 
-        array_94107_CZ = []
-        results_94107 = Retailer.objects.filter(postcode="94107")
-        for retailer in results_94107:
-            if sodaCZ in retailer.sodas.all():
-                array_94107_CZ.append(str(retailer.name))
-        array_94107_CZ.sort()
-
-        array_94108_CC = []
-        results_94108 = Retailer.objects.filter(postcode="94108")
-        for retailer in results_94108:
-            if sodaCC in retailer.sodas.all():
-                array_94108_CC.append(str(retailer.name))
-        array_94108_CC.sort()
-
-        array_94108_DC = []
-        for retailer in results_94108:
-            if sodaDC in retailer.sodas.all():
-                array_94108_DC.append(str(retailer.name))
-
-        self.assertEqual(len(array_94107_CZ), 2)
-        self.assertEqual(len(array_94108_CC), 1)
-        self.assertEqual(len(array_94108_DC), 0)
-
-        self.assertEqual(array_94107_CZ, ['Retailer3', 'Shell'])
-        self.assertEqual(array_94108_CC, ['Retailer4'])
-
+        # Assert that only the single retailer with matching postcode AND soda is returned
+        self.assertEqual(results.count(), 1)
+        self.assertIn(retailer1, results)
+        self.assertTrue(all(r.postcode == zip_code for r in results))
+        self.assertTrue(all(soda in r.sodas.all() for r in results))

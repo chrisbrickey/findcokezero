@@ -316,8 +316,8 @@ class RetailerWebTestCase(WebTest):
         get_response = self.app.get(f'/api/retailers/{new_retailer_id}/')
 
         self.assertEqual(get_response.status, "200 OK")
-        self.assertEqual(get_response.json["latitude"], "37.78838850000000348928")
-        self.assertEqual(get_response.json["longitude"], "-122.42281889999999577867")
+        self.assertEqual(get_response.json["latitude"], "37.7883885")
+        self.assertEqual(get_response.json["longitude"], "-122.4228189")
 
     def test_update_retailer_with_sodas(self):
         # "For retailers, HTTP request put request with new data (including soda) updates retailer"
