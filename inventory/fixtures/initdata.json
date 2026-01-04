@@ -370,7 +370,7 @@
     "model": "inventory.retailer",
     "pk": 19,
     "fields": {
-      "name": "Walgreens - Downtown SF",
+      "name": "Walgreens - Downtown San Francisco",
       "street_address": "1301 Market Street",
       "city": "San Francisco",
       "postcode": 94103,
@@ -391,7 +391,7 @@
     "model": "inventory.retailer",
     "pk": 20,
     "fields": {
-      "name": "CVS - Downtown SF",
+      "name": "CVS - Downtown San Francisco",
       "street_address": "789 Mission Street",
       "city": "San Francisco",
       "postcode": 94103,
@@ -412,7 +412,7 @@
     "model": "inventory.retailer",
     "pk": 21,
     "fields": {
-      "name": "7-Eleven - Downtown SF",
+      "name": "7-Eleven - Downtown San Francisco",
       "street_address": "500 West 7th Street",
       "city": "San Francisco",
       "postcode": 94102,
