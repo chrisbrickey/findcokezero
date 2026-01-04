@@ -30,9 +30,7 @@ findcokezero/                      # root includes files that manage dependencie
 ├── pyproject.toml                 # dependency management and project metadata
 ├── Procfile                       # heroku deployment configuration
 │
-├── scripts/                       # standalone scripts for data management and maintenance
-│   ├── update_retailer_coordinates.py    # updates fixture file coordinates
-│   └── update_database_coordinates.py    # updates database coordinates via ORM
+├── scripts/                       # scripts for data management and maintenance
 │
 ├── config/                        # PROJECT: entry point, configuration, and infrastructure
 │   ├── settings.py                # primary configuration file for django
@@ -50,32 +48,8 @@ findcokezero/                      # root includes files that manage dependencie
     ├── migrations/                # database migrations
     ├── fixtures/
     │   └── initdata.json          # seed data
-    ├── tests/                     # test suite
-    └── management/                # (optional) custom django management commands
-        └── commands/
-            └── update_coordinates.py
+    └── tests/                     # test suite
 ```
-
-### Script Organization
-
-Django projects commonly use two approaches for organizing utility scripts:
-
-**1. `scripts/` directory (recommended for this project)**
-- Standalone Python scripts at the root level
-- Simple to run: `python scripts/script_name.py`
-- Good for data management, one-off tasks, and maintenance scripts
-- No Django boilerplate required
-- Example: `scripts/update_retailer_coordinates.py`
-
-**2. `management/commands/` directory (Django custom commands)**
-- Django-native approach for creating custom `manage.py` commands
-- Runs as: `./manage.py command_name`
-- Better integration with Django's application lifecycle
-- Useful when scripts need Django's full initialization
-- Requires creating a command class with `handle()` method
-- Example: `inventory/management/commands/update_coordinates.py`
-
-This project uses the `scripts/` approach for simplicity. Scripts can be converted to management commands if they need deeper Django integration.
 
 ## API Endpoints
 
@@ -294,69 +268,6 @@ But for day to day development, use Django's development server instead.
 
 ## Local Development
 
-### Scripts
-
-#### Update Retailer Coordinates (Fixture File)
-Updates latitude and longitude for retailers in the fixture file using the Google Maps Geocoding API.
-
-**Location:** `scripts/update_retailer_coordinates.py`
-
-**When to use:**
-- After manually adding new retailers to `inventory/fixtures/initdata.json`
-- To verify or correct existing geocoded coordinates in fixture data
-- Before loading seed data into a fresh database
-
-**Prerequisites:**
-- Google Maps API key must be configured in `.env` file
-- Virtual environment must be activated
-
-**Usage:**
-```
-python scripts/update_retailer_coordinates.py
-```
-
-The script will:
-1. Read all retailers from `inventory/fixtures/initdata.json`
-2. Geocode each address using the same Google Maps API logic as the application
-3. Update the fixture file with accurate latitude/longitude coordinates
-4. Display a summary of changes for each retailer
-
-**Note:** This script modifies the fixture file directly. Use this before loading data into the database.
-
-#### Update Retailer Coordinates (Database)
-Updates latitude and longitude for existing retailer records in the database using Django ORM CRUD operations.
-
-**Location:** `scripts/update_database_coordinates.py`
-
-**When to use:**
-- To update coordinates for retailers already in the database
-- After addresses have been corrected in existing records
-- To verify or fix geocoded coordinates in production/development database
-
-**Prerequisites:**
-- Google Maps API key must be configured in `.env` file
-- Virtual environment must be activated
-- PostgreSQL must be running
-- Database must exist with retailer data
-
-**Usage:**
-```
-python scripts/update_database_coordinates.py
-```
-
-The script will:
-1. Query all retailers from the database using Django ORM (`Retailer.objects.all()`)
-2. Geocode each address using the Google Maps API
-3. Compare new coordinates with existing database values
-4. Update only retailers with changed coordinates using `.save(update_fields=['latitude', 'longitude'])`
-5. Display a summary showing total retailers, updated count, and skipped count
-
-**Database Operations:**
-- **READ**: `Retailer.objects.all()` - Query all retailer records
-- **UPDATE**: `retailer.save(update_fields=['latitude', 'longitude'])` - Update specific fields
-
-**Note:** This script uses the same geocoding logic as `RetailerSerializer.create()`, ensuring consistency between database records and new retailer creation.
-
 ### Test Suite
 Django automatically creates and destroys a test database when running tests. 
 The test database is named `test_findcoke_dev1` and is isolated from development data.
@@ -434,6 +345,58 @@ The test database is named `test_findcoke_dev1` and is isolated from development
    ./manage.py migrate
    ./manage.py loaddata initdata.json
    ```
+
+### Scripts
+
+// TODO!!! delete one of these scripts!!!
+#### Update Retailer Coordinates in Database Fixtures
+**Script location:** `scripts/update_retailer_coordinates.py`
+
+This script calls the Google Maps Geocoding API and update the latidude and longitude fields of retailer fixtures used for seeding the database.
+Use this after adding new retailers to the database fixtures or to verify the existing geocoded data, which may drift over time.
+
+   ```
+   # run script
+   python scripts/update_retailer_coordinates.py
+   
+   # reseed the database with the new data
+   ./manage.py flush
+   ./manage.py loaddata initdata.json
+   ```
+
+The script will:
+1. Read all retailers from `inventory/fixtures/initdata.json`
+2. Geocode each address using the same Google Maps API logic as the application
+3. Update the fixture file with accurate latitude/longitude coordinates
+4. Display a summary of changes for each retailer
+
+
+#### Update Retailer Coordinates (Database)
+**Script location:** `scripts/update_database_coordinates.py`
+Updates latitude and longitude for existing retailer records in the database using Django ORM CRUD operations.
+
+```
+python scripts/update_database_coordinates.py
+```
+
+**When to use:**
+- To update coordinates for retailers already in the database
+- After addresses have been corrected in existing records
+- To verify or fix geocoded coordinates in production/development database
+
+
+The script will:
+1. Query all retailers from the database using Django ORM (`Retailer.objects.all()`)
+2. Geocode each address using the Google Maps API
+3. Compare new coordinates with existing database values
+4. Update only retailers with changed coordinates using `.save(update_fields=['latitude', 'longitude'])`
+5. Display a summary showing total retailers, updated count, and skipped count
+
+**Database Operations:**
+- **READ**: `Retailer.objects.all()` - Query all retailer records
+- **UPDATE**: `retailer.save(update_fields=['latitude', 'longitude'])` - Update specific fields
+
+**Note:** This script uses the same geocoding logic as `RetailerSerializer.create()`, ensuring consistency between database records and new retailer creation.
 
 ## Future Development
 Build client that shows map of retailers based on some geographic input (e.g., current user location or manually entered zip code)
