@@ -1,66 +1,105 @@
-from decimal import Decimal
-
-# using test.TestCase instead of unittest.TestCase to make sure tests run within the suite - not just in isolation
-from django.db import IntegrityError
-from django.test import TestCase
 from django_webtest import WebTest
 
-from inventory.models import Retailer, Soda
-
-
-# web tests should not use objects created and stored in database; that is testing behavior of both the http application and the database (too much)
 class RetailerWebTestCase(WebTest):
     csrf_checks = False
 
+    retailer1_data = {
+        "name": "test_retailer_1",
+        "city": "San Francisco",
+        "postcode": 94107,
+        "street_address": "test_street_1",
+    }
+
+    retailer2_data = {
+        "name": "test_retailer_2",
+        "city": "New York",
+        "postcode": 10003,
+        "street_address": "test_street_2",
+    }
+
+    soda_ch_data = {
+        "abbreviation": "CH",
+        "low_calorie": "True",
+        "name": "CherryCokeZero",
+    }
+
+    soda_vz_data = {
+        "abbreviation": "VZ",
+        "low_calorie": "True",
+        "name": "VanillaCokeZero",
+    }
+
+    soda_cc_data = {
+        "abbreviation": "CC",
+        "low_calorie": "False",
+        "name": "CokeClassic",
+    }
+
     def setUp(self):
-        self.app.post_json('/api/retailers/',
-                           params={"city": "San Francisco",
-                                   "name": "Shell",
-                                   "postcode": "94107",
-                                   "street_address": "598 Bryant Street"})
+        # Create sodas first so we have their URLs
 
-        self.app.post_json('/api/retailers/',
-                           params={"city": "San Francisco",
-                                   "name": "Bush Market",
-                                   "postcode": "94108",
-                                   "street_address": "820 Bush Street"})
+        post_soda_ch = self.app.post_json('/api/sodas/', params=self.soda_ch_data)
+        self.soda_ch_url = post_soda_ch.json["url"]
+        self.soda_ch_id = post_soda_ch.json["id"]
 
-    def test_view_all_retailers(self):
-        # "For retailers, HTTP get request with no params retrieves all retailers in database"
+        post_soda_cc = self.app.post_json('/api/sodas/', params=self.soda_cc_data)
+        self.soda_cc_url = post_soda_cc.json["url"]
+        self.soda_cc_id = post_soda_cc.json["id"]
+
+        post_soda_vz = self.app.post_json('/api/sodas/', params=self.soda_vz_data)
+        self.soda_vz_url = post_soda_vz.json["url"]
+        self.soda_vz_id = post_soda_vz.json["id"]
+
+        # Create retailers with soda associations
+
+        # retailer1: CH (CherryCokeZero) and CC (CokeClassic)
+        retailer1_params = {**self.retailer1_data, "sodas": [self.soda_ch_url, self.soda_cc_url]}
+        post_retailer_1  = self.app.post_json('/api/retailers/', params=retailer1_params)
+        self.retailer1_id = post_retailer_1.json["id"]
+
+        # retailer2: VZ (VanillaCokeZero) and CC (CokeClassic)
+        retailer2_params = {**self.retailer2_data, "sodas": [self.soda_vz_url, self.soda_cc_url]}
+        self.app.post_json('/api/retailers/', params=retailer2_params)
+
+    def test_view_retailers_returns_all(self):
+        # "HTTP get request with no params retrieves all retailers"
 
         get_response = self.app.get('/api/retailers/')
+
         self.assertEqual(get_response.status, "200 OK")
         self.assertEqual(len(get_response.json), 2)
+        result_names = [r["name"] for r in get_response.json]
+        self.assertIn(self.retailer1_data["name"], result_names)
+        self.assertIn(self.retailer2_data["name"], result_names)
 
-    def test_view_all_retailers_by_soda(self):
-        # "HTTP get request with soda ID and 'retailers' in params retrieves all retailers associated with that soda"
+    def test_view_retailer_by_id_succeeds(self):
+        # "HTTP get request with retailer ID retrieves single retailer"
 
-        post_soda_response = self.app.post_json('/api/sodas/',
-                                                params={"abbreviation": "DC",
-                                                        "low_calorie": "True",
-                                                        "name": "Diet Coke"})
-        new_soda_url = post_soda_response.json["url"]
-        new_soda_id = post_soda_response.json["id"]
+        get_response = self.app.get(f"/api/retailers/{self.retailer1_id}/")
 
-        self.app.post_json('/api/retailers/',
-                           params={"city": "San Francisco",
-                                   "name": "CVS",
-                                   "postcode": "94109",
-                                   "sodas": [new_soda_url],
-                                   "street_address": "225 Bush Street"})
+        self.assertEqual(get_response.status, "200 OK")
+        self.assertEqual(get_response.json["name"], self.retailer1_data["name"])
+        self.assertEqual(get_response.json["city"], self.retailer1_data["city"])
+        self.assertEqual(get_response.json["street_address"], self.retailer1_data["street_address"])
 
-        self.app.post_json('/api/retailers/',
-                           params={"city": "San Francisco",
-                                   "name": "Le Beau",
-                                   "postcode": "94109",
-                                   "sodas": [new_soda_url],
-                                   "street_address": "1415 Clay Street"})
+    def test_view_retailers_by_soda_returns_filtered_results(self):
+        # "HTTP get request with one soda in params retrieves associated retailers"
 
-        get_response = self.app.get(f"/api/sodas/{new_soda_id}/retailers/")
+        # single record
+        get_response = self.app.get(f"/api/sodas/{self.soda_ch_id}/retailers/")
+        self.assertEqual(get_response.status, "200 OK")
+        self.assertEqual(len(get_response.json), 1)
+        self.assertEqual(get_response.json[0]["name"], self.retailer1_data["name"])
+
+        # multiple records
+        get_response = self.app.get(f"/api/sodas/{self.soda_cc_id}/retailers/")
         self.assertEqual(get_response.status, "200 OK")
         self.assertEqual(len(get_response.json), 2)
+        result_names = [r["name"] for r in get_response.json]
+        self.assertIn(self.retailer1_data["name"], result_names)
+        self.assertIn(self.retailer2_data["name"], result_names)
 
-    def test_view_all_retailers_by_bad_soda_returns_404(self):
+    def test_view_retailers_by_bad_soda_returns_404(self):
         # "HTTP get request with invalid soda ID returns 404 (not 500 index error)"
 
         # soda id 99999 will not exist in the test database
@@ -68,286 +107,189 @@ class RetailerWebTestCase(WebTest):
 
         self.assertEqual(get_response.status, "404 Not Found")
 
-    def test_view_all_retailers_by_postcode(self):
-        # "HTTP get request with postcode and 'retailers' in params retrieves all retailers associated with that postcode"
+    def test_view_retailers_by_postcode_returns_filtered_results(self):
+        # "HTTP get request with postcode in params retrieves associated retailers"
 
-        self.app.post_json('/api/retailers/',
-                           params={"city": "San Francisco",
-                                   "name": "Walgreens",
-                                   "postcode": "94107",
-                                   "street_address": "670 4th Street"})
+        get_response = self.app.get(f"/api/retailers/?postcode={self.retailer2_data['postcode']}")
 
-        get_response_94107 = self.app.get(f"/api/retailers/?postcode={94107}")
-        self.assertEqual(get_response_94107.status, "200 OK")
-        self.assertEqual(len(get_response_94107.json), 2)
+        self.assertEqual(get_response.status, "200 OK")
+        self.assertEqual(len(get_response.json), 1)
+        self.assertEqual(get_response.json[0]["name"], self.retailer2_data["name"])
 
-        get_response_94108 = self.app.get(f"/api/retailers/?postcode={94108}")
-        self.assertEqual(get_response_94108.status, "200 OK")
-        self.assertEqual(len(get_response_94108.json), 1)
+    def test_view_retailers_by_postcode_and_soda_returns_filtered_results(self):
+        # "HTTP get request with postcode and one soda type in query string retrieves associated retailers"
 
-    def test_view_one_retailer_by_postcode_and_one_soda(self):
-        # "HTTP get request with postcode and one soda type in query string retrieves one associated retailer"
+        # retailer3: VZ (VanillaCokeZero) and same postcode as retailer1
+        new_retailer_params = {
+            "name": "new_retailer",
+            "city": "San Francisco",
+            "postcode": self.retailer1_data["postcode"],
+            "street_address": "new_retailer_street",
+            "sodas": [self.soda_vz_url]
+        }
+        self.app.post_json('/api/retailers/', params=new_retailer_params)
 
-        post_soda_response_CH = self.app.post_json('/api/sodas/',
-                                                   params={"abbreviation": "CH",
-                                                           "low_calorie": "True",
-                                                           "name": "CherryCokeZero"})
-        CH_url = post_soda_response_CH.json["url"]
+        # Make GET request using params to filter by postcode and soda
+        get_params = {
+            "postcode": self.retailer1_data["postcode"],
+            "sodas": self.soda_ch_data["abbreviation"],
+        }
+        get_response = self.app.get("/api/retailers/", params=get_params)
 
-        post_soda_response_CC = self.app.post_json('/api/sodas/',
-                                                   params={"abbreviation": "CC",
-                                                           "low_calorie": "False",
-                                                           "name": "Coke Classic"})
-        CC_url = post_soda_response_CC.json["url"]
+        # Verify response
+        self.assertEqual(get_response.status, "200 OK")
+        self.assertEqual(len(get_response.json), 1)
+        self.assertEqual(get_response.json[0]["name"], self.retailer1_data["name"])
 
-        self.app.post_json('/api/retailers/',
-                           params={"city": "San Francisco",
-                                   "name": "CVS",
-                                   "postcode": "94109",
-                                   "sodas": [CH_url],
-                                   "street_address": "225 Bush Street"})
+    def test_view_retailers_by_multiple_sodas_returns_filtered_results(self):
+        # "HTTP get request with multiple soda types in params retrieves associated retailers"
 
-        self.app.post_json('/api/retailers/',
-                           params={"city": "San Francisco",
-                                   "name": "Le Beau",
-                                   "postcode": "94109",
-                                   "sodas": [CC_url],
-                                   "street_address": "1415 Clay Street"})
+        get_response = self.app.get("/api/retailers/?sodas=CC,VZ")
 
-        get_response_94109_CH = self.app.get("/api/retailers/?postcode=94109&sodas=CH")
-        self.assertEqual(get_response_94109_CH.status, "200 OK")
-        self.assertEqual(len(get_response_94109_CH.json), 1)
-        self.assertEqual(get_response_94109_CH.json[0]["name"], "CVS")
-        self.assertEqual(get_response_94109_CH.json[0]["street_address"], "225 Bush Street")
-        self.assertEqual(get_response_94109_CH.json[0]["city"], "San Francisco")
-        self.assertEqual(get_response_94109_CH.json[0]["postcode"], 94109)
+        # Verify response
+        self.assertEqual(get_response.status, "200 OK")
+        self.assertEqual(len(get_response.json), 1)
+        self.assertEqual(get_response.json[0]["name"], self.retailer2_data["name"])
 
-    def test_view_all_retailers_by_postcode_and_one_soda(self):
-        # "HTTP get request with postcode and one soda type in query string retrieves all associated retailers"
+    def test_create_retailer_without_sodas_succeeds(self):
+        # "HTTP post request with required data results in creation of object and response with all object data"
 
-        post_soda_response_CH = self.app.post_json('/api/sodas/',
-                                                   params={"abbreviation": "CH",
-                                                           "low_calorie": "True",
-                                                           "name": "CherryCokeZero"})
-        CH_url = post_soda_response_CH.json["url"]
+        new_retailer_params = {
+            "name": "new_retailer",
+            "city": "New York",
+            "postcode": 10009,
+            "street_address": "new_retailer_street",
+        }
+        post_response = self.app.post_json('/api/retailers/', params=new_retailer_params)
 
-        post_soda_response_CC = self.app.post_json('/api/sodas/',
-                                                   params={"abbreviation": "CC",
-                                                           "low_calorie": "False",
-                                                           "name": "Coke Classic"})
-        CC_url = post_soda_response_CC.json["url"]
-
-        self.app.post_json('/api/sodas/',
-                           params={"abbreviation": "DC",
-                                   "low_calorie": "True",
-                                   "name": "Diet Coke"})
-
-        self.app.post_json('/api/retailers/',
-                           params={"city": "San Francisco",
-                                   "name": "Walgreens",
-                                   "postcode": "94107",
-                                   "sodas": [CH_url, CC_url],
-                                   "street_address": "670 4th Street"})
-
-        self.app.post_json('/api/retailers/',
-                           params={"city": "San Francisco",
-                                   "name": "Safeway",
-                                   "postcode": "94107",
-                                   "sodas": [CH_url],
-                                   "street_address": "298 King Street"})
-
-        self.app.post_json('/api/retailers/',
-                           params={"city": "San Francisco",
-                                   "name": "CVS",
-                                   "postcode": "94109",
-                                   "sodas": [CH_url],
-                                   "street_address": "225 Bush Street"})
-
-        self.app.post_json('/api/retailers/',
-                           params={"city": "San Francisco",
-                                   "name": "Le Beau",
-                                   "postcode": "94109",
-                                   "sodas": [CC_url],
-                                   "street_address": "1415 Clay Street"})
-
-        get_response_94107_CH = self.app.get("/api/retailers/?postcode=94107&sodas=CH")
-        self.assertEqual(get_response_94107_CH.status, "200 OK")
-        self.assertEqual(len(get_response_94107_CH.json), 2)
-
-        get_response_94109_CC = self.app.get("/api/retailers/?postcode=94109&sodas=CC")
-        self.assertEqual(get_response_94109_CC.status, "200 OK")
-        self.assertEqual(len(get_response_94109_CC.json), 1)
-        self.assertEqual(get_response_94109_CC.json[0]["name"], "Le Beau")
-        self.assertEqual(get_response_94109_CC.json[0]["street_address"], "1415 Clay Street")
-        self.assertEqual(get_response_94109_CC.json[0]["city"], "San Francisco")
-        self.assertEqual(get_response_94109_CC.json[0]["postcode"], 94109)
-
-        get_response_94109_DC = self.app.get("/api/retailers/?postcode=94109&sodas=DC")
-        self.assertEqual(get_response_94109_DC.status, "200 OK")
-        self.assertEqual(len(get_response_94109_DC.json), 0)
-
-    def test_view_all_retailers_by_postcode_and_multiple_sodas(self):
-        # "HTTP get request with postcode and multiple soda types in params retrieves all associated retailers"
-
-        post_soda_response_CH = self.app.post_json('/api/sodas/',
-                                                   params={"abbreviation": "CH",
-                                                           "low_calorie": "True",
-                                                           "name": "CherryCokeZero"})
-        CH_url = post_soda_response_CH.json["url"]
-
-        post_soda_response_CC = self.app.post_json('/api/sodas/',
-                                                   params={"abbreviation": "CC",
-                                                           "low_calorie": "False",
-                                                           "name": "Coke Classic"})
-        CC_url = post_soda_response_CC.json["url"]
-
-        post_soda_response_DC = self.app.post_json('/api/sodas/',
-                                                   params={"abbreviation": "DC",
-                                                           "low_calorie": "True",
-                                                           "name": "Diet Coke"})
-        DC_url = post_soda_response_DC.json["url"]
-
-        self.app.post_json('/api/retailers/',
-                           params={"city": "San Francisco",
-                                   "name": "Safeway",
-                                   "postcode": "94107",
-                                   "sodas": [CH_url],
-                                   "street_address": "298 King Street"})
-
-        self.app.post_json('/api/retailers/',
-                           params={"city": "San Francisco",
-                                   "name": "CVS",
-                                   "postcode": "94109",
-                                   "sodas": [CH_url, CC_url, DC_url],
-                                   "street_address": "225 Bush Street"})
-
-        self.app.post_json('/api/retailers/',
-                           params={"city": "San Francisco",
-                                   "name": "Le Beau",
-                                   "postcode": "94109",
-                                   "sodas": [CH_url, CC_url],
-                                   "street_address": "1415 Clay Street"})
-
-        self.app.post_json('/api/retailers/',
-                           params={"city": "San Francisco",
-                                   "name": "Pine & Jones Market",
-                                   "postcode": "94109",
-                                   "sodas": [CH_url, DC_url],
-                                   "street_address": "1100 Pine Street"})
-
-        get_response_94109_CH_DC = self.app.get("/api/retailers/?postcode=94109&sodas=CH,DC")
-        self.assertEqual(get_response_94109_CH_DC.status, "200 OK")
-        self.assertEqual(len(get_response_94109_CH_DC.json), 2)
-
-        result_names = [str(get_response_94109_CH_DC.json[0]["name"]), str(get_response_94109_CH_DC.json[1]["name"])]
-        self.assertTrue("CVS" in result_names)
-        self.assertTrue("Pine & Jones Market" in result_names)
-        self.assertEqual(get_response_94109_CH_DC.json[0]["postcode"], 94109)
-
-    def test_create_retailer_without_sodas(self):
-        # "For retailers, HTTP request post request with required data results in creation of object and response with all object data"
-
-        post_response = self.app.post_json('/api/retailers/',
-                                           params={"city": "SF",
-                                                   "name": "McJSONs Store",
-                                                   "street_address": "Bush St"})
+        # Verify response structure: response code with retailer data
         self.assertEqual(post_response.status, "201 Created")
+        self.assertEqual(post_response.json["name"], new_retailer_params["name"])
+        self.assertEqual(post_response.json["city"], new_retailer_params["city"])
+        self.assertEqual(post_response.json["street_address"], new_retailer_params["street_address"])
 
-        self.assertEqual(post_response.json["name"], "McJSONs Store")
-        self.assertEqual(post_response.json["city"], "SF")
-        self.assertEqual(post_response.json["street_address"], "Bush St")
+        # Verify id was created and can be used to fetch the retailer
         self.assertIn("id", post_response.json,
                       "Expected Retailer object to have key 'id', but it was missing.")
-
         new_retailer_id = post_response.json["id"]
-
-        get_response = self.app.get(f'/api/retailers/{new_retailer_id}/')
-
+        get_response = self.app.get(f"/api/retailers/{new_retailer_id}/")
         self.assertEqual(get_response.status, "200 OK")
-        self.assertEqual(len(get_response.json.keys()), 11)
 
-        get_latitude = Decimal(get_response.json["latitude"])
-        get_longitude = Decimal(get_response.json["longitude"])
-        post_latitude = Decimal(post_response.json["latitude"])
-        post_longitude = Decimal(post_response.json["longitude"])
+        # Verify latitude and longitude were populated correctly
+        self.assertIn("latitude", post_response.json,
+                      "Expected Retailer object to have key 'latitude', but it was missing.")
+        self.assertIn("longitude", post_response.json,
+                      "Expected Retailer object to have key 'longitude', but it was missing.")
+        self.assertEqual(post_response.json["latitude"], "40.7275043")
+        self.assertEqual(post_response.json["longitude"], "-73.9800645")
 
-        self.assertAlmostEqual(get_latitude, post_latitude, places=10)
-        self.assertAlmostEqual(get_longitude, post_longitude, places=10)
+    def test_create_retailer_with_sodas_succeeds(self):
+        # "HTTP post request with soda data results in creation of object and response with all object data"
 
-        get_dictionary = get_response.json
-        post_dictionary = post_response.json
-        del get_dictionary["latitude"]
-        del get_dictionary["longitude"]
-        del post_dictionary["latitude"]
-        del post_dictionary["longitude"]
+        new_retailer_params = {
+            "name": "new_retailer",
+            "city": "Los Angeles",
+            "postcode": 90291,
+            "street_address": "new_retailer_street",
+            "sodas": [self.soda_ch_url, self.soda_vz_url]
+        }
+        post_response = self.app.post_json('/api/retailers/', params=new_retailer_params)
 
-        self.assertEqual(get_dictionary, post_dictionary)
+        # Verify response structure: response code with retailer data
+        self.assertEqual(post_response.status, "201 Created")
+        self.assertEqual(post_response.json["name"], new_retailer_params["name"])
+        self.assertEqual(post_response.json["sodas"], new_retailer_params["sodas"])
 
-    def test_create_retailer_with_sodas(self):
-        # "For retailers, HTTP request post request with soda data results in creation of object and response with all object data"
+    def test_create_retailer_without_postcode_populates_geocoding(self):
+        # "HTTP post request without postcode still populates latitude and longitude"
 
-        post_soda_response = self.app.post_json('/api/sodas/',
-                                                params={"name": "FavoriteSoda", "abbreviation": "FS"})
-        new_soda_url = post_soda_response.json["url"]
+        new_retailer_params = {
+            "name": "new_retailer",
+            "city": "New York",
+            "street_address": "new_retailer_street",
+        }
+        post_response = self.app.post_json('/api/retailers/', params=new_retailer_params)
 
-        post_retailer_response = self.app.post_json('/api/retailers/',
-                                                    params={"city": "SF",
-                                                            "name": "McJSONs Store",
-                                                            "street_address": "Bush St",
-                                                            "sodas": [new_soda_url]})
-        new_retailer_id = post_retailer_response.json["id"]
+        # Verify latitude and longitude were populated correctly
+        self.assertIn("latitude", post_response.json,
+                      "Expected Retailer object to have key 'latitude', but it was missing.")
+        self.assertIn("longitude", post_response.json,
+                      "Expected Retailer object to have key 'longitude', but it was missing.")
+        self.assertEqual(post_response.json["latitude"], "40.7127753")
+        self.assertEqual(post_response.json["longitude"], "-74.0059728")
 
-        get_retailer_response = self.app.get(f'/api/retailers/{new_retailer_id}/')
-        self.assertEqual(get_retailer_response.status, "200 OK")
-        sodas_list = get_retailer_response.json["sodas"]
-        self.assertEqual(len(sodas_list), 1)
+    def test_create_retailer_with_same_name_fails(self):
+        # "HTTP post request with duplicate name returns error"
 
-    def test_creating_retailer_populates_latlong(self):
-        # "For retailers, HTTP request post request populates latitude and longitude for user"
+        duplicate_name_params = {
+            "name": self.retailer1_data["name"],  # duplicate name
+            "city": "Chicago",
+            "postcode": 60601,
+            "street_address": "unique_street_address",
+        }
+        post_response = self.app.post_json('/api/retailers/', params=duplicate_name_params, expect_errors=True)
 
-        post_response = self.app.post_json('/api/retailers/',
-                                           params={"city": "SF",
-                                                   "name": "McJSONs Store",
-                                                   "street_address": "Bush St",
-                                                   "sodas": []})
+        self.assertEqual(post_response.status, "400 Bad Request")
 
-        new_retailer_id = post_response.json["id"]
+    def test_create_retailer_with_same_street_address_fails(self):
+        # "HTTP post request with duplicate street_address returns error"
 
-        get_response = self.app.get(f'/api/retailers/{new_retailer_id}/')
+        duplicate_address_params = {
+            "name": "unique_retailer_name",
+            "city": "Chicago",
+            "postcode": 60601,
+            "street_address": self.retailer1_data["street_address"],  # duplicate address
+        }
+        post_response = self.app.post_json('/api/retailers/', params=duplicate_address_params, expect_errors=True)
 
-        self.assertEqual(get_response.status, "200 OK")
-        self.assertEqual(get_response.json["latitude"], "37.7883885")
-        self.assertEqual(get_response.json["longitude"], "-122.4228189")
+        self.assertEqual(post_response.status, "400 Bad Request")
 
     def test_update_retailer_with_sodas(self):
-        # "For retailers, HTTP request put request with new data (including soda) updates retailer"
+        # "HTTP put request updates retailer with new soda"
 
-        post_soda_response_DC = self.app.post_json('/api/sodas/',
-                                                   params={"abbreviation": "DC",
-                                                           "low_calorie": "True",
-                                                           "name": "Diet Coke"})
-        soda_url_DC = post_soda_response_DC.json["url"]
+        # Get existing list of sodas from retailer1
+        get_response = self.app.get(f"/api/retailers/{self.retailer1_id}/")
+        sodas_list_before = get_response.json["sodas"]
+        self.assertEqual(len(sodas_list_before), 2)
 
-        post_retailer_response_McJSON = self.app.post_json('/api/retailers/',
-                                                           params={"city": "SF",
-                                                                   "name": "McJSONs Store",
-                                                                   "street_address": "Bush St"})
+        # Update retailer1 with VanillaCokeZero (adding to existing sodas)
+        updated_sodas = sodas_list_before + [self.soda_vz_url]
+        update_params = {**self.retailer1_data, "sodas": updated_sodas}
+        put_response = self.app.put_json(f"/api/retailers/{self.retailer1_id}/", params=update_params)
 
-        self.assertEqual(post_retailer_response_McJSON.json["name"], "McJSONs Store")
-        sodas_list_before = post_retailer_response_McJSON.json["sodas"]
-        self.assertEqual(len(sodas_list_before), 0)
+        # Verify sodas updated
+        self.assertEqual(put_response.json["name"], self.retailer1_data["name"])
+        sodas_list_after = put_response.json["sodas"]
+        self.assertEqual(len(sodas_list_after), 3)
 
-        retailer_id_McJSON = post_retailer_response_McJSON.json["id"]
-        city_McJSON = post_retailer_response_McJSON.json["city"]
-        address_McJSON = post_retailer_response_McJSON.json["street_address"]
+        self.assertIn(self.soda_ch_url, sodas_list_after)
+        self.assertIn(self.soda_cc_url, sodas_list_after)
+        self.assertIn(self.soda_vz_url, sodas_list_after)
 
-        put_retailer_response_McJSON = self.app.put_json(f'/api/retailers/{retailer_id_McJSON}/',
-                                                         params={"name": "McJSON2",
-                                                                 "city": city_McJSON,
-                                                                 "sodas": [soda_url_DC],
-                                                                 "street_address": address_McJSON})
+    def test_update_retailer_with_same_soda_does_not_create_duplicate(self):
+        # "HTTP put request adding already-associated soda does not create duplicates"
 
-        self.assertEqual(put_retailer_response_McJSON.json["name"], "McJSON2")
+        # Get existing list of sodas from retailer1 (should have CH and CC)
+        get_response = self.app.get(f"/api/retailers/{self.retailer1_id}/")
+        sodas_list_before = get_response.json["sodas"]
+        self.assertEqual(len(sodas_list_before), 2)
 
-        sodas_list_after = put_retailer_response_McJSON.json["sodas"]
-        self.assertEqual(len(sodas_list_after), 1)
+        # Attempt to update retailer1 with CherryCokeZero again (already present)
+        update_params = {**self.retailer1_data, "sodas": [self.soda_ch_url, self.soda_cc_url, self.soda_ch_url]}
+        put_response = self.app.put_json(f"/api/retailers/{self.retailer1_id}/", params=update_params)
+
+        # Verify no duplicate was created
+        self.assertEqual(put_response.status, "200 OK")
+        sodas_list_after = put_response.json["sodas"]
+        self.assertEqual(len(sodas_list_after), 2)
+
+    def test_delete_retailer_succeeds(self):
+        # "HTTP delete request removes retailer"
+
+        # Delete retailer1
+        delete_response = self.app.delete(f"/api/retailers/{self.retailer1_id}/")
+        self.assertEqual(delete_response.status, "204 No Content")
+
+        # Verify retailer1 no longer exists
+        get_response = self.app.get(f"/api/retailers/{self.retailer1_id}/", expect_errors=True)
+        self.assertEqual(get_response.status, "404 Not Found")
