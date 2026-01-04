@@ -319,6 +319,53 @@ class RetailerWebTestCase(WebTest):
         self.assertEqual(get_response.json["latitude"], "37.7883885")
         self.assertEqual(get_response.json["longitude"], "-122.4228189")
 
+    def test_creating_retailer_with_postcode_in_non_california_state_populates_latlong(self):
+        # "For retailers, HTTP request post request populates latitude and longitude for non-CA addresses"
+
+        post_response = self.app.post_json('/api/retailers/',
+                                           params={"city": "New York",
+                                                   "name": "Space Market",
+                                                   "postcode": "10003",
+                                                   "street_address": "1 University Place"})
+
+        new_retailer_id = post_response.json["id"]
+
+        get_response = self.app.get(f'/api/retailers/{new_retailer_id}/')
+
+        self.assertEqual(get_response.status, "200 OK")
+        self.assertIsNotNone(get_response.json["latitude"])
+        self.assertIsNotNone(get_response.json["longitude"])
+        # Verify coordinates are in New York area (approx 40.7N, -74.0W)
+        latitude = Decimal(get_response.json["latitude"])
+        longitude = Decimal(get_response.json["longitude"])
+        self.assertGreater(latitude, Decimal("40.0"))
+        self.assertLess(latitude, Decimal("41.0"))
+        self.assertGreater(longitude, Decimal("-75.0"))
+        self.assertLess(longitude, Decimal("-73.0"))
+
+    def test_creating_retailer_without_postcode_populates_latlong(self):
+        # "For retailers, HTTP request post request without postcode still populates latitude and longitude"
+
+        post_response = self.app.post_json('/api/retailers/',
+                                           params={"city": "New York",
+                                                   "name": "Empire State Shop",
+                                                   "street_address": "350 Fifth Avenue"})
+
+        new_retailer_id = post_response.json["id"]
+
+        get_response = self.app.get(f'/api/retailers/{new_retailer_id}/')
+
+        self.assertEqual(get_response.status, "200 OK")
+        self.assertIsNotNone(get_response.json["latitude"])
+        self.assertIsNotNone(get_response.json["longitude"])
+        # Verify coordinates are in New York area (approx 40.7N, -74.0W)
+        latitude = Decimal(get_response.json["latitude"])
+        longitude = Decimal(get_response.json["longitude"])
+        self.assertGreater(latitude, Decimal("40.0"))
+        self.assertLess(latitude, Decimal("41.0"))
+        self.assertGreater(longitude, Decimal("-75.0"))
+        self.assertLess(longitude, Decimal("-73.0"))
+
     def test_update_retailer_with_sodas(self):
         # "For retailers, HTTP request put request with new data (including soda) updates retailer"
 

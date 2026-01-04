@@ -11,19 +11,19 @@ from .models import Retailer, Soda
 class RetailerSerializer(serializers.HyperlinkedModelSerializer):
 
     def create(self, validated_data):
-
         saved_retailer = super(RetailerSerializer, self).create(validated_data)
 
-        # TODO: Remove hard-coding to California state but remember that postcode can be null
-        address_string = f"{validated_data['street_address']}, {validated_data['city']}, CA {validated_data.get('postcode', '')}"
+        # construct address string; postcode can be empty
+        postcode = validated_data.get('postcode', '')
+        postcode_suffix = f", {postcode}" if postcode else ""
+        address_string = f"{validated_data['street_address']}, {validated_data['city']}{postcode_suffix}"
 
-        # Remove empty space at end of address_string for some cases (e.g., postcode is None)
-        query_params = {'address': address_string.strip(), 'key': settings.GOOGLEMAPS_KEY}
-
+        query_params = {'address': address_string, 'key': settings.GOOGLEMAPS_KEY}
         query_string = urllib.parse.urlencode(query_params)
         url = f"https://maps.googleapis.com/maps/api/geocode/json?{query_string}"
         json_response = requests.get(url).json()
 
+        # populate latitude and longitude from google maps response
         results = json_response["results"]
         if len(results) > 0:
             location = results[0]["geometry"]["location"]
