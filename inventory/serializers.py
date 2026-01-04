@@ -29,8 +29,10 @@ class RetailerSerializer(serializers.HyperlinkedModelSerializer):
             location = results[0]["geometry"]["location"]
             lat = location["lat"]
             lon = location["lng"]
-            saved_retailer.latitude = Decimal(lat)
-            saved_retailer.longitude = Decimal(lon)
+            # Convert to string first to avoid float precision issues
+            # Model DecimalField has decimal_places=7 which matches Google Maps precision
+            saved_retailer.latitude = Decimal(str(lat))
+            saved_retailer.longitude = Decimal(str(lon))
             saved_retailer.save()
 
         return saved_retailer

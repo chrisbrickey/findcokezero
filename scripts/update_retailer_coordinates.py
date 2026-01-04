@@ -52,7 +52,8 @@ def geocode_address(street_address, city, postcode, country='USA'):
             lat = location["lat"]
             lon = location["lng"]
             print(f"  Found coordinates: {lat}, {lon}")
-            return str(Decimal(lat)), str(Decimal(lon))
+            # Return as strings - fixture file will store with 7 decimal precision
+            return str(lat), str(lon)
         else:
             print(f"  WARNING: No results found")
             return None, None

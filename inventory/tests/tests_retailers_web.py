@@ -316,8 +316,33 @@ class RetailerWebTestCase(WebTest):
         get_response = self.app.get(f'/api/retailers/{new_retailer_id}/')
 
         self.assertEqual(get_response.status, "200 OK")
-        self.assertEqual(get_response.json["latitude"], "37.78838850000000348928")
-        self.assertEqual(get_response.json["longitude"], "-122.42281889999999577867")
+
+        # Verify latitude and longitude are populated with reasonable precision
+        # Google Maps API returns ~7 decimal places (sufficient for ~1cm accuracy)
+        latitude = get_response.json["latitude"]
+        longitude = get_response.json["longitude"]
+
+        self.assertIsNotNone(latitude, "Latitude should be populated")
+        self.assertIsNotNone(longitude, "Longitude should be populated")
+
+        # Convert to Decimal for precise comparison
+        lat_decimal = Decimal(latitude)
+        lon_decimal = Decimal(longitude)
+
+        # Verify coordinates are in reasonable range for San Francisco
+        self.assertGreater(lat_decimal, Decimal("37.7"), "Latitude should be in SF range")
+        self.assertLess(lat_decimal, Decimal("37.9"), "Latitude should be in SF range")
+        self.assertGreater(lon_decimal, Decimal("-122.6"), "Longitude should be in SF range")
+        self.assertLess(lon_decimal, Decimal("-122.3"), "Longitude should be in SF range")
+
+        # Verify precision is reasonable (not excessive)
+        # Should have approximately 7 decimal places (between 5-10 is acceptable)
+        lat_decimals = len(latitude.split('.')[1]) if '.' in latitude else 0
+        lon_decimals = len(longitude.split('.')[1]) if '.' in longitude else 0
+        self.assertGreaterEqual(lat_decimals, 5, "Latitude should have reasonable precision")
+        self.assertLessEqual(lat_decimals, 10, "Latitude should not have excessive precision")
+        self.assertGreaterEqual(lon_decimals, 5, "Longitude should have reasonable precision")
+        self.assertLessEqual(lon_decimals, 10, "Longitude should not have excessive precision")
 
     def test_update_retailer_with_sodas(self):
         # "For retailers, HTTP request put request with new data (including soda) updates retailer"

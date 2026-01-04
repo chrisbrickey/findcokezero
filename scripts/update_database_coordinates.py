@@ -62,6 +62,7 @@ def geocode_address(street_address, city, postcode, country='USA'):
             lat = location["lat"]
             lon = location["lng"]
             print(f"  Found coordinates: {lat}, {lon}")
+            # Model DecimalField has decimal_places=7 which will handle precision
             return Decimal(str(lat)), Decimal(str(lon))
         else:
             print(f"  WARNING: No results found")
