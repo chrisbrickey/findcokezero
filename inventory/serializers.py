@@ -1,4 +1,5 @@
 from decimal import Decimal
+from typing import Any
 import requests
 import urllib.parse
 
@@ -8,9 +9,9 @@ from rest_framework import serializers
 from .models import Retailer, Soda
 
 
-class RetailerSerializer(serializers.HyperlinkedModelSerializer):
+class RetailerSerializer(serializers.HyperlinkedModelSerializer[Retailer]):
 
-    def create(self, validated_data):
+    def create(self, validated_data: dict[str, Any]) -> Retailer:
         saved_retailer = super(RetailerSerializer, self).create(validated_data)
 
         # construct address string; postcode can be empty
@@ -45,7 +46,9 @@ class RetailerSerializer(serializers.HyperlinkedModelSerializer):
 
         return saved_retailer
 
-    def _extract_postcode_from_address_components(self, address_components):
+    def _extract_postcode_from_address_components(
+        self, address_components: list[dict[str, Any]]
+    ) -> int | None:
         """
         Extract postcode from Google Maps API response.
         Returns int if found and numeric, None otherwise.
@@ -66,7 +69,7 @@ class RetailerSerializer(serializers.HyperlinkedModelSerializer):
         # add conditionals here to restrict amount of data sent to frontend for query string filters
 
 
-class SodaSerializer(serializers.HyperlinkedModelSerializer):
+class SodaSerializer(serializers.HyperlinkedModelSerializer[Soda]):
     class Meta:
         model = Soda
         fields = ('id', 'name', 'abbreviation', 'low_calorie', 'url')

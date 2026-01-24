@@ -4,7 +4,7 @@ from django_webtest import WebTest
 class SodaWebTestCase(WebTest):
     csrf_checks = False
 
-    def setUp(self):
+    def setUp(self) -> None:
         self.app.post_json('/api/sodas/',
                            params={"abbreviation": "CH",
                                    "low_calorie": "True",
@@ -14,14 +14,14 @@ class SodaWebTestCase(WebTest):
                                    "low_calorie": "False",
                                    "name": "Coke Classic"})
 
-    def test_show_sodas(self):
+    def test_show_sodas(self) -> None:
         """For sodas, HTTP get request with no params retrieves all retailers"""
 
         get_response = self.app.get('/api/sodas/')
         self.assertEqual(get_response.status, "200 OK")
         self.assertEqual(len(get_response.json), 2)
 
-    def test_view_all_sodas_by_retailer(self):
+    def test_view_all_sodas_by_retailer(self) -> None:
         """HTTP get request with retailer ID and 'sodas' in params retrieves all sodas associated with that retailer"""
 
         post_soda_response_DC = self.app.post_json('/api/sodas/',
@@ -48,7 +48,7 @@ class SodaWebTestCase(WebTest):
         self.assertEqual(get_response.status, "200 OK")
         self.assertEqual(len(get_response.json), 2)
 
-    def test_view_all_sodas_by_bad_retailer_returns_404(self):
+    def test_view_all_sodas_by_bad_retailer_returns_404(self) -> None:
         """HTTP get request with invalid retailer ID returns 404 (not 500 index error)"""
 
         # retailer id 99999 will not exist in the test database
@@ -56,7 +56,7 @@ class SodaWebTestCase(WebTest):
 
         self.assertEqual(get_response.status, "404 Not Found")
 
-    def test_create_soda(self):
+    def test_create_soda(self) -> None:
         """HTTP request post request with valid data results in creation of object and correct response"""
 
         post_response = self.app.post_json('/api/sodas/',
