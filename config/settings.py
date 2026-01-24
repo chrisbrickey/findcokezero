@@ -108,7 +108,7 @@ DATABASES = {
 # If DATABASE_URL environment variable is detected, its value will overwrite default configuration above.
 # NB: Heroku (production environment) automatically sets DATABASE_URL.
 if os.environ.get('DATABASE_URL'):
-    DATABASES['default'].update(dj_database_url.config(conn_max_age=500))
+    DATABASES['default'].update(dj_database_url.config(conn_max_age=500))  # type: ignore[arg-type]
 
 # Password validation
 # https://docs.djangoproject.com/en/4.2/ref/settings/#auth-password-validators

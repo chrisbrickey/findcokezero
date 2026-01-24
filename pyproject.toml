@@ -16,3 +16,37 @@ dependencies = [
     "waitress==2.1.2",
     "whitenoise==6.8.2",
 ]
+
+[project.optional-dependencies]
+dev = [
+    "mypy>=1.13.0",
+    "django-stubs[compatible-mypy]>=5.1.0",
+    "djangorestframework-stubs[compatible-mypy]>=3.15.0",
+]
+
+[tool.mypy]
+python_version = "3.12"
+plugins = [
+    "mypy_django_plugin.main",
+    "mypy_drf_plugin.main",
+]
+
+# Gradual adoption - start permissive
+disallow_untyped_defs = false
+disallow_incomplete_defs = false
+disallow_untyped_calls = false
+implicit_optional = true
+
+# Helpful warnings
+warn_unused_ignores = true
+show_error_codes = true
+
+# Import handling
+ignore_missing_imports = true
+
+# Paths
+files = ["inventory", "config", "manage.py"]
+exclude = ["migrations", ".venv", "__pycache__"]
+
+[tool.django-stubs]
+django_settings_module = "config.settings"
