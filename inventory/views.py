@@ -1,12 +1,15 @@
+from django.db.models import QuerySet
 from django.shortcuts import get_object_or_404
 from rest_framework import viewsets
 from rest_framework.decorators import api_view
+from rest_framework.request import Request
 from rest_framework.response import Response
 
 from .models import Retailer, Soda
 from .serializers import RetailerSerializer, SodaSerializer
 
-class RetailerViewSet(viewsets.ModelViewSet):
+
+class RetailerViewSet(viewsets.ModelViewSet[Retailer]):
     """
     API endpoint that allows retailers to be viewed or edited.
     """
@@ -14,7 +17,7 @@ class RetailerViewSet(viewsets.ModelViewSet):
     serializer_class = RetailerSerializer
     # queryset = Retailer.objects.all()
 
-    def get_queryset(self):
+    def get_queryset(self) -> QuerySet[Retailer]:
         queryset = Retailer.objects.prefetch_related('sodas')
         post_code = self.request.query_params.get('postcode', None)
         sodas= self.request.query_params.get('sodas', None)
@@ -31,7 +34,7 @@ class RetailerViewSet(viewsets.ModelViewSet):
         return queryset
 
 
-class SodaViewSet(viewsets.ModelViewSet):
+class SodaViewSet(viewsets.ModelViewSet[Soda]):
     """
     API endpoint that allows sodas to be viewed or edited.
     """
@@ -40,7 +43,7 @@ class SodaViewSet(viewsets.ModelViewSet):
 
 
 @api_view(['GET'])
-def sodas_by_retailer(request, pk):
+def sodas_by_retailer(request: Request, pk: int) -> Response:
     """
     API endpoint that shows sodas filtered by retailer.
     """
@@ -51,7 +54,7 @@ def sodas_by_retailer(request, pk):
     return Response(serializer.data)
 
 @api_view(['GET'])
-def retailers_by_sodas(request, pk):
+def retailers_by_sodas(request: Request, pk: int) -> Response:
     """
     API endpoint that shows retailers filtered by soda.
     """

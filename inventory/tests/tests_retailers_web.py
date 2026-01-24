@@ -35,7 +35,7 @@ class RetailerWebTestCase(WebTest):
         "name": "CokeClassic",
     }
 
-    def setUp(self):
+    def setUp(self) -> None:
         # Create sodas first so we have their URLs
 
         post_soda_ch = self.app.post_json('/api/sodas/', params=self.soda_ch_data)
@@ -61,7 +61,7 @@ class RetailerWebTestCase(WebTest):
         retailer2_params = {**self.retailer2_data, "sodas": [self.soda_vz_url, self.soda_cc_url]}
         self.app.post_json('/api/retailers/', params=retailer2_params)
 
-    def test_view_retailers_returns_all(self):
+    def test_view_retailers_returns_all(self) -> None:
         """HTTP get request with no params retrieves all retailers"""
 
         get_response = self.app.get('/api/retailers/')
@@ -73,7 +73,7 @@ class RetailerWebTestCase(WebTest):
         self.assertIn(self.retailer1_data["name"], result_names)
         self.assertIn(self.retailer2_data["name"], result_names)
 
-    def test_view_retailer_by_id_succeeds(self):
+    def test_view_retailer_by_id_succeeds(self) -> None:
         """HTTP get request with retailer ID retrieves single retailer"""
 
         get_response = self.app.get(f"/api/retailers/{self.retailer1_id}/")
@@ -83,7 +83,7 @@ class RetailerWebTestCase(WebTest):
         self.assertEqual(get_response.json["city"], self.retailer1_data["city"])
         self.assertEqual(get_response.json["street_address"], self.retailer1_data["street_address"])
 
-    def test_view_retailers_by_soda_returns_filtered_results(self):
+    def test_view_retailers_by_soda_returns_filtered_results(self) -> None:
         """HTTP get request with one soda in params retrieves associated retailers"""
 
         # single record
@@ -100,14 +100,14 @@ class RetailerWebTestCase(WebTest):
         self.assertIn(self.retailer1_data["name"], result_names)
         self.assertIn(self.retailer2_data["name"], result_names)
 
-    def test_view_retailers_by_bad_soda_returns_404(self):
+    def test_view_retailers_by_bad_soda_returns_404(self) -> None:
         """HTTP get request with invalid soda ID returns 404 (not 500 index error)"""
 
         # soda id 99999 will not exist in the test database
         get_response = self.app.get('/api/sodas/99999/retailers/', expect_errors=True)
         self.assertEqual(get_response.status, "404 Not Found")
 
-    def test_view_retailers_by_postcode_returns_filtered_results(self):
+    def test_view_retailers_by_postcode_returns_filtered_results(self) -> None:
         """HTTP get request with postcode in params retrieves associated retailers"""
 
         get_response = self.app.get(f"/api/retailers/?postcode={self.retailer2_data['postcode']}")
@@ -116,7 +116,7 @@ class RetailerWebTestCase(WebTest):
         self.assertEqual(len(get_response.json), 1)
         self.assertEqual(get_response.json[0]["name"], self.retailer2_data["name"])
 
-    def test_view_retailers_by_postcode_and_soda_returns_filtered_results(self):
+    def test_view_retailers_by_postcode_and_soda_returns_filtered_results(self) -> None:
         """HTTP get request with postcode and one soda type in query string retrieves associated retailers"""
 
         # retailer3: VZ (VanillaCokeZero) and same postcode as retailer1
@@ -141,7 +141,7 @@ class RetailerWebTestCase(WebTest):
         self.assertEqual(len(get_response.json), 1)
         self.assertEqual(get_response.json[0]["name"], self.retailer1_data["name"])
 
-    def test_view_retailers_by_multiple_sodas_returns_filtered_results(self):
+    def test_view_retailers_by_multiple_sodas_returns_filtered_results(self) -> None:
         """HTTP get request with multiple soda types in params retrieves associated retailers"""
 
         get_response = self.app.get("/api/retailers/?sodas=CC,VZ")
@@ -151,7 +151,7 @@ class RetailerWebTestCase(WebTest):
         self.assertEqual(len(get_response.json), 1)
         self.assertEqual(get_response.json[0]["name"], self.retailer2_data["name"])
 
-    def test_create_retailer_without_sodas_succeeds(self):
+    def test_create_retailer_without_sodas_succeeds(self) -> None:
         """HTTP post request with required data results in creation of object and response with all object data"""
 
         new_retailer_params = {
@@ -187,7 +187,7 @@ class RetailerWebTestCase(WebTest):
             float(post_response.json["longitude"]), -73.98, delta=0.01
         )
 
-    def test_create_retailer_with_sodas_succeeds(self):
+    def test_create_retailer_with_sodas_succeeds(self) -> None:
         """HTTP post request with soda data results in creation of object and response with all object data"""
 
         new_retailer_params = {
@@ -204,7 +204,7 @@ class RetailerWebTestCase(WebTest):
         self.assertEqual(post_response.json["name"], new_retailer_params["name"])
         self.assertEqual(post_response.json["sodas"], new_retailer_params["sodas"])
 
-    def test_create_retailer_without_postcode_populates_all_geocoding(self):
+    def test_create_retailer_without_postcode_populates_all_geocoding(self) -> None:
         """HTTP post request without postcode will populate latitude, longitude,
         and numeric postcode via Google Maps API"""
 
@@ -233,7 +233,7 @@ class RetailerWebTestCase(WebTest):
         )
         self.assertEqual(post_response.json["postcode"], 10032)
 
-    def test_create_retailer_with_postcode_preserves_user_value(self):
+    def test_create_retailer_with_postcode_preserves_user_value(self) -> None:
         """HTTP post request with user-provided postcode preserves that value
         instead of over-writing it via Google Maps API"""
 
@@ -249,7 +249,7 @@ class RetailerWebTestCase(WebTest):
         self.assertEqual(post_response.status, "201 Created")
         self.assertEqual(post_response.json["postcode"], user_provided_postcode)
 
-    def test_create_retailer_with_same_name_fails(self):
+    def test_create_retailer_with_same_name_fails(self) -> None:
         """HTTP post request with duplicate name returns error"""
 
         duplicate_name_params = {
@@ -262,7 +262,7 @@ class RetailerWebTestCase(WebTest):
 
         self.assertEqual(post_response.status, "400 Bad Request")
 
-    def test_create_retailer_with_same_street_address_fails(self):
+    def test_create_retailer_with_same_street_address_fails(self) -> None:
         """HTTP post request with duplicate street_address returns error"""
 
         duplicate_address_params = {
@@ -275,7 +275,7 @@ class RetailerWebTestCase(WebTest):
 
         self.assertEqual(post_response.status, "400 Bad Request")
 
-    def test_update_retailer_with_sodas(self):
+    def test_update_retailer_with_sodas(self) -> None:
         """HTTP put request updates retailer with new soda"""
 
         # Get existing list of sodas from retailer1
@@ -297,7 +297,7 @@ class RetailerWebTestCase(WebTest):
         self.assertIn(self.soda_cc_url, sodas_list_after)
         self.assertIn(self.soda_vz_url, sodas_list_after)
 
-    def test_update_retailer_with_same_soda_does_not_create_duplicate(self):
+    def test_update_retailer_with_same_soda_does_not_create_duplicate(self) -> None:
         """HTTP put request adding already-associated soda does not create duplicates"""
 
         # Get existing list of sodas from retailer1 (should have CH and CC)
@@ -314,7 +314,7 @@ class RetailerWebTestCase(WebTest):
         sodas_list_after = put_response.json["sodas"]
         self.assertEqual(len(sodas_list_after), 2)
 
-    def test_delete_retailer_succeeds(self):
+    def test_delete_retailer_succeeds(self) -> None:
         """HTTP delete request removes retailer"""
 
         # Delete retailer1

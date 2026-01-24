@@ -8,7 +8,7 @@ class Soda(models.Model):
     low_calorie = models.BooleanField(default=False)
 
     # declares a field to display on the Django admin or anytime you want string representation of the entire object; must be unique
-    def __str__(self):
+    def __str__(self) -> str:
         return self.name
 
 
@@ -28,6 +28,5 @@ class Retailer(models.Model):
     sodas = models.ManyToManyField(Soda, blank=True)
 
     # declares a field to display on the Django admin or anytime you want string representation of the entire object; must be unique
-    def __str__(self):
+    def __str__(self) -> str:
         return self.name
-
