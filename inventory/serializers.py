@@ -23,17 +23,41 @@ class RetailerSerializer(serializers.HyperlinkedModelSerializer):
         url = f"https://maps.googleapis.com/maps/api/geocode/json?{query_string}"
         json_response = requests.get(url).json()
 
-        # populate latitude and longitude from google maps response
+        # populate latitude and longitude (and optionally postcode) from google maps response
         results = json_response["results"]
-        if len(results) > 0:
-            location = results[0]["geometry"]["location"]
-            lat = location["lat"]
-            lon = location["lng"]
-            saved_retailer.latitude = Decimal(lat)
-            saved_retailer.longitude = Decimal(lon)
+        if results:
+            result = results[0]
+
+            # Extract latitude and longitude (always present per api contract)
+            location = result["geometry"]["location"]
+            saved_retailer.latitude = Decimal(location["lat"])
+            saved_retailer.longitude = Decimal(location["lng"])
+
+            # Auto-populate postcode only if not already provided by user
+            if not validated_data.get('postcode'):
+                api_postcode = self._extract_postcode_from_address_components(
+                    result.get("address_components", [])
+                )
+                if api_postcode is not None:
+                    saved_retailer.postcode = api_postcode
+
             saved_retailer.save()
 
         return saved_retailer
+
+    def _extract_postcode_from_address_components(self, address_components):
+        """
+        Extract postcode from Google Maps API response.
+        Returns int if found and numeric, None otherwise.
+        """
+        for component in address_components:
+            if "postal_code" in component.get("types", []):
+                try:
+                    return int(component.get("short_name", ""))
+                except ValueError:
+                    # Non-numeric postal code (e.g., UK, Canada) are not yet compatible with this app
+                    return None
+        return None
 
     class Meta:
         model = Retailer

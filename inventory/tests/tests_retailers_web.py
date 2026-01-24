@@ -180,8 +180,12 @@ class RetailerWebTestCase(WebTest):
                       "Expected Retailer object to have key 'latitude', but it was missing.")
         self.assertIn("longitude", post_response.json,
                       "Expected Retailer object to have key 'longitude', but it was missing.")
-        self.assertEqual(post_response.json["latitude"], "40.7275043")
-        self.assertEqual(post_response.json["longitude"], "-73.9800645")
+        self.assertAlmostEqual(
+            float(post_response.json["latitude"]), 40.7275, delta=0.01
+        )
+        self.assertAlmostEqual(
+            float(post_response.json["longitude"]), -73.98, delta=0.01
+        )
 
     def test_create_retailer_with_sodas_succeeds(self):
         # "HTTP post request with soda data results in creation of object and response with all object data"
@@ -200,23 +204,50 @@ class RetailerWebTestCase(WebTest):
         self.assertEqual(post_response.json["name"], new_retailer_params["name"])
         self.assertEqual(post_response.json["sodas"], new_retailer_params["sodas"])
 
-    def test_create_retailer_without_postcode_populates_geocoding(self):
-        # "HTTP post request without postcode still populates latitude and longitude"
+    def test_create_retailer_without_postcode_populates_all_geocoding(self):
+        """HTTP post request without postcode will populate latitude, longitude,
+        and numeric postcode via Google Maps API"""
 
         new_retailer_params = {
             "name": "new_retailer",
             "city": "New York",
-            "street_address": "new_retailer_street",
+            "street_address": "409 Edgecombe Avenue",
         }
         post_response = self.app.post_json('/api/retailers/', params=new_retailer_params)
 
-        # Verify latitude and longitude were populated correctly
+        # Verify latitude, longitude, and zip code were populated
+        self.assertEqual(post_response.status, "201 Created")
         self.assertIn("latitude", post_response.json,
                       "Expected Retailer object to have key 'latitude', but it was missing.")
         self.assertIn("longitude", post_response.json,
                       "Expected Retailer object to have key 'longitude', but it was missing.")
-        self.assertEqual(post_response.json["latitude"], "40.7127753")
-        self.assertEqual(post_response.json["longitude"], "-74.0059728")
+        self.assertIn("postcode", post_response.json,
+                      "Expected Retailer object to have key 'postcode', but it was missing.")
+
+        # Verify correctness of data (using approximate matching for coordinates)
+        self.assertAlmostEqual(
+            float(post_response.json["latitude"]), 40.8294, delta=0.01
+        )
+        self.assertAlmostEqual(
+            float(post_response.json["longitude"]), -73.94, delta=0.01
+        )
+        self.assertEqual(post_response.json["postcode"], 10032)
+
+    def test_create_retailer_with_postcode_preserves_user_value(self):
+        """HTTP post request with user-provided postcode preserves that value
+        instead of over-writing it via Google Maps API"""
+
+        user_provided_postcode = 85250 # correct zip is 85259 as of 2026
+        new_retailer_params = {
+            "name": "new_retailer_user_postcode",
+            "city": "Scottsdale",
+            "street_address": "12621 N Frank Lloyd Wright Boulevard",
+            "postcode": user_provided_postcode,
+        }
+        post_response = self.app.post_json('/api/retailers/', params=new_retailer_params)
+
+        self.assertEqual(post_response.status, "201 Created")
+        self.assertEqual(post_response.json["postcode"], user_provided_postcode)
 
     def test_create_retailer_with_same_name_fails(self):
         # "HTTP post request with duplicate name returns error"
