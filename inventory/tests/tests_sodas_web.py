@@ -1,12 +1,6 @@
 # using test.TestCase instead of unittest.TestCase to make sure tests run within the suite - not just in isolation
-from django.db import IntegrityError
-from django.test import TestCase
 from django_webtest import WebTest
 
-from inventory.models import Retailer, Soda
-
-
-# web tests should not use objects created and stored in database; that is testing behavior of both the http application and the database (too much)
 class SodaWebTestCase(WebTest):
     csrf_checks = False
 
@@ -21,13 +15,15 @@ class SodaWebTestCase(WebTest):
                                    "name": "Coke Classic"})
 
     def test_show_sodas(self):
-        # "For sodas, HTTP get request with no params retrieves all retailers"
+        """For sodas, HTTP get request with no params retrieves all retailers"""
+
         get_response = self.app.get('/api/sodas/')
         self.assertEqual(get_response.status, "200 OK")
         self.assertEqual(len(get_response.json), 2)
 
     def test_view_all_sodas_by_retailer(self):
-        # "HTTP get request with retailer ID and 'sodas' in params retrieves all sodas associated with that retailer"
+        """HTTP get request with retailer ID and 'sodas' in params retrieves all sodas associated with that retailer"""
+
         post_soda_response_DC = self.app.post_json('/api/sodas/',
                                                    params={"abbreviation": "DC",
                                                            "low_calorie": "True",
@@ -53,7 +49,7 @@ class SodaWebTestCase(WebTest):
         self.assertEqual(len(get_response.json), 2)
 
     def test_view_all_sodas_by_bad_retailer_returns_404(self):
-        # "HTTP get request with invalid retailer ID returns 404 (not 500 index error)"
+        """HTTP get request with invalid retailer ID returns 404 (not 500 index error)"""
 
         # retailer id 99999 will not exist in the test database
         get_response = self.app.get('/api/retailers/99999/sodas/', expect_errors=True)
@@ -61,7 +57,8 @@ class SodaWebTestCase(WebTest):
         self.assertEqual(get_response.status, "404 Not Found")
 
     def test_create_soda(self):
-        # "For sodas, HTTP request post request with valid data results in creation of object and response with all object data"
+        """HTTP request post request with valid data results in creation of object and correct response"""
+
         post_response = self.app.post_json('/api/sodas/',
                                            params={"abbreviation": "DC",
                                                    "low_calorie": "True",
