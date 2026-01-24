@@ -281,9 +281,22 @@ The test database is named `test_findcoke_dev1` and is isolated from development
    **Run manual curls from script:**
    ```
    ./manage.py runserver
-   
+
    # in a different terminal
    ./inventory/tests/manual_test.sh
+   ```
+
+### Type Checking
+Run type checking tool before committing changes.
+
+   **Configuration:** See `[tool.mypy]` in `pyproject.toml`. The current configuration is permissive to support gradual adoption of type hints.
+
+   **Run type checking:**
+   ```
+   mypy inventory config manage.py
+
+   # alternatively with uv
+   uv run mypy inventory config manage.py
    ```
 
 ### Static Files
