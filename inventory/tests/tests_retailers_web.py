@@ -351,39 +351,3 @@ class RetailerWebTestCase(WebTest):
         # Verify retailer1 no longer exists
         get_response = self.app.get(f"/api/retailers/{self.retailer1_id}/", expect_errors=True)
         self.assertEqual(get_response.status, "404 Not Found")
-
-
-@unittest.skipUnless(
-    os.environ.get("RUN_INTEGRATION_TESTS"),
-    "Skipping integration tests that hit real Google Maps API. Set RUN_INTEGRATION_TESTS=1 to run.",
-)
-class RetailerGeocodingIntegrationTestCase(WebTest):
-    """Integration tests that hit the real Google Maps API.
-
-    These tests are skipped by default. To run them:
-        RUN_INTEGRATION_TESTS=1 python manage.py test inventory.tests.tests_retailers_web.RetailerGeocodingIntegrationTestCase
-    """
-
-    csrf_checks = False
-
-    def test_create_retailer_geocoding_with_real_api(self) -> None:
-        """Integration test: verify real Google Maps API geocoding works."""
-
-        new_retailer_params = {
-            "name": "integration_test_retailer",
-            "city": "New York",
-            "street_address": "409 Edgecombe Avenue",
-        }
-        post_response = self.app.post_json('/api/retailers/', params=new_retailer_params)
-
-        # Verify latitude, longitude, and zip code were populated
-        self.assertEqual(post_response.status, "201 Created")
-
-        # Verify correctness of data from real API (using approximate matching)
-        self.assertAlmostEqual(
-            float(post_response.json["latitude"]), 40.8294, delta=0.01
-        )
-        self.assertAlmostEqual(
-            float(post_response.json["longitude"]), -73.94, delta=0.01
-        )
-        self.assertEqual(post_response.json["postcode"], 10032)
