@@ -1,8 +1,11 @@
 """Tests for the GeocodingService."""
 
+# disable logging when running these tests
+import logging
+logging.disable(logging.CRITICAL)
+
 from decimal import Decimal
 from unittest.mock import MagicMock, patch
-
 from django.test import TestCase, override_settings
 
 from inventory.services import (

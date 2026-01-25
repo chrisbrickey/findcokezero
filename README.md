@@ -271,7 +271,7 @@ But for day to day development, use Django's development server instead.
 Django automatically creates and destroys a test database when running tests. 
 The test database is named `test_findcoke_dev1` and is isolated from development data.
 
-   **Run automated tests**
+   **Run automated tests:**
    ```
    ./manage.py test
 
