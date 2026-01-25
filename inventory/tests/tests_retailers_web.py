@@ -1,4 +1,9 @@
+from unittest.mock import patch
+
 from django_webtest import WebTest
+
+from inventory.tests.fixtures import mock_requests_get
+
 
 class RetailerWebTestCase(WebTest):
     csrf_checks = False
@@ -36,6 +41,12 @@ class RetailerWebTestCase(WebTest):
     }
 
     def setUp(self) -> None:
+        # Start mocking Google Maps API
+        self.patcher = patch(
+            'inventory.serializers.requests.get',
+            side_effect=mock_requests_get
+        )
+        self.mock_get = self.patcher.start()
         # Create sodas first so we have their URLs
 
         post_soda_ch = self.app.post_json('/api/sodas/', params=self.soda_ch_data)
@@ -60,6 +71,9 @@ class RetailerWebTestCase(WebTest):
         # retailer2: VZ (VanillaCokeZero) and CC (CokeClassic)
         retailer2_params = {**self.retailer2_data, "sodas": [self.soda_vz_url, self.soda_cc_url]}
         self.app.post_json('/api/retailers/', params=retailer2_params)
+
+    def tearDown(self) -> None:
+        self.patcher.stop()
 
     def test_view_retailers_returns_all(self) -> None:
         """HTTP get request with no params retrieves all retailers"""
