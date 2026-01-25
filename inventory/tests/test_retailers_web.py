@@ -1,4 +1,9 @@
+from decimal import Decimal
 from django_webtest import WebTest
+from unittest.mock import patch
+from inventory.exceptions import NonNumericPostcodeError
+from inventory.services.geocoding import GeocodingResult
+
 
 class RetailerWebTestCase(WebTest):
     csrf_checks = False
@@ -274,6 +279,29 @@ class RetailerWebTestCase(WebTest):
         post_response = self.app.post_json('/api/retailers/', params=duplicate_address_params, expect_errors=True)
 
         self.assertEqual(post_response.status, "400 Bad Request")
+
+    @patch('inventory.serializers.GeocodingService')
+    def test_create_retailer_with_non_numeric_postcode_from_geocoding_fails(self, mock_geocoding_class) -> None:
+        """HTTP post request without postcode raises NonNumericPostcodeError
+        when geocoding service returns non-numeric postcode"""
+
+        # Mock the geocoding service to return a non-numeric postcode (e.g., UK format)
+        mock_geocoding_instance = mock_geocoding_class.return_value
+        mock_geocoding_instance.geocode_address.return_value = GeocodingResult(
+            latitude=Decimal("51.5124"),
+            longitude=Decimal("-0.1279"),
+            postcode="WC2H 0NE",  # UK postcode format; cannot be converted to int
+        )
+
+        new_retailer_params = {
+            "name": "Sainsbury's Local",
+            "city": "London",
+            "street_address": "57-63 Charing Cross Road",
+            # No postcode provided - will trigger geocoding postcode population
+        }
+
+        with self.assertRaises(NonNumericPostcodeError):
+            self.app.post_json('/api/retailers/', params=new_retailer_params)
 
     def test_update_retailer_with_sodas(self) -> None:
         """HTTP put request updates retailer with new soda"""
