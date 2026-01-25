@@ -1,66 +1,68 @@
-from decimal import Decimal
+import logging
 from typing import Any
-import requests
-import urllib.parse
 
-from django.conf import settings
 from rest_framework import serializers
 
 from .models import Retailer, Soda
+from .services import (
+    GeocodingError,
+    GeocodingService,
+)
+
+logger = logging.getLogger(__name__)
 
 
 class RetailerSerializer(serializers.HyperlinkedModelSerializer[Retailer]):
 
+    def __init__(
+        self,
+        *args: Any,
+        geocoding_service: GeocodingService | None = None,
+        **kwargs: Any,
+    ) -> None:
+        """
+        Initialize the serializer with optional dependency injection.
+
+        Args:
+            geocoding_service: Optional GeocodingService instance for testing.
+        """
+        super().__init__(*args, **kwargs)
+        self._geocoding_service = geocoding_service
+
+    @property
+    def geocoding_service(self) -> GeocodingService:
+        """Lazy-load the geocoding service."""
+        if self._geocoding_service is None:
+            self._geocoding_service = GeocodingService()
+        return self._geocoding_service
+
     def create(self, validated_data: dict[str, Any]) -> Retailer:
         saved_retailer = super(RetailerSerializer, self).create(validated_data)
 
-        # construct address string; postcode can be empty
-        postcode = validated_data.get('postcode', '')
-        postcode_suffix = f", {postcode}" if postcode else ""
-        address_string = f"{validated_data['street_address']}, {validated_data['city']}{postcode_suffix}"
+        try:
+            result = self.geocoding_service.geocode_address(
+                street_address=validated_data["street_address"],
+                city=validated_data["city"],
+                postcode=validated_data.get("postcode"),
+            )
 
-        query_params = {'address': address_string, 'key': settings.GOOGLEMAPS_KEY}
-        query_string = urllib.parse.urlencode(query_params)
-        url = f"https://maps.googleapis.com/maps/api/geocode/json?{query_string}"
-        json_response = requests.get(url).json()
-
-        # populate latitude and longitude (and optionally postcode) from google maps response
-        results = json_response["results"]
-        if results:
-            result = results[0]
-
-            # Extract latitude and longitude (always present per api contract)
-            location = result["geometry"]["location"]
-            saved_retailer.latitude = Decimal(location["lat"])
-            saved_retailer.longitude = Decimal(location["lng"])
+            saved_retailer.latitude = result.latitude
+            saved_retailer.longitude = result.longitude
 
             # Auto-populate postcode only if not already provided by user
-            if not validated_data.get('postcode'):
-                api_postcode = self._extract_postcode_from_address_components(
-                    result.get("address_components", [])
-                )
-                if api_postcode is not None:
-                    saved_retailer.postcode = api_postcode
+            if not validated_data.get("postcode") and result.postcode is not None:
+                saved_retailer.postcode = result.postcode
 
             saved_retailer.save()
 
-        return saved_retailer
+        except GeocodingError as e:
+            logger.warning(
+                "Geocoding failed for retailer '%s': %s. Continuing without coordinates.",
+                saved_retailer.name,
+                str(e),
+            )
 
-    def _extract_postcode_from_address_components(
-        self, address_components: list[dict[str, Any]]
-    ) -> int | None:
-        """
-        Extract postcode from Google Maps API response.
-        Returns int if found and numeric, None otherwise.
-        """
-        for component in address_components:
-            if "postal_code" in component.get("types", []):
-                try:
-                    return int(component.get("short_name", ""))
-                except ValueError:
-                    # Non-numeric postal code (e.g., UK, Canada) are not yet compatible with this app
-                    return None
-        return None
+        return saved_retailer
 
     class Meta:
         model = Retailer

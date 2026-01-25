@@ -41,8 +41,9 @@ findcokezero/                      # root includes files that manage dependencie
 └── inventory/                     # APP: domain logic & business functionality (e.g., sodas, retailers)
     ├── urls.py                    # API URL routing
     ├── views.py                   # API endpoints
-    ├── serializers.py             # API serializers
     ├── models.py
+    ├── serializers.py             # API serializers                                                                                                                     
+    ├── services/                  # integration with GoogleMaps                                                                                                                                                                  
     ├── migrations/                # database migrations
     ├── fixtures/
     │   └── initdata.json          # seed data
