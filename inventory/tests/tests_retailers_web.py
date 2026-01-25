@@ -1,5 +1,40 @@
+import os
+import unittest
+from decimal import Decimal
+from unittest.mock import patch
+
 from django_webtest import WebTest
 
+from inventory.services import GeocodingResult
+
+
+def mock_geocode_address(
+    street_address: str,
+    city: str,
+    postcode: str | int | None = None,
+) -> GeocodingResult:
+    """Mock geocoding that returns predictable coordinates based on city."""
+    # Return different coordinates based on city for realistic test data
+    city_coords = {
+        "San Francisco": (Decimal("37.7749"), Decimal("-122.4194"), 94107),
+        "New York": (Decimal("40.7128"), Decimal("-74.0060"), 10001),
+        "Los Angeles": (Decimal("34.0522"), Decimal("-118.2437"), 90001),
+        "Scottsdale": (Decimal("33.4942"), Decimal("-111.9261"), 85250),
+    }
+    lat, lng, default_postcode = city_coords.get(
+        city, (Decimal("40.0"), Decimal("-74.0"), 10001)
+    )
+    return GeocodingResult(
+        latitude=lat,
+        longitude=lng,
+        postcode=default_postcode,
+    )
+
+
+@patch(
+    "inventory.services.geocoding.GeocodingService.geocode_address",
+    side_effect=mock_geocode_address,
+)
 class RetailerWebTestCase(WebTest):
     csrf_checks = False
 
@@ -61,7 +96,7 @@ class RetailerWebTestCase(WebTest):
         retailer2_params = {**self.retailer2_data, "sodas": [self.soda_vz_url, self.soda_cc_url]}
         self.app.post_json('/api/retailers/', params=retailer2_params)
 
-    def test_view_retailers_returns_all(self) -> None:
+    def test_view_retailers_returns_all(self, mock_geocode: unittest.mock.MagicMock) -> None:
         """HTTP get request with no params retrieves all retailers"""
 
         get_response = self.app.get('/api/retailers/')
@@ -73,7 +108,7 @@ class RetailerWebTestCase(WebTest):
         self.assertIn(self.retailer1_data["name"], result_names)
         self.assertIn(self.retailer2_data["name"], result_names)
 
-    def test_view_retailer_by_id_succeeds(self) -> None:
+    def test_view_retailer_by_id_succeeds(self, mock_geocode: unittest.mock.MagicMock) -> None:
         """HTTP get request with retailer ID retrieves single retailer"""
 
         get_response = self.app.get(f"/api/retailers/{self.retailer1_id}/")
@@ -83,7 +118,7 @@ class RetailerWebTestCase(WebTest):
         self.assertEqual(get_response.json["city"], self.retailer1_data["city"])
         self.assertEqual(get_response.json["street_address"], self.retailer1_data["street_address"])
 
-    def test_view_retailers_by_soda_returns_filtered_results(self) -> None:
+    def test_view_retailers_by_soda_returns_filtered_results(self, mock_geocode: unittest.mock.MagicMock) -> None:
         """HTTP get request with one soda in params retrieves associated retailers"""
 
         # single record
@@ -100,14 +135,14 @@ class RetailerWebTestCase(WebTest):
         self.assertIn(self.retailer1_data["name"], result_names)
         self.assertIn(self.retailer2_data["name"], result_names)
 
-    def test_view_retailers_by_bad_soda_returns_404(self) -> None:
+    def test_view_retailers_by_bad_soda_returns_404(self, mock_geocode: unittest.mock.MagicMock) -> None:
         """HTTP get request with invalid soda ID returns 404 (not 500 index error)"""
 
         # soda id 99999 will not exist in the test database
         get_response = self.app.get('/api/sodas/99999/retailers/', expect_errors=True)
         self.assertEqual(get_response.status, "404 Not Found")
 
-    def test_view_retailers_by_postcode_returns_filtered_results(self) -> None:
+    def test_view_retailers_by_postcode_returns_filtered_results(self, mock_geocode: unittest.mock.MagicMock) -> None:
         """HTTP get request with postcode in params retrieves associated retailers"""
 
         get_response = self.app.get(f"/api/retailers/?postcode={self.retailer2_data['postcode']}")
@@ -116,7 +151,7 @@ class RetailerWebTestCase(WebTest):
         self.assertEqual(len(get_response.json), 1)
         self.assertEqual(get_response.json[0]["name"], self.retailer2_data["name"])
 
-    def test_view_retailers_by_postcode_and_soda_returns_filtered_results(self) -> None:
+    def test_view_retailers_by_postcode_and_soda_returns_filtered_results(self, mock_geocode: unittest.mock.MagicMock) -> None:
         """HTTP get request with postcode and one soda type in query string retrieves associated retailers"""
 
         # retailer3: VZ (VanillaCokeZero) and same postcode as retailer1
@@ -141,7 +176,7 @@ class RetailerWebTestCase(WebTest):
         self.assertEqual(len(get_response.json), 1)
         self.assertEqual(get_response.json[0]["name"], self.retailer1_data["name"])
 
-    def test_view_retailers_by_multiple_sodas_returns_filtered_results(self) -> None:
+    def test_view_retailers_by_multiple_sodas_returns_filtered_results(self, mock_geocode: unittest.mock.MagicMock) -> None:
         """HTTP get request with multiple soda types in params retrieves associated retailers"""
 
         get_response = self.app.get("/api/retailers/?sodas=CC,VZ")
@@ -151,7 +186,7 @@ class RetailerWebTestCase(WebTest):
         self.assertEqual(len(get_response.json), 1)
         self.assertEqual(get_response.json[0]["name"], self.retailer2_data["name"])
 
-    def test_create_retailer_without_sodas_succeeds(self) -> None:
+    def test_create_retailer_without_sodas_succeeds(self, mock_geocode: unittest.mock.MagicMock) -> None:
         """HTTP post request with required data results in creation of object and response with all object data"""
 
         new_retailer_params = {
@@ -175,19 +210,15 @@ class RetailerWebTestCase(WebTest):
         get_response = self.app.get(f"/api/retailers/{new_retailer_id}/")
         self.assertEqual(get_response.status, "200 OK")
 
-        # Verify latitude and longitude were populated correctly
+        # Verify latitude and longitude were populated (mocked values)
         self.assertIn("latitude", post_response.json,
                       "Expected Retailer object to have key 'latitude', but it was missing.")
         self.assertIn("longitude", post_response.json,
                       "Expected Retailer object to have key 'longitude', but it was missing.")
-        self.assertAlmostEqual(
-            float(post_response.json["latitude"]), 40.7275, delta=0.01
-        )
-        self.assertAlmostEqual(
-            float(post_response.json["longitude"]), -73.98, delta=0.01
-        )
+        self.assertIsNotNone(post_response.json["latitude"])
+        self.assertIsNotNone(post_response.json["longitude"])
 
-    def test_create_retailer_with_sodas_succeeds(self) -> None:
+    def test_create_retailer_with_sodas_succeeds(self, mock_geocode: unittest.mock.MagicMock) -> None:
         """HTTP post request with soda data results in creation of object and response with all object data"""
 
         new_retailer_params = {
@@ -204,9 +235,9 @@ class RetailerWebTestCase(WebTest):
         self.assertEqual(post_response.json["name"], new_retailer_params["name"])
         self.assertEqual(post_response.json["sodas"], new_retailer_params["sodas"])
 
-    def test_create_retailer_without_postcode_populates_all_geocoding(self) -> None:
+    def test_create_retailer_without_postcode_populates_all_geocoding(self, mock_geocode: unittest.mock.MagicMock) -> None:
         """HTTP post request without postcode will populate latitude, longitude,
-        and numeric postcode via Google Maps API"""
+        and numeric postcode via geocoding service"""
 
         new_retailer_params = {
             "name": "new_retailer",
@@ -224,20 +255,16 @@ class RetailerWebTestCase(WebTest):
         self.assertIn("postcode", post_response.json,
                       "Expected Retailer object to have key 'postcode', but it was missing.")
 
-        # Verify correctness of data (using approximate matching for coordinates)
-        self.assertAlmostEqual(
-            float(post_response.json["latitude"]), 40.8294, delta=0.01
-        )
-        self.assertAlmostEqual(
-            float(post_response.json["longitude"]), -73.94, delta=0.01
-        )
-        self.assertEqual(post_response.json["postcode"], 10032)
+        # Verify data was populated (using mocked values for New York)
+        self.assertEqual(Decimal(post_response.json["latitude"]), Decimal("40.7128"))
+        self.assertEqual(Decimal(post_response.json["longitude"]), Decimal("-74.0060"))
+        self.assertEqual(post_response.json["postcode"], 10001)
 
-    def test_create_retailer_with_postcode_preserves_user_value(self) -> None:
+    def test_create_retailer_with_postcode_preserves_user_value(self, mock_geocode: unittest.mock.MagicMock) -> None:
         """HTTP post request with user-provided postcode preserves that value
-        instead of over-writing it via Google Maps API"""
+        instead of over-writing it with geocoded postcode"""
 
-        user_provided_postcode = 85250 # correct zip is 85259 as of 2026
+        user_provided_postcode = 85250
         new_retailer_params = {
             "name": "new_retailer_user_postcode",
             "city": "Scottsdale",
@@ -249,7 +276,7 @@ class RetailerWebTestCase(WebTest):
         self.assertEqual(post_response.status, "201 Created")
         self.assertEqual(post_response.json["postcode"], user_provided_postcode)
 
-    def test_create_retailer_with_same_name_fails(self) -> None:
+    def test_create_retailer_with_same_name_fails(self, mock_geocode: unittest.mock.MagicMock) -> None:
         """HTTP post request with duplicate name returns error"""
 
         duplicate_name_params = {
@@ -262,7 +289,7 @@ class RetailerWebTestCase(WebTest):
 
         self.assertEqual(post_response.status, "400 Bad Request")
 
-    def test_create_retailer_with_same_street_address_fails(self) -> None:
+    def test_create_retailer_with_same_street_address_fails(self, mock_geocode: unittest.mock.MagicMock) -> None:
         """HTTP post request with duplicate street_address returns error"""
 
         duplicate_address_params = {
@@ -275,7 +302,7 @@ class RetailerWebTestCase(WebTest):
 
         self.assertEqual(post_response.status, "400 Bad Request")
 
-    def test_update_retailer_with_sodas(self) -> None:
+    def test_update_retailer_with_sodas(self, mock_geocode: unittest.mock.MagicMock) -> None:
         """HTTP put request updates retailer with new soda"""
 
         # Get existing list of sodas from retailer1
@@ -297,7 +324,7 @@ class RetailerWebTestCase(WebTest):
         self.assertIn(self.soda_cc_url, sodas_list_after)
         self.assertIn(self.soda_vz_url, sodas_list_after)
 
-    def test_update_retailer_with_same_soda_does_not_create_duplicate(self) -> None:
+    def test_update_retailer_with_same_soda_does_not_create_duplicate(self, mock_geocode: unittest.mock.MagicMock) -> None:
         """HTTP put request adding already-associated soda does not create duplicates"""
 
         # Get existing list of sodas from retailer1 (should have CH and CC)
@@ -314,7 +341,7 @@ class RetailerWebTestCase(WebTest):
         sodas_list_after = put_response.json["sodas"]
         self.assertEqual(len(sodas_list_after), 2)
 
-    def test_delete_retailer_succeeds(self) -> None:
+    def test_delete_retailer_succeeds(self, mock_geocode: unittest.mock.MagicMock) -> None:
         """HTTP delete request removes retailer"""
 
         # Delete retailer1
@@ -324,3 +351,39 @@ class RetailerWebTestCase(WebTest):
         # Verify retailer1 no longer exists
         get_response = self.app.get(f"/api/retailers/{self.retailer1_id}/", expect_errors=True)
         self.assertEqual(get_response.status, "404 Not Found")
+
+
+@unittest.skipUnless(
+    os.environ.get("RUN_INTEGRATION_TESTS"),
+    "Skipping integration tests that hit real Google Maps API. Set RUN_INTEGRATION_TESTS=1 to run.",
+)
+class RetailerGeocodingIntegrationTestCase(WebTest):
+    """Integration tests that hit the real Google Maps API.
+
+    These tests are skipped by default. To run them:
+        RUN_INTEGRATION_TESTS=1 python manage.py test inventory.tests.tests_retailers_web.RetailerGeocodingIntegrationTestCase
+    """
+
+    csrf_checks = False
+
+    def test_create_retailer_geocoding_with_real_api(self) -> None:
+        """Integration test: verify real Google Maps API geocoding works."""
+
+        new_retailer_params = {
+            "name": "integration_test_retailer",
+            "city": "New York",
+            "street_address": "409 Edgecombe Avenue",
+        }
+        post_response = self.app.post_json('/api/retailers/', params=new_retailer_params)
+
+        # Verify latitude, longitude, and zip code were populated
+        self.assertEqual(post_response.status, "201 Created")
+
+        # Verify correctness of data from real API (using approximate matching)
+        self.assertAlmostEqual(
+            float(post_response.json["latitude"]), 40.8294, delta=0.01
+        )
+        self.assertAlmostEqual(
+            float(post_response.json["longitude"]), -73.94, delta=0.01
+        )
+        self.assertEqual(post_response.json["postcode"], 10032)

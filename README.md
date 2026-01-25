@@ -271,12 +271,17 @@ But for day to day development, use Django's development server instead.
 Django automatically creates and destroys a test database when running tests. 
 The test database is named `test_findcoke_dev1` and is isolated from development data.
 
-   **Run automated tests:**
+   **Run automated tests (do not hit real GoogleMaps API)**
    ```
    ./manage.py test
 
    # alternatively with uv
    uv run ./manage.py test
+   ```
+   
+   **Run manual test of GoogleMaps API**
+   ```
+   RUN_INTEGRATION_TESTS=1 python manage.py test inventory.tests.tests_retailers_web.RetailerGeocodingIntegrationTestCase
    ```
 
    **Run manual curls from script:**
