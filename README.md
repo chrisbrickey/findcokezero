@@ -39,13 +39,14 @@ findcokezero/                      # root includes files that manage dependencie
 │   └── static/                    # static assets (CSS, JavaScript)
 │
 └── inventory/                     # APP: domain logic & business functionality (e.g., sodas, retailers)
-    ├── urls.py                    # API URL routing
+    ├── urls.py                    # API url routing
     ├── views.py                   # API endpoints
     ├── serializers.py             # API serializers
     ├── models.py
-    ├── migrations/                # database migrations
     ├── fixtures/
     │   └── initdata.json          # seed data
+    ├── migrations/                # database migrations
+    ├── services/                  # integration with GoogleMaps   
     └── tests/                     # test suite
 ```
 
