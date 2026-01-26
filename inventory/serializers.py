@@ -32,19 +32,20 @@ class RetailerSerializer(serializers.HyperlinkedModelSerializer[Retailer]):
                 str(e),
             )
 
-        # Always populate latitude and longitude from geocoding service
-        saved_retailer.latitude = geocoding_result.latitude
-        saved_retailer.longitude = geocoding_result.longitude
+        if geocoding_result is not None:
+            # Populate latitude and longitude from geocoding service
+            saved_retailer.latitude = geocoding_result.latitude
+            saved_retailer.longitude = geocoding_result.longitude
 
-        # Only populate postcode from geocoding service if not provided by user
-        if not validated_data.get("postcode") and geocoding_result.postcode is not None:
-            numerical_postcode = None
+            # Only populate postcode from geocoding service if not provided by user
+            if not validated_data.get("postcode") and geocoding_result.postcode is not None:
+                numerical_postcode = None
 
-            try:
-                numerical_postcode = int(geocoding_result.postcode)
-            except ValueError:
-                raise NonNumericPostcodeError
-            saved_retailer.postcode = numerical_postcode
+                try:
+                    numerical_postcode = int(geocoding_result.postcode)
+                except ValueError:
+                    raise NonNumericPostcodeError
+                saved_retailer.postcode = numerical_postcode
 
         saved_retailer.save()
         return saved_retailer

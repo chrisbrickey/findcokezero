@@ -2,6 +2,7 @@ import requests
 
 from decimal import Decimal
 from django.test import TestCase
+from typing import cast
 from unittest.mock import Mock, patch
 from inventory.services.geocoding import GeocodingResult, GeocodingService
 from inventory.services.exceptions import (
@@ -103,8 +104,8 @@ class GeocodingServiceTest(TestCase):
             results=[{
                 "geometry": {
                     "location": {
-                        "lat": float(self.SAMPLE_RETAILER_DATA["latitude"]),
-                        "lng": float(self.SAMPLE_RETAILER_DATA["longitude"]),
+                        "lat": float(cast(Decimal, self.SAMPLE_RETAILER_DATA["latitude"])),
+                        "lng": float(cast(Decimal, self.SAMPLE_RETAILER_DATA["longitude"])),
                     }
                 },
                 "address_components": []
@@ -126,8 +127,8 @@ class GeocodingServiceTest(TestCase):
             results = [{
                 "geometry": {
                     "location": {
-                        "lat": float(self.SAMPLE_RETAILER_DATA["latitude"]),
-                        "lng": float(self.SAMPLE_RETAILER_DATA["longitude"]),
+                        "lat": float(cast(Decimal, self.SAMPLE_RETAILER_DATA["latitude"])),
+                        "lng": float(cast(Decimal, self.SAMPLE_RETAILER_DATA["longitude"])),
                     }
                 },
                 "address_components": [
@@ -138,6 +139,6 @@ class GeocodingServiceTest(TestCase):
 
     def _call_geocode_service(self) -> GeocodingResult:
         return self.service.geocode_address(
-            street_address=self.SAMPLE_RETAILER_DATA["street_address"],
-            city=self.SAMPLE_RETAILER_DATA["city"],
+            street_address=cast(str, self.SAMPLE_RETAILER_DATA["street_address"]),
+            city=cast(str, self.SAMPLE_RETAILER_DATA["city"]),
         )
