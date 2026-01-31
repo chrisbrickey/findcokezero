@@ -4,49 +4,59 @@ from django_webtest import WebTest
 class SodaWebTestCase(WebTest):
     csrf_checks = False
 
-    def setUp(self) -> None:
-        self.app.post_json('/api/sodas/',
-                           params={"abbreviation": "CH",
-                                   "low_calorie": "True",
-                                   "name": "CherryCokeZero"})
-        self.app.post_json('/api/sodas/',
-                           params={"abbreviation": "CC",
-                                   "low_calorie": "False",
-                                   "name": "Coke Classic"})
+    soda_ch_data = {
+        "abbreviation": "CH",
+        "low_calorie": "True",
+        "name": "CherryCokeZero",
+    }
 
-    def test_show_sodas(self) -> None:
+    soda_cc_data = {
+        "abbreviation": "CC",
+        "low_calorie": "False",
+        "name": "CokeClassic",
+    }
+
+    def setUp(self) -> None:
+        self.post_soda_ch = self.app.post_json('/api/sodas/', params=self.soda_ch_data)
+        self.post_soda_cc = self.app.post_json('/api/sodas/', params=self.soda_cc_data)
+
+    def test_view_sodas_returns_all(self) -> None:
         """HTTP get request with no params retrieves all retailers"""
 
         get_response = self.app.get('/api/sodas/')
-        self.assertEqual(get_response.status, "200 OK")
-        self.assertEqual(len(get_response.json), 2)
 
-    def test_view_all_sodas_by_retailer(self) -> None:
+        self.assertEqual(get_response.status, "200 OK")
+
+        # verify content
+        response_data = get_response.json
+        self.assertEqual(len(response_data), 2)
+
+        result_names = [soda["name"] for soda in response_data]
+        self.assertIn(self.soda_ch_data["name"], result_names)
+        self.assertIn(self.soda_cc_data["name"], result_names)
+
+    def test_view_all_sodas_by_retailer_filters_correctly(self) -> None:
         """HTTP get request with retailer ID and 'sodas' in params retrieves all sodas associated with that retailer"""
 
-        post_soda_response_DC = self.app.post_json('/api/sodas/',
-                                                   params={"abbreviation": "DC",
-                                                           "low_calorie": "True",
-                                                           "name": "Diet Coke"})
-        soda_url_DC = post_soda_response_DC.json["url"]
-
-        post_soda_response_CF = self.app.post_json('/api/sodas/',
-                                                   params={"abbreviation": "CF",
-                                                           "low_calorie": "True",
-                                                           "name": "Caffeine Free Diet Coke"})
-        soda_url_CF = post_soda_response_CF.json["url"]
-
-        post_retailer_response_Shell = self.app.post_json('/api/retailers/',
+        # create the retailer with associated sodas
+        soda_ch_url = self.post_soda_ch.json["url"]
+        post_retailer_response = self.app.post_json('/api/retailers/',
                                                           params={"city": "San Francisco",
                                                                   "name": "Shell",
                                                                   "postcode": "94107",
                                                                   "street_address": "598 Bryant Street",
-                                                                  "sodas": [soda_url_DC, soda_url_CF]})
-        retailer_id_Shell = post_retailer_response_Shell.json["id"]
+                                                                  "sodas": [soda_ch_url]})
 
-        get_response = self.app.get(f"/api/retailers/{retailer_id_Shell}/sodas/")
+        # filter sodas by the new retailer
+        retailer_id = post_retailer_response.json["id"]
+        get_response = self.app.get(f"/api/retailers/{retailer_id}/sodas/")
+
+        # verify successful response that only includes the associated soda
         self.assertEqual(get_response.status, "200 OK")
-        self.assertEqual(len(get_response.json), 2)
+        self.assertEqual(len(get_response.json), 1)
+
+        result_name = get_response.json[0]["name"]
+        self.assertEqual(self.soda_ch_data["name"], result_name)
 
     def test_view_all_sodas_by_bad_retailer_returns_404(self) -> None:
         """HTTP get request with invalid retailer ID returns 404 (not 500 index error)"""
@@ -128,3 +138,16 @@ class SodaWebTestCase(WebTest):
         post_response = self.app.post_json('/api/sodas/', params=duplicate_name_params, expect_errors=True)
 
         self.assertEqual(post_response.status, "400 Bad Request")
+
+
+    def test_delete_soda_succeeds(self) -> None:
+        """HTTP delete request removes soda"""
+
+        # Delete soda
+        soda_ch_id = self.post_soda_ch.json["id"]
+        delete_response = self.app.delete(f"/api/sodas/{soda_ch_id}/")
+        self.assertEqual(delete_response.status, "204 No Content")
+
+        # Verify soda is no longer available
+        get_response = self.app.get(f"/api/sodas/{soda_ch_id}/", expect_errors=True)
+        self.assertEqual(get_response.status, "404 Not Found")
