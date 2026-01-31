@@ -1,16 +1,19 @@
 # using test.TestCase instead of unittest.TestCase to make sure tests run within the suite - not just in isolation
 from django_webtest import WebTest
 
+from inventory.tests.types import SodaTestFormData
+
+
 class SodaWebTestCase(WebTest):
     csrf_checks = False
 
-    soda_ch_data = {
+    soda_ch_data: SodaTestFormData = {
         "abbreviation": "CH",
         "low_calorie": "True",
         "name": "CherryCokeZero",
     }
 
-    soda_cc_data = {
+    soda_cc_data: SodaTestFormData = {
         "abbreviation": "CC",
         "low_calorie": "False",
         "name": "CokeClassic",

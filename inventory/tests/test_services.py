@@ -3,18 +3,20 @@ import requests
 from decimal import Decimal
 from django.test import TestCase
 from unittest.mock import Mock, patch
+
 from inventory.services.geocoding import GeocodingResult, GeocodingService
 from inventory.services.exceptions import (
     GeocodingAPIError,
     GeocodingNetworkError,
     GeocodingNoResultsError,
 )
+from inventory.tests.types import RetailerTestFormDataWithGeocoding
 
 
 class GeocodingServiceTest(TestCase):
     """Tests only the GeocodingService. Underlying HTTP calls to GoogleMaps API are mocked."""
 
-    SAMPLE_RETAILER_DATA = {
+    SAMPLE_RETAILER_DATA: RetailerTestFormDataWithGeocoding = {
         "name": "Plaid Pantry",
         "street_address": "1305 SW 11th Avenue",
         "city": "Portland",
