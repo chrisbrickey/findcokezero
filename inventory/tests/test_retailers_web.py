@@ -1,40 +1,42 @@
 from decimal import Decimal
 from django_webtest import WebTest
 from unittest.mock import patch
+
 from inventory.exceptions import NonNumericPostcodeError
 from inventory.services.geocoding import GeocodingResult
+from inventory.tests.types import RetailerTestPersistenceData, SodaTestFormData
 
 
 class RetailerWebTestCase(WebTest):
     csrf_checks = False
 
-    retailer1_data = {
+    retailer1_data: RetailerTestPersistenceData = {
         "name": "test_retailer_1",
         "city": "San Francisco",
         "postcode": 94107,
         "street_address": "test_street_1",
     }
 
-    retailer2_data = {
+    retailer2_data: RetailerTestPersistenceData = {
         "name": "test_retailer_2",
         "city": "New York",
         "postcode": 10003,
         "street_address": "test_street_2",
     }
 
-    soda_ch_data = {
+    soda_ch_data: SodaTestFormData = {
         "abbreviation": "CH",
         "low_calorie": "True",
         "name": "CherryCokeZero",
     }
 
-    soda_vz_data = {
+    soda_vz_data: SodaTestFormData = {
         "abbreviation": "VZ",
         "low_calorie": "True",
         "name": "VanillaCokeZero",
     }
 
-    soda_cc_data = {
+    soda_cc_data: SodaTestFormData = {
         "abbreviation": "CC",
         "low_calorie": "False",
         "name": "CokeClassic",

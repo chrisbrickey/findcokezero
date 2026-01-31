@@ -3,21 +3,23 @@ from django.db import IntegrityError
 from django.test import TestCase
 
 from inventory.models import Retailer, Soda
+from inventory.tests.types import RetailerTestPersistenceData, SodaTestPersistenceData
+
 
 class RetailerDBTestCase(TestCase):
-    retailer1_data: dict[str, str | int] = {
+    retailer1_data: RetailerTestPersistenceData = {
             "name": "Shell",
             "street_address": "598 Bryant Street",
             "city": "San Francisco",
             "postcode": 94107,
         }
-    retailer2_data: dict[str, str | int] = {
+    retailer2_data: RetailerTestPersistenceData = {
             "name": "Bush Market",
             "street_address": "820 Bush Street",
             "city": "San Francisco",
             "postcode": 94108,
         }
-    soda1_data: dict[str, str | bool] = {
+    soda1_data: SodaTestPersistenceData = {
             "name": "Cherry Coke Zero",
             "abbreviation": "CZ",
             "low_calorie": True,

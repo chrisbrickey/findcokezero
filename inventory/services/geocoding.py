@@ -5,7 +5,8 @@ import urllib
 from dataclasses import dataclass
 from decimal import Decimal
 from django.conf import settings
-from typing import Any
+
+from inventory.types import GoogleMapsAddressComponent, GoogleMapsGeocodeResponse
 
 from .exceptions import (
     GeocodingAPIError,
@@ -115,7 +116,7 @@ class GeocodingService:
         logger.info("Geocoding request successful for address: %s", address)
         return data
 
-    def _parse_response(self, data: dict[str, Any]) -> GeocodingResult:
+    def _parse_response(self, data: GoogleMapsGeocodeResponse) -> GeocodingResult:
         """
         Parse the API response and extract coordinates.
 
@@ -151,7 +152,7 @@ class GeocodingService:
 
     def _extract_postcode(
             self,
-            address_data: list[dict[str, Any]]
+            address_data: list[GoogleMapsAddressComponent]
     ) -> str | None:
         """
         Extract postcode from address components portion of response from Google Maps API.
