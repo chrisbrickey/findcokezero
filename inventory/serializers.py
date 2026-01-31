@@ -57,6 +57,9 @@ class RetailerSerializer(serializers.HyperlinkedModelSerializer[Retailer]):
 
 
 class SodaSerializer(serializers.HyperlinkedModelSerializer[Soda]):
+    def validate_abbreviation(self, value: str) -> str:
+        return value.upper()
+
     class Meta:
         model = Soda
         fields = ('id', 'name', 'abbreviation', 'low_calorie', 'url')

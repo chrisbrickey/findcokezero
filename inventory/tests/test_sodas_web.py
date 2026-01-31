@@ -92,6 +92,41 @@ class SodaWebTestCase(WebTest):
         self.assertEqual(get_response.status, "200 OK")
         self.assertEqual(get_response.json, post_response.json)
 
+    def test_create_soda_with_lowercase_abbreviation_transforms_to_uppercase(self) -> None:
+        """HTTP request post request with lowercase abbreviation succeeds
+        and stores abbreviation as uppercase"""
+
+        lowercase_soda_params = {
+            "abbreviation": "vz",
+            "low_calorie": "True",
+            "name": "Vanilla Coke Zero"
+        }
+        post_response = self.app.post_json('/api/sodas/', params=lowercase_soda_params)
+
+        self.assertEqual(post_response.status, "201 Created")
+
+        # verify post response content
+        post_response_data = post_response.json
+        self.assertEqual(post_response_data["abbreviation"], lowercase_soda_params["abbreviation"].upper())
+
+        # verify that abbreviation was persisted as uppercase
+        new_soda_id = post_response_data["id"]
+        get_response = self.app.get(f'/api/sodas/{new_soda_id}/')
+        self.assertEqual(get_response.json["abbreviation"], lowercase_soda_params["abbreviation"].upper())
+
+    def test_create_soda_with_large_abbreviation_fails(self) -> None:
+        """HTTP post request with abbreviation larger than two letters returns informative error"""
+
+        duplicate_name_params = {
+            "abbreviation": "SCH",
+            "low_calorie": "True",
+            "name": "Sour Cherry Coke"
+        }
+        post_response = self.app.post_json('/api/sodas/', params=duplicate_name_params, expect_errors=True)
+
+        self.assertEqual(post_response.status, "400 Bad Request")
+        self.assertIn("Ensure this field has no more than 2 characters.", post_response.json["abbreviation"])
+
     def test_create_soda_with_same_abbreviation_fails(self) -> None:
         """HTTP post request with duplicate abbreviation returns error"""
 
@@ -104,7 +139,6 @@ class SodaWebTestCase(WebTest):
 
         self.assertEqual(post_response.status, "400 Bad Request")
 
-
     def test_create_soda_with_same_name_fails(self) -> None:
         """HTTP post request with duplicate name returns error"""
 
@@ -116,7 +150,6 @@ class SodaWebTestCase(WebTest):
         post_response = self.app.post_json('/api/sodas/', params=duplicate_name_params, expect_errors=True)
 
         self.assertEqual(post_response.status, "400 Bad Request")
-
 
     def test_delete_soda_succeeds(self) -> None:
         """HTTP delete request removes soda"""
