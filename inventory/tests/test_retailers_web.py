@@ -43,6 +43,18 @@ class RetailerWebTestCase(WebTest):
     }
 
     def setUp(self) -> None:
+        # Start mocking GeocodingService for all tests
+        self.geocoding_patcher = patch('inventory.serializers.GeocodingService')
+        self.mock_geocoding_class = self.geocoding_patcher.start()
+
+        # Configure default mock return value for geocoding
+        mock_instance = self.mock_geocoding_class.return_value
+        mock_instance.geocode_address.return_value = GeocodingResult(
+            latitude=Decimal("40.0"),
+            longitude=Decimal("-74.0"),
+            postcode="10001",
+        )
+
         # Create sodas first so we have their URLs
 
         post_soda_ch = self.app.post_json('/api/sodas/', params=self.soda_ch_data)
@@ -67,6 +79,9 @@ class RetailerWebTestCase(WebTest):
         # retailer2: VZ (VanillaCokeZero) and CC (CokeClassic)
         retailer2_params = {**self.retailer2_data, "sodas": [self.soda_vz_url, self.soda_cc_url]}
         self.app.post_json('/api/retailers/', params=retailer2_params)
+
+    def tearDown(self) -> None:
+        self.geocoding_patcher.stop()
 
     def test_view_retailers_returns_all(self) -> None:
         """HTTP get request with no params retrieves all retailers"""
@@ -164,6 +179,14 @@ class RetailerWebTestCase(WebTest):
     def test_create_retailer_without_sodas_succeeds(self) -> None:
         """HTTP post request with required data results in creation of object and response with all object data"""
 
+        # Configure mock to return specific coordinates for this test
+        mock_instance = self.mock_geocoding_class.return_value
+        mock_instance.geocode_address.return_value = GeocodingResult(
+            latitude=Decimal("40.7275"),
+            longitude=Decimal("-73.98"),
+            postcode="10009",
+        )
+
         new_retailer_params = {
             "name": "new_retailer",
             "city": "New York",
@@ -200,6 +223,14 @@ class RetailerWebTestCase(WebTest):
     def test_create_retailer_with_sodas_succeeds(self) -> None:
         """HTTP post request with soda data results in creation of object and response with all object data"""
 
+        # Configure mock to return specific coordinates for this test
+        mock_instance = self.mock_geocoding_class.return_value
+        mock_instance.geocode_address.return_value = GeocodingResult(
+            latitude=Decimal("34.0"),
+            longitude=Decimal("-118.5"),
+            postcode="90291",
+        )
+
         new_retailer_params = {
             "name": "new_retailer",
             "city": "Los Angeles",
@@ -216,7 +247,15 @@ class RetailerWebTestCase(WebTest):
 
     def test_create_retailer_without_postcode_populates_all_geocoding(self) -> None:
         """HTTP post request without postcode will populate latitude, longitude,
-        and numeric postcode via Google Maps API"""
+        and numeric postcode via geocoding service"""
+
+        # Configure mock to return specific coordinates for this test
+        mock_instance = self.mock_geocoding_class.return_value
+        mock_instance.geocode_address.return_value = GeocodingResult(
+            latitude=Decimal("40.8294"),
+            longitude=Decimal("-73.94"),
+            postcode="10032",
+        )
 
         new_retailer_params = {
             "name": "new_retailer",
@@ -245,7 +284,15 @@ class RetailerWebTestCase(WebTest):
 
     def test_create_retailer_with_postcode_preserves_user_value(self) -> None:
         """HTTP post request with user-provided postcode preserves that value
-        instead of over-writing it via Google Maps API"""
+        instead of over-writing it via geocoding service"""
+
+        # Configure mock to return a postcode different than user provided
+        mock_instance = self.mock_geocoding_class.return_value
+        mock_instance.geocode_address.return_value = GeocodingResult(
+            latitude=Decimal("33.6"),
+            longitude=Decimal("-111.9"),
+            postcode="85259",
+        )
 
         user_provided_postcode = 85250 # correct zip is 85259 as of 2026
         new_retailer_params = {
@@ -285,13 +332,12 @@ class RetailerWebTestCase(WebTest):
 
         self.assertEqual(post_response.status, "400 Bad Request")
 
-    @patch('inventory.serializers.GeocodingService')
-    def test_create_retailer_with_non_numeric_postcode_from_geocoding_fails(self, mock_geocoding_class) -> None:
+    def test_create_retailer_with_non_numeric_postcode_from_geocoding_fails(self) -> None:
         """HTTP post request without postcode raises NonNumericPostcodeError
         when geocoding service returns non-numeric postcode"""
 
-        # Mock the geocoding service to return a non-numeric postcode (e.g., UK format)
-        mock_geocoding_instance = mock_geocoding_class.return_value
+        # Configure mock to return a non-numeric postcode (e.g., UK format)
+        mock_geocoding_instance = self.mock_geocoding_class.return_value
         mock_geocoding_instance.geocode_address.return_value = GeocodingResult(
             latitude=Decimal("51.5124"),
             longitude=Decimal("-0.1279"),
