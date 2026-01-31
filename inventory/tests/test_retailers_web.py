@@ -72,9 +72,12 @@ class RetailerWebTestCase(WebTest):
         get_response = self.app.get('/api/retailers/')
 
         self.assertEqual(get_response.status, "200 OK")
-        self.assertEqual(len(get_response.json), 2)
 
-        result_names = [r["name"] for r in get_response.json]
+        # verify content
+        response_data = get_response.json
+        self.assertEqual(len(response_data), 2)
+
+        result_names = [retailer["name"] for retailer in response_data]
         self.assertIn(self.retailer1_data["name"], result_names)
         self.assertIn(self.retailer2_data["name"], result_names)
 
@@ -172,10 +175,10 @@ class RetailerWebTestCase(WebTest):
         self.assertEqual(post_response.json["name"], new_retailer_params["name"])
         self.assertEqual(post_response.json["city"], new_retailer_params["city"])
         self.assertEqual(post_response.json["street_address"], new_retailer_params["street_address"])
-
-        # Verify id was created and can be used to fetch the retailer
         self.assertIn("id", post_response.json,
                       "Expected Retailer object to have key 'id', but it was missing.")
+
+        # Verify new id can be used to fetch the retailer
         new_retailer_id = post_response.json["id"]
         get_response = self.app.get(f"/api/retailers/{new_retailer_id}/")
         self.assertEqual(get_response.status, "200 OK")
