@@ -48,4 +48,4 @@ class GoogleMapsIntegrationTestCase(WebTest):
         # Verify geocoding values are accurate
         self.assertAlmostEqual(latitude, 40.8294, delta=0.01)
         self.assertAlmostEqual(longitude, -73.94, delta=0.01)
-        self.assertEqual(int(postcode), 10032)
+        self.assertEqual(postcode, "10032")
