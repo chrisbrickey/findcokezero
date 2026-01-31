@@ -21,7 +21,7 @@ class GeocodingResult:
 
     latitude: Decimal
     longitude: Decimal
-    postcode: int | None = None
+    postcode: str | None = None
 
 class GeocodingService:
     """Service for geocoding addresses using Google Maps API."""
